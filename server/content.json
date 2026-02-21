@@ -1,0 +1,137 @@
+{
+  "hero": {
+    "title": "Devenez l'Expert de la Transition Écologique",
+    "subtitle": "Formez-vous aux métiers de demain avec nos parcours d'excellence en performance énergétique, RSE et développement durable."
+  },
+  "programs": [
+    {
+      "id": 1,
+      "title": "Bachelor Performance Énergétique",
+      "description": "Formation post-bac pour maîtriser les bases de l'efficacité énergétique."
+    },
+    {
+      "id": 2,
+      "title": "Master Cybersécurité & Green IT",
+      "description": "Alliez sécurité numérique et sobriété énergétique."
+    },
+    {
+      "id": 3,
+      "title": "Bachelor en développement d'application",
+      "description": "Devenez un expert en développement web et mobile."
+    },
+    {
+      "id": 4,
+      "title": "Design",
+      "description": "Maîtrisez les outils de création graphique et UX/UI."
+    },
+    {
+      "id": 5,
+      "title": "Sécurité et réseau",
+      "description": "Protégez les infrastructures et les données des entreprises."
+    },
+    {
+      "id": 6,
+      "title": "Master Management Durable",
+      "description": "Pilotez la stratégie RSE des entreprises."
+    }
+  ],
+  "whyChooseUs": [
+    {
+      "id": 1,
+      "title": "Innovation Pédagogique",
+      "description": "Méthodes d'apprentissage actives, projets réels avec des entreprises partenaires, et technologies de pointe.",
+      "stat": "40+",
+      "statLabel": "Projets/an",
+      "icon": "Zap"
+    },
+    {
+      "id": 2,
+      "title": "100% Alternance",
+      "description": "Immersion professionnelle totale. Vous êtes rémunéré pendant vos études et opérationnel dès la sortie.",
+      "stat": "0€",
+      "statLabel": "Frais de scolarité",
+      "icon": "Briefcase"
+    },
+    {
+      "id": 3,
+      "title": "Experts de Terrain",
+      "description": "Nos intervenants sont des professionnels en activité, leaders dans leurs domaines respectifs.",
+      "stat": "85%",
+      "statLabel": "Pros en activité",
+      "icon": "Users"
+    }
+  ],
+  "testimonials": [
+    {
+      "id": 1,
+      "name": "Thomas Dubois",
+      "role": "Consultant Green IT",
+      "company": "Capgemini",
+      "image": "https://randomuser.me/api/portraits/men/32.jpg",
+      "program": "Master Green IT 2024",
+      "quote": "Green Up Academy m'a permis de transformer ma passion pour l'informatique en une carrière qui a du sens. Aujourd'hui, j'aide les grandes entreprises à réduire l'empreinte carbone de leurs systèmes d'information.",
+      "rating": 5
+    },
+    {
+      "id": 2,
+      "name": "Sarah Martin",
+      "role": "Cheffe de projet RSE",
+      "company": "L'Oréal",
+      "image": "https://randomuser.me/api/portraits/women/44.jpg",
+      "program": "Master Management Durable 2023",
+      "quote": "L'alternance chez L'Oréal pendant ma formation a été un véritable tremplin. Les cours étaient directement applicables et l'équipe pédagogique exceptionnelle. Je recommande à 100%.",
+      "rating": 5
+    },
+    {
+      "id": 3,
+      "name": "Lucas Bernard",
+      "role": "Ingénieur Efficacité Énergétique",
+      "company": "EDF",
+      "image": "https://randomuser.me/api/portraits/men/86.jpg",
+      "program": "Bachelor Performance Énergétique 2022",
+      "quote": "Une formation complète qui m'a donné toutes les compétences techniques et relationnelles pour réussir. Le réseau d'anciens est un vrai plus pour trouver des opportunités.",
+      "rating": 5
+    }
+  ],
+  "cta": {
+    "title": "Prêt à transformer votre avenir ?",
+    "subtitle": "Rejoignez la prochaine promotion de leaders de la transition écologique. Places limitées, candidatures ouvertes jusqu'au 30 juin 2025.",
+    "dates": [
+      {
+        "label": "30 Juin",
+        "sub": "Clôture candidatures"
+      },
+      {
+        "label": "260 places",
+        "sub": "Toutes formations"
+      },
+      {
+        "label": "48h",
+        "sub": "Réponse admission"
+      }
+    ]
+  },
+  "contact": {
+    "director": "Charles Giscard Fongang",
+    "email": "dosyca35@gmail.com",
+    "phone": "(+33) 7 51 36 09 44",
+    "address": "15 rue des halles, 75001 Paris"
+  },
+  "partners": [
+    {
+      "id": 1,
+      "name": "Google",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+    },
+    {
+      "id": 2,
+      "name": "Microsoft",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg"
+    },
+    {
+      "id": 3,
+      "name": "Amazon",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
+    }
+  ]
+}
