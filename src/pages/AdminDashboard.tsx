@@ -1537,9 +1537,9 @@ async function viewApplication(id) {
       <div class="form-group"><label class="form-label">Changer le statut</label>
         <select class="form-control" id="reply-status">
           <option value="">Ne pas changer</option>
-          <option value="en_etude">⏳ Passer en étude</option>
-          <option value="accepte">✅ Accepter la candidature</option>
-          <option value="refuse">❌ Refuser la candidature</option>
+          <option value="en_etude"> Passer en étude</option>
+          <option value="accepte"> Accepter la candidature</option>
+          <option value="refuse"> Refuser la candidature</option>
         </select>
       </div>
       <div class="form-group"><label class="form-label">Objet</label><input class="form-control" id="reply-subject" value="Réponse à votre candidature — ${a.program}"></div>
@@ -1558,7 +1558,7 @@ async function sendAppReply(id) {
   if (!message.trim()) { toast('Rédigez un message', 'error'); return; }
   const res = await api(`/applications/${id}/reply`, 'POST', { subject, message, status });
   if (res.success) {
-    toast('✅ Réponse envoyée!');
+    toast(' Réponse envoyée!');
     if (status) { const a = allApplications.find(x => x.id === id); if (a) a.status = status; }
     closeAppModal();
     renderApplicationsTable(allApplications);
@@ -1674,7 +1674,7 @@ async function uploadImage(input, field, previewId) {
     if (!content[keys[0]]) content[keys[0]] = {};
     content[keys[0]][keys[1]] = `http://localhost:4000${res.url}`;
     showImagePreview(previewId, `http://localhost:4000${res.url}`);
-    toast('✅ Image uploadée!');
+    toast(' Image uploadée!');
   }
 }
 function showImagePreview(containerId, url) {
