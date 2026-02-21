@@ -1,30 +1,7 @@
-// React default import not required with new JSX transform
+import React from 'react';
 import { ArrowRight, Calendar, Users, Clock } from 'lucide-react';
 import { Button } from '../ui/Button';
-import { useState, useEffect } from 'react';
-
 export function CTASection() {
-  const [data, setData] = useState({
-    title: "Prêt à transformer votre avenir ?",
-    subtitle: "Rejoignez la prochaine promotion de leaders de la transition écologique. Places limitées, candidatures ouvertes jusqu'au 30 juin 2025.",
-    dates: [
-      { label: "30 Juin", sub: "Clôture candidatures" },
-      { label: "260 places", sub: "Toutes formations" },
-      { label: "48h", sub: "Réponse admission" }
-    ]
-  });
-
-  useEffect(() => {
-    fetch('http://localhost:4000/api/content')
-      .then(res => res.json())
-      .then(content => {
-        if (content.cta) {
-          setData(d => ({ ...d, ...content.cta }));
-        }
-      })
-      .catch(console.error);
-  }, []);
-
   return (
     <section className="py-32 bg-light-bg dark:bg-dark-bg relative overflow-hidden">
       {/* Background decoration */}
@@ -40,10 +17,16 @@ export function CTASection() {
               Rentrée Octobre 2025
             </span>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-light-text dark:text-dark-text mb-6 leading-tight">
-              {data.title}
+              Prêt à{' '}
+              <span className="font-display italic text-gradient">
+                transformer
+              </span>{' '}
+              votre avenir ?
             </h2>
             <p className="text-xl text-light-muted dark:text-dark-muted mb-8 leading-relaxed">
-              {data.subtitle}
+              Rejoignez la prochaine promotion de leaders de la transition
+              écologique. Places limitées, candidatures ouvertes jusqu'au 30
+              juin 2025.
             </p>
 
             {/* Key dates */}
@@ -52,10 +35,10 @@ export function CTASection() {
                 <Calendar className="h-5 w-5 text-primary" />
                 <div>
                   <p className="font-semibold text-light-text dark:text-dark-text">
-                    {data.dates[0]?.label}
+                    30 Juin
                   </p>
                   <p className="text-xs text-light-muted dark:text-dark-muted">
-                    {data.dates[0]?.sub}
+                    Clôture candidatures
                   </p>
                 </div>
               </div>
@@ -63,10 +46,10 @@ export function CTASection() {
                 <Users className="h-5 w-5 text-primary" />
                 <div>
                   <p className="font-semibold text-light-text dark:text-dark-text">
-                    {data.dates[1]?.label}
+                    260 places
                   </p>
                   <p className="text-xs text-light-muted dark:text-dark-muted">
-                    {data.dates[1]?.sub}
+                    Toutes formations
                   </p>
                 </div>
               </div>
@@ -74,10 +57,10 @@ export function CTASection() {
                 <Clock className="h-5 w-5 text-primary" />
                 <div>
                   <p className="font-semibold text-light-text dark:text-dark-text">
-                    {data.dates[2]?.label}
+                    48h
                   </p>
                   <p className="text-xs text-light-muted dark:text-dark-muted">
-                    {data.dates[2]?.sub}
+                    Réponse admission
                   </p>
                 </div>
               </div>
@@ -109,7 +92,7 @@ export function CTASection() {
                 <div className="space-y-4 mb-8">
                   {[
                   {
-                    date: '15 Mars 2025',
+                    date: '03 Mars 2025',
                     time: '10h - 17h'
                   },
                   {

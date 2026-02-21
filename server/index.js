@@ -4,389 +4,717 @@ const bodyParser = require('body-parser');
 const multer     = require('multer');
 const cors       = require('cors');
 const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
 const fs         = require('fs');
 const path       = require('path');
+const crypto     = require('crypto');
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
-// ──────────────────────────────────────────────────────────────────────────────
-// CONFIGURATION EMAIL GMAIL
-// ──────────────────────────────────────────────────────────────────────────────
-// 1. Activez la validation en 2 étapes sur Google
-// 2. Sécurité → Mots de passe des applications → "GreenUpSite"
-// 3. Copiez le mot de passe 16 caractères dans votre .env :
-//    EMAIL_USER=votre.email@gmail.com
-//    EMAIL_PASS=xxxx_xxxx_xxxx_xxxx
+// ─── FICHIERS DE DONNÉES ────────────────────────────────────────────────────
+const DATA_DIR          = path.join(__dirname, 'data');
+const CONTENT_FILE      = path.join(DATA_DIR, 'content.json');
+const APPLICATIONS_FILE = path.join(DATA_DIR, 'applications.json');
+const MESSAGES_FILE     = path.join(DATA_DIR, 'messages.json');
+const ANALYTICS_FILE    = path.join(DATA_DIR, 'analytics.json');
+const NEWS_FILE         = path.join(DATA_DIR, 'news.json');
+const UPLOADS_DIR       = path.join(__dirname, 'uploads');
+const PORT              = process.env.PORT || 4000;
+const ADMIN_EMAIL       = process.env.ADMIN_EMAIL || 'dosyca35@gmail.com';
 
-const CONTENT_FILE      = path.join(__dirname, 'content.json');
-const APPLICATIONS_FILE = path.join(__dirname, 'applications.json');
-const ADMIN_EMAIL       = 'dosyca35@gmail.com';
+// Créer les dossiers
+[DATA_DIR, UPLOADS_DIR].forEach(d => { if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true }); });
 
-// ──────────────────────────────────────────────────────────────────────────────
-// CONTENU CMS INITIAL
-// ──────────────────────────────────────────────────────────────────────────────
+// ─── CONFIGURATION GMAIL OAUTH2 ────────────────────────────────────────────
+// Dans votre .env :
+//   GMAIL_CLIENT_ID=votre_client_id
+//   GMAIL_CLIENT_SECRET=votre_client_secret
+//   GMAIL_REFRESH_TOKEN=votre_refresh_token
+//   GMAIL_USER=dosyca35@gmail.com
+//
+// Pour obtenir le refresh token :
+// 1. Google Cloud Console → APIs → Gmail API → Activer
+// 2. OAuth 2.0 → Créer des identifiants → Application Web
+// 3. URI de redirection : https://developers.google.com/oauthplayground
+// 4. Aller sur https://developers.google.com/oauthplayground
+// 5. Paramètres → cocher "Use your own OAuth credentials" → mettre client_id + secret
+// 6. Scope : https://mail.google.com/
+// 7. Autoriser → Exchange tokens → copier le refresh_token
+
+function createTransporter() {
+  // Mode OAuth2 (recommandé - plus sécurisé)
+  if (process.env.GMAIL_CLIENT_ID && process.env.GMAIL_REFRESH_TOKEN) {
+    const oAuth2Client = new google.auth.OAuth2(
+      process.env.GMAIL_CLIENT_ID,
+      process.env.GMAIL_CLIENT_SECRET,
+      'https://developers.google.com/oauthplayground'
+    );
+    oAuth2Client.setCredentials({ refresh_token: process.env.GMAIL_REFRESH_TOKEN });
+
+    return nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        type: 'OAuth2',
+        user: process.env.GMAIL_USER || ADMIN_EMAIL,
+        clientId: process.env.GMAIL_CLIENT_ID,
+        clientSecret: process.env.GMAIL_CLIENT_SECRET,
+        refreshToken: process.env.GMAIL_REFRESH_TOKEN,
+      },
+    });
+  }
+
+  // Mode App Password (fallback)
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    return nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+    });
+  }
+
+  return null;
+}
+
+async function sendEmail(options) {
+  const transporter = createTransporter();
+  if (!transporter) {
+    console.log('[SIMULATION EMAIL]', options.subject, '→', options.to);
+    return { simulated: true };
+  }
+  return transporter.sendMail({
+    from: `"Green Up Academy" <${process.env.GMAIL_USER || process.env.EMAIL_USER || ADMIN_EMAIL}>`,
+    ...options,
+  });
+}
+
+// ─── UPLOAD ────────────────────────────────────────────────────────────────
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, UPLOADS_DIR),
+  filename: (req, file, cb) => {
+    const ext  = path.extname(file.originalname);
+    const name = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_');
+    cb(null, `${Date.now()}_${name}${ext}`);
+  },
+});
+const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB max
+
+// Servir les uploads
+app.use('/uploads', express.static(UPLOADS_DIR));
+
+// ─── INITIALISATION DES DONNÉES ────────────────────────────────────────────
 const initialContent = {
   hero: {
     title: "Devenez l'Expert de la Transition Écologique",
     subtitle: "Formez-vous aux métiers de demain avec nos parcours d'excellence.",
+    backgroundImage: '',
+    ctaText: 'Candidater maintenant',
+    ctaSubText: 'Admissions 2026 ouvertes',
+  },
+  about: {
+    title: "Notre Mission",
+    text: "Green Up Academy forme les professionnels de demain aux enjeux de la transition écologique et numérique. Une école innovante, 100% en alternance, au cœur de l'Essonne.",
+    vision: "Former 1000 experts de la transition écologique d'ici 2030.",
+    values: ["Innovation", "Durabilité", "Excellence", "Engagement"],
+    stats: [
+      { label: "Étudiants formés", value: "250+" },
+      { label: "Partenaires entreprises", value: "80+" },
+      { label: "Taux d'insertion", value: "94%" },
+      { label: "Années d'expérience", value: "5+" },
+    ],
   },
   programs: [
-    { id: 1, title: 'Bachelor Administration des Entreprises', description: 'Gestion, management et entrepreneuriat en alternance.' },
-    { id: 2, title: 'Bachelor Design',                          description: 'UX/UI, design graphique et création visuelle en alternance.' },
-    { id: 3, title: 'Bachelor Développement Logiciel',           description: 'Web, mobile et applications full-stack en alternance.' },
-    { id: 4, title: 'Bachelor Administration Réseau',            description: 'Infrastructure, sécurité et systèmes en alternance.' },
-    { id: 5, title: 'Master Cybersécurité & Green IT',           description: 'Sécurité numérique et sobriété énergétique.' },
-    { id: 6, title: 'Master Performance Énergétique',            description: 'Audit, rénovation et efficacité des bâtiments.' },
+    { id: 1, title: 'Bachelor Administration des Entreprises', level: 'Bac+3', duration: '3 ans', description: 'Gestion, management et entrepreneuriat en alternance.', icon: '🏢', color: '#1FAB89', details: 'Formation complète en gestion d\'entreprise avec focus sur le développement durable.', outcomes: ['Manager de projet', 'Chef de service', 'Entrepreneur'] },
+    { id: 2, title: 'Bachelor Design',                          level: 'Bac+3', duration: '3 ans', description: 'UX/UI, design graphique et création visuelle en alternance.', icon: '🎨', color: '#4ECDC4', details: 'Maîtrisez les outils du design moderne avec une approche éco-responsable.', outcomes: ['UX Designer', 'Designer Graphique', 'Directeur Artistique'] },
+    { id: 3, title: 'Bachelor Développement Logiciel',           level: 'Bac+3', duration: '3 ans', description: 'Web, mobile et applications full-stack en alternance.', icon: '💻', color: '#45B7D1', details: 'Développez des solutions numériques innovantes et sobres en énergie.', outcomes: ['Développeur Full-Stack', 'Ingénieur Logiciel', 'CTO'] },
+    { id: 4, title: 'Bachelor Administration Réseau',            level: 'Bac+3', duration: '3 ans', description: 'Infrastructure, sécurité et systèmes en alternance.', icon: '🔗', color: '#96CEB4', details: 'Maîtrisez l\'infrastructure informatique moderne et éco-efficace.', outcomes: ['Administrateur Réseau', 'Ingénieur Cloud', 'DSI'] },
+    { id: 5, title: 'Master Cybersécurité & Green IT',           level: 'Bac+5', duration: '2 ans', description: 'Sécurité numérique et sobriété énergétique.', icon: '🔒', color: '#FFEAA7', details: 'Devenez expert en cybersécurité avec une vision Green IT.', outcomes: ['RSSI', 'Consultant Cybersécurité', 'Ethical Hacker'] },
+    { id: 6, title: 'Master Performance Énergétique',            level: 'Bac+5', duration: '2 ans', description: 'Audit, rénovation et efficacité des bâtiments.', icon: '⚡', color: '#DDA0DD', details: 'Spécialisez-vous dans l\'efficacité énergétique des bâtiments.', outcomes: ['Auditeur Énergétique', 'Consultant RSE', 'Directeur Développement Durable'] },
   ],
   whyChooseUs: [
-    { id:1, title:'Innovation Pédagogique', description:"Méthodes actives, projets réels.", stat:'40+', statLabel:'Projets/an', icon:'Zap' },
-    { id:2, title:'100% Alternance',         description:'Rémunéré pendant les études.',    stat:'0€',  statLabel:'Frais',        icon:'Briefcase' },
-    { id:3, title:'Experts de Terrain',      description:'Intervenants pro en activité.',   stat:'85%', statLabel:'Pros actifs',   icon:'Users' },
+    { id: 1, title: 'Innovation Pédagogique', description: "Méthodes actives, projets réels, hackathons et ateliers pratiques.", stat: '40+', statLabel: 'Projets/an', icon: 'Zap', color: '#1FAB89' },
+    { id: 2, title: '100% Alternance',         description: 'Rémunéré pendant toute la durée de vos études.',    stat: '0€',  statLabel: 'Frais de scolarité', icon: 'Briefcase', color: '#4ECDC4' },
+    { id: 3, title: 'Experts de Terrain',      description: 'Intervenants professionnels en activité dans leur domaine.',   stat: '85%', statLabel: 'Pros actifs',   icon: 'Users', color: '#45B7D1' },
+    { id: 4, title: 'Insertion Garantie',      description: 'Accompagnement emploi et réseau entreprises actif.',   stat: '94%', statLabel: 'Taux insertion',   icon: 'TrendingUp', color: '#96CEB4' },
   ],
-  testimonials: [],
+  testimonials: [
+    { id: 1, name: 'Marie Dubois', program: 'Bachelor Dev Logiciel', year: '2023', text: 'Une formation exceptionnelle qui m\'a permis de décrocher un CDI dès la fin de mes études.', avatar: '', rating: 5, company: 'TechCorp Paris' },
+    { id: 2, name: 'Karim Mansour', program: 'Master Cybersécurité', year: '2024', text: 'Le réseau entreprises de Green Up Academy est incroyable. J\'ai trouvé mon alternance en 2 semaines.', avatar: '', rating: 5, company: 'SecureNet' },
+  ],
   cta: {
     title: "Prêt à transformer votre avenir ?",
     subtitle: "Candidatures 2026 ouvertes. Places limitées.",
     dates: [
-      { label:"30 Juin",       sub:"Clôture candidatures" },
-      { label:"6 formations",  sub:"Disponibles"          },
-      { label:"48h",           sub:"Réponse admission"    },
+      { label: "30 Juin", sub: "Clôture candidatures" },
+      { label: "6 formations", sub: "Disponibles" },
+      { label: "48h", sub: "Réponse admission" },
     ],
   },
   contact: {
     director: 'Charles Giscard Fongang',
-    email:    ADMIN_EMAIL,
-    phone:    '(+33) 7 51 36 09 44',
-    address:  'Boussy-Saint-Antoine, 91480 Essonne',
+    email: ADMIN_EMAIL,
+    phone: '(+33) 7 51 36 09 44',
+    address: 'Boussy-Saint-Antoine, 91480 Essonne',
+    mapEmbed: '',
+    hours: 'Lun–Ven : 9h–18h',
+    socialLinks: {
+      linkedin: '',
+      instagram: '',
+      facebook: '',
+      twitter: '',
+    },
   },
-  partners: [],
+  partners: [
+    { id: 1, name: 'Partenaire 1', logo: '', url: '', category: 'Entreprise' },
+  ],
+  admission: {
+    title: "Candidatez en ligne",
+    subtitle: "Rejoignez Green Up Academy pour la rentrée 2026",
+    steps: [
+      { num: 1, title: "Dépôt de dossier", desc: "Remplissez le formulaire et uploadez vos documents." },
+      { num: 2, title: "Étude du dossier", desc: "Notre équipe pédagogique étudie votre candidature sous 48h." },
+      { num: 3, title: "Entretien", desc: "Si votre profil correspond, nous vous contactons pour un entretien." },
+      { num: 4, title: "Réponse", desc: "Vous recevez notre décision par email dans les 72h suivant l'entretien." },
+    ],
+    documentsRequired: [
+      { key: 'cv', label: 'Curriculum Vitae (CV)', required: true, formats: 'PDF, DOC, DOCX', maxSize: '5MB' },
+      { key: 'letter', label: 'Lettre de motivation', required: true, formats: 'PDF, DOC, DOCX', maxSize: '5MB' },
+      { key: 'diploma', label: 'Relevé(s) de notes / Diplôme(s)', required: true, formats: 'PDF, JPG, PNG', maxSize: '10MB' },
+      { key: 'id', label: "Pièce d'identité", required: true, formats: 'PDF, JPG, PNG', maxSize: '5MB' },
+      { key: 'photo', label: 'Photo d\'identité', required: false, formats: 'JPG, PNG', maxSize: '2MB' },
+    ],
+    faq: [
+      { q: "Quels sont les frais de scolarité ?", a: "Green Up Academy est 100% en alternance, donc 0€ de frais à votre charge. L'entreprise finance votre formation." },
+      { q: "Quelle est la durée des formations ?", a: "Les Bachelors durent 3 ans (Bac+3) et les Masters 2 ans (Bac+5)." },
+      { q: "Faut-il trouver son alternance soi-même ?", a: "Notre service relations entreprises vous accompagne dans votre recherche d'alternance." },
+    ],
+  },
+  header: {
+    logo: '',
+    logoText: 'Green Up Academy',
+    navLinks: [
+      { label: 'Accueil', href: '#hero' },
+      { label: 'Formations', href: '#programs' },
+      { label: 'Pourquoi nous', href: '#why' },
+      { label: 'Témoignages', href: '#testimonials' },
+      { label: 'Actualités', href: '#news' },
+      { label: 'Contact', href: '#contact' },
+    ],
+    ctaText: 'Candidater',
+    ctaHref: '#admission',
+  },
+  footer: {
+    description: "Former les experts de la transition écologique et numérique.",
+    copyright: `© ${new Date().getFullYear()} Green Up Academy. Tous droits réservés.`,
+    links: [
+      { label: 'Mentions légales', href: '/mentions-legales' },
+      { label: 'Politique de confidentialité', href: '/confidentialite' },
+    ],
+  },
+  seo: {
+    title: "Green Up Academy — École de la Transition Écologique",
+    description: "Formez-vous aux métiers de demain avec Green Up Academy. Bachelor et Master en alternance, 100% gratuit.",
+    keywords: "école alternance, transition écologique, cybersécurité, développement logiciel, Essonne",
+    ogImage: '',
+  },
 };
 
-// Init fichiers persistants
-if (!fs.existsSync(CONTENT_FILE)) {
-  fs.writeFileSync(CONTENT_FILE, JSON.stringify(initialContent, null, 2));
-} else {
-  try {
-    const current = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'));
-    let changed = false;
-    for (const key of Object.keys(initialContent)) {
-      if (current[key] === undefined) { current[key] = initialContent[key]; changed = true; }
-    }
-    if (changed) fs.writeFileSync(CONTENT_FILE, JSON.stringify(current, null, 2));
-  } catch {
-    fs.writeFileSync(CONTENT_FILE, JSON.stringify(initialContent, null, 2));
+const initialNews = [
+  { id: 1, title: "Ouverture des candidatures 2026", slug: "candidatures-2026", excerpt: "Les candidatures pour la rentrée 2026 sont officiellement ouvertes !", content: "...", image: "", date: new Date().toISOString(), author: "Green Up Academy", category: "Admissions", published: true, likes: 0, views: 0, tags: ["admission", "2026"] },
+  { id: 2, title: "Green Up remporte le prix de l'Innovation Pédagogique", slug: "prix-innovation", excerpt: "Notre école primée pour ses méthodes innovantes.", content: "...", image: "", date: new Date(Date.now() - 7 * 86400000).toISOString(), author: "Équipe GUA", category: "Actualité", published: true, likes: 0, views: 0, tags: ["prix", "innovation"] },
+];
+
+const initialAnalytics = {
+  pageViews: { total: 0, today: 0, thisWeek: 0, thisMonth: 0 },
+  visitors: { total: 0, unique: 0 },
+  dailyViews: [],
+  pageBreakdown: {},
+  applicationStats: { total: 0, nouveau: 0, en_etude: 0, accepte: 0, refuse: 0 },
+  contactStats: { total: 0, todayTotal: 0 },
+  newsStats: { totalLikes: 0, totalViews: 0 },
+};
+
+function initFile(file, data) {
+  if (!fs.existsSync(file)) {
+    fs.writeFileSync(file, JSON.stringify(data, null, 2));
   }
 }
-if (!fs.existsSync(APPLICATIONS_FILE)) {
-  fs.writeFileSync(APPLICATIONS_FILE, JSON.stringify([], null, 2));
+function readJSON(file, fallback = []) {
+  try { return JSON.parse(fs.readFileSync(file, 'utf8')); }
+  catch { return fallback; }
+}
+function writeJSON(file, data) {
+  fs.writeFileSync(file, JSON.stringify(data, null, 2));
 }
 
-const upload     = multer({ storage: multer.memoryStorage() });
-const PORT       = process.env.PORT || 4000;
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+initFile(CONTENT_FILE,      initialContent);
+initFile(APPLICATIONS_FILE, []);
+initFile(MESSAGES_FILE,     []);
+initFile(ANALYTICS_FILE,    initialAnalytics);
+initFile(NEWS_FILE,         initialNews);
+
+// ─── ANALYTICS MIDDLEWARE ───────────────────────────────────────────────────
+app.use((req, res, next) => {
+  if (req.method === 'GET' && req.path.startsWith('/api/track')) {
+    return next();
+  }
+  next();
 });
 
-// ──────────────────────────────────────────────────────────────────────────────
-// ENDPOINT — CONTACT SIMPLE
-// ──────────────────────────────────────────────────────────────────────────────
-app.post('/api/send', async (req, res) => {
-  const { name, email, subject, message } = req.body;
-  const mailOptions = {
-    from:    `"Green Up Academy" <${process.env.EMAIL_USER || ADMIN_EMAIL}>`,
-    replyTo: email,
-    to:      ADMIN_EMAIL,
-    subject: subject || `Nouveau message de ${name}`,
-    html: `<div style="font-family:Arial,sans-serif;max-width:600px;">
-      <div style="background:#1FAB89;padding:20px;border-radius:10px 10px 0 0;">
-        <h2 style="color:white;margin:0;">📩 Message de contact</h2>
-      </div>
-      <div style="background:#f9f9f9;padding:20px;border-radius:0 0 10px 10px;">
-        <p><b>Nom :</b> ${name}</p><p><b>Email :</b> ${email}</p><p><b>Sujet :</b> ${subject}</p>
-        <hr style="border:none;border-top:1px solid #eee;margin:12px 0;">
-        <p><b>Message :</b></p>
-        <p style="background:white;padding:12px;border-radius:8px;border-left:3px solid #1FAB89;">${message.replace(/\n/g,'<br>')}</p>
-      </div></div>`,
-    text: `Nom: ${name}\nEmail: ${email}\nSujet: ${subject}\n\nMessage:\n${message}`,
+app.post('/api/track', (req, res) => {
+  const { page, sessionId } = req.body;
+  const analytics = readJSON(ANALYTICS_FILE, initialAnalytics);
+  const today = new Date().toISOString().split('T')[0];
+
+  analytics.pageViews.total = (analytics.pageViews.total || 0) + 1;
+
+  // Daily breakdown
+  if (!analytics.dailyViews) analytics.dailyViews = [];
+  let dayEntry = analytics.dailyViews.find(d => d.date === today);
+  if (!dayEntry) {
+    dayEntry = { date: today, views: 0, visitors: new Set() };
+    analytics.dailyViews.push(dayEntry);
+  }
+  dayEntry.views = (dayEntry.views || 0) + 1;
+
+  // Keep only last 30 days
+  analytics.dailyViews = analytics.dailyViews.slice(-30);
+
+  // Page breakdown
+  if (!analytics.pageBreakdown) analytics.pageBreakdown = {};
+  analytics.pageBreakdown[page || '/'] = (analytics.pageBreakdown[page || '/'] || 0) + 1;
+
+  writeJSON(ANALYTICS_FILE, analytics);
+  res.json({ success: true });
+});
+
+app.get('/api/analytics', (req, res) => {
+  const analytics = readJSON(ANALYTICS_FILE, initialAnalytics);
+  const applications = readJSON(APPLICATIONS_FILE, []);
+  const messages = readJSON(MESSAGES_FILE, []);
+  const news = readJSON(NEWS_FILE, []);
+
+  // Stats candidatures
+  const appStats = {
+    total: applications.length,
+    nouveau:   applications.filter(a => a.status === 'nouveau').length,
+    en_etude:  applications.filter(a => a.status === 'en_etude').length,
+    accepte:   applications.filter(a => a.status === 'accepte').length,
+    refuse:    applications.filter(a => a.status === 'refuse').length,
+    unread:    applications.filter(a => !a.read).length,
   };
-  try {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.log('[SIMULATION] Email contact:', { name, email, subject });
-      return res.json({ success: true });
-    }
-    await transporter.sendMail(mailOptions);
-    res.json({ success: true });
-  } catch (err) {
-    console.error('Erreur email contact:', err);
-    res.status(500).json({ error: 'Erreur envoi.' });
-  }
+
+  // Stats messages
+  const msgStats = {
+    total: messages.length,
+    unread: messages.filter(m => !m.read).length,
+  };
+
+  // Stats actualités
+  const newsStats = {
+    totalLikes:  news.reduce((s, n) => s + (n.likes || 0), 0),
+    totalViews:  news.reduce((s, n) => s + (n.views || 0), 0),
+    published:   news.filter(n => n.published).length,
+    total:       news.length,
+  };
+
+  res.json({
+    ...analytics,
+    applicationStats: appStats,
+    messageStats: msgStats,
+    newsStats,
+  });
 });
 
-// ──────────────────────────────────────────────────────────────────────────────
-// ENDPOINT — CANDIDATURE COMPLÈTE
-// ──────────────────────────────────────────────────────────────────────────────
-app.post('/api/send-application', upload.array('files'), async (req, res) => {
-  try {
-    const {
-      firstName, lastName, email, phone,
-      birthDate, birthPlace, nationality, address,
-      diploma, school, specialite, year, gpa,
-      program, programNiveau, startDate,
-      motivation, experience,
-    } = req.body;
-
-    const fullName = `${firstName} ${lastName}`;
-    const now = new Date().toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
-
-    const attachments = (req.files || []).map(f => ({
-      filename:    f.originalname,
-      content:     f.buffer,
-      contentType: f.mimetype,
-    }));
-
-    // ── 1. Sauvegarder dans applications.json (messagerie du dashboard) ──────
-    let applications = [];
-    try { applications = JSON.parse(fs.readFileSync(APPLICATIONS_FILE, 'utf8')); } catch {}
-
-    const newApp = {
-      id:          Date.now(),
-      date:        new Date().toISOString(),
-      firstName,   lastName, fullName,
-      email,       phone,
-      birthDate,   birthPlace, nationality, address,
-      diploma,     school, specialite, year, gpa,
-      program,     programNiveau, startDate,
-      motivation,  experience,
-      files:       (req.files || []).map(f => f.originalname),
-      status:      'nouveau',   // nouveau | en_etude | accepté | refusé
-      read:        false,
-    };
-
-    applications.unshift(newApp);
-    fs.writeFileSync(APPLICATIONS_FILE, JSON.stringify(applications, null, 2));
-    console.log(`\n📥 [CANDIDATURE] ${fullName} → ${program} (${programNiveau})`);
-    console.log(`   Email: ${email} | Rentrée: ${startDate}`);
-    console.log(`   Fichiers: ${(req.files||[]).map(f=>f.originalname).join(', ') || 'Aucun'}\n`);
-
-    // ── 2. Email si credentials disponibles ──────────────────────────────────
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.log('[SIMULATION] Emails non envoyés (pas de credentials EMAIL_USER/EMAIL_PASS).');
-      return res.json({ success: true, message: 'Candidature enregistrée' });
-    }
-
-    // ─── Email formaté → admin ────────────────────────────────────────────────
-    const htmlAdmin = `<!DOCTYPE html>
-<html><head><meta charset="utf-8"><style>
-  body{font-family:'Segoe UI',Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px;}
-  .c{max-width:680px;margin:0 auto;background:white;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.10);}
-  .hd{background:linear-gradient(135deg,#1FAB89,#15896B);padding:32px;text-align:center;}
-  .hd h1{color:white;margin:0;font-size:22px;} .hd p{color:rgba(255,255,255,.82);margin:6px 0 0;font-size:14px;}
-  .badge{display:inline-block;background:rgba(255,255,255,.20);color:white;border-radius:20px;padding:4px 16px;font-size:13px;margin-top:10px;}
-  .prog{background:#1FAB89;color:white;border-radius:10px;padding:14px 20px;margin:20px 24px;}
-  .prog h3{margin:0;font-size:17px;} .prog p{margin:4px 0 0;font-size:13px;opacity:.85;}
-  .sec{padding:20px 24px;border-bottom:1px solid #f0f0f0;}
-  .sec:last-child{border-bottom:none;}
-  .stitle{font-size:12px;font-weight:700;color:#1FAB89;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;padding-left:10px;border-left:3px solid #1FAB89;}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .field{background:#f8f8f8;border-radius:8px;padding:10px 14px;}
-  .flabel{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
-  .fvalue{font-size:14px;color:#2D2D2D;font-weight:500;}
-  .motiv{background:#f8fffe;border-left:3px solid #1FAB89;border-radius:8px;padding:16px;font-size:14px;color:#444;line-height:1.7;}
-  .ft{background:#2D2D2D;padding:18px;text-align:center;}
-  .ft p{color:#999;font-size:12px;margin:3px 0;}
-</style></head>
-<body><div class="c">
-  <div class="hd">
-    <h1>📋 Nouvelle Candidature</h1>
-    <p>Reçue le ${now}</p>
-    <div class="badge">Green Up Academy — Admissions 2026</div>
-  </div>
-
-  <div class="prog">
-    <h3>${program}</h3>
-    <p>${programNiveau} · Rentrée : ${startDate}</p>
-  </div>
-
-  <div class="sec">
-    <div class="stitle">Informations personnelles</div>
-    <div class="grid">
-      <div class="field"><div class="flabel">Nom</div><div class="fvalue">${lastName.toUpperCase()}</div></div>
-      <div class="field"><div class="flabel">Prénom</div><div class="fvalue">${firstName}</div></div>
-      <div class="field"><div class="flabel">Email</div><div class="fvalue">${email}</div></div>
-      <div class="field"><div class="flabel">Téléphone</div><div class="fvalue">${phone}</div></div>
-      <div class="field"><div class="flabel">Date de naissance</div><div class="fvalue">${birthDate || '—'}</div></div>
-      <div class="field"><div class="flabel">Lieu de naissance</div><div class="fvalue">${birthPlace || '—'}</div></div>
-      <div class="field"><div class="flabel">Nationalité</div><div class="fvalue">${nationality || '—'}</div></div>
-      <div class="field"><div class="flabel">Adresse</div><div class="fvalue">${address || '—'}</div></div>
-    </div>
-  </div>
-
-  <div class="sec">
-    <div class="stitle">Parcours académique</div>
-    <div class="grid">
-      <div class="field"><div class="flabel">Diplôme</div><div class="fvalue">${diploma}</div></div>
-      <div class="field"><div class="flabel">Année</div><div class="fvalue">${year}</div></div>
-      <div class="field"><div class="flabel">Établissement</div><div class="fvalue">${school}</div></div>
-      <div class="field"><div class="flabel">Spécialité</div><div class="fvalue">${specialite}</div></div>
-      ${gpa ? `<div class="field"><div class="flabel">Moyenne / Mention</div><div class="fvalue">${gpa}</div></div>` : ''}
-    </div>
-  </div>
-
-  <div class="sec">
-    <div class="stitle">Lettre de motivation</div>
-    <div class="motiv">${(motivation || '').replace(/\n/g,'<br>')}</div>
-    ${experience ? `<div style="margin-top:14px;"><div class="stitle">Expériences professionnelles</div><div class="motiv">${experience.replace(/\n/g,'<br>')}</div></div>` : ''}
-  </div>
-
-  <div class="sec">
-    <div class="stitle">Documents joints</div>
-    <div class="grid">
-      ${['cv','lettre','diplomes','identite'].map(k => {
-        const f = (req.files||[]).find(f => f.fieldname === 'files' && f.originalname.startsWith(k));
-        return `<div class="field"><div class="flabel">${k==='cv'?'CV':k==='lettre'?'Lettre de motivation':k==='diplomes'?'Relevés de notes':"Pièce d'identité"}</div>
-          <div class="fvalue">${f ? '✅ '+f.originalname.replace(k+'_','') : '❌ Non fourni'}</div></div>`;
-      }).join('')}
-    </div>
-  </div>
-
-  <div class="ft">
-    <p style="color:#1FAB89;font-weight:700;">Green Up Academy</p>
-    <p>Boussy-Saint-Antoine, Essonne (91) · ${ADMIN_EMAIL}</p>
-    <p style="margin-top:6px;font-size:11px;">Message généré automatiquement depuis le formulaire de candidature.</p>
-  </div>
-</div></body></html>`;
-
-    // ─── Email de confirmation → candidat ─────────────────────────────────────
-    const htmlConfirm = `<!DOCTYPE html>
-<html><head><meta charset="utf-8"></head>
-<body style="font-family:'Segoe UI',Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px;">
-<div style="max-width:600px;margin:0 auto;background:white;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1);">
-  <div style="background:linear-gradient(135deg,#1FAB89,#15896B);padding:32px;text-align:center;">
-    <div style="font-size:48px;margin-bottom:8px;">✅</div>
-    <h1 style="color:white;margin:0;font-size:22px;">Candidature reçue !</h1>
-    <p style="color:rgba(255,255,255,.82);margin:6px 0 0;font-size:14px;">Green Up Academy — Admissions 2026</p>
-  </div>
-  <div style="padding:32px;">
-    <p style="font-size:16px;color:#2D2D2D;margin-top:0;">Bonjour <strong>${firstName}</strong>,</p>
-    <p style="color:#696969;line-height:1.7;font-size:14px;">
-      Nous avons bien reçu votre candidature pour la formation<br>
-      <strong style="color:#1FAB89;font-size:16px;">${program}</strong><br>
-      Notre équipe pédagogique l'étudiera dans les meilleurs délais.
-    </p>
-    <div style="background:#f0fdf9;border:1px solid #d1fae5;border-radius:10px;padding:20px;margin:20px 0;">
-      <p style="margin:0 0 12px;font-weight:700;color:#1FAB89;font-size:13px;">📋 RÉCAPITULATIF</p>
-      <table style="width:100%;border-collapse:collapse;font-size:13px;">
-        <tr><td style="padding:5px 0;color:#696969;width:40%">Formation</td><td style="color:#2D2D2D;font-weight:600">${program}</td></tr>
-        <tr><td style="padding:5px 0;color:#696969">Niveau</td><td style="color:#2D2D2D;font-weight:600">${programNiveau}</td></tr>
-        <tr><td style="padding:5px 0;color:#696969">Rentrée souhaitée</td><td style="color:#2D2D2D;font-weight:600">${startDate}</td></tr>
-        <tr><td style="padding:5px 0;color:#696969">Votre email</td><td style="color:#2D2D2D;font-weight:600">${email}</td></tr>
-        <tr><td style="padding:5px 0;color:#696969">Délai de réponse</td><td style="color:#1FAB89;font-weight:700">⏱ Sous 48h ouvrées</td></tr>
-      </table>
-    </div>
-    <p style="color:#696969;font-size:13px;line-height:1.6;">
-      Des questions ? Contactez-nous :<br>
-      📧 <a href="mailto:${ADMIN_EMAIL}" style="color:#1FAB89">${ADMIN_EMAIL}</a><br>
-      📞 <strong>(+33) 7 51 36 09 44</strong>
-    </p>
-  </div>
-  <div style="background:#2D2D2D;padding:18px;text-align:center;">
-    <p style="color:#1FAB89;font-weight:700;margin:0 0 4px;">Green Up Academy</p>
-    <p style="color:#999;font-size:12px;margin:0;">Boussy-Saint-Antoine, Essonne (91)</p>
-  </div>
-</div></body></html>`;
-
-    await Promise.all([
-      transporter.sendMail({
-        from:        `"Green Up Academy — Admissions" <${process.env.EMAIL_USER}>`,
-        replyTo:     email,
-        to:          ADMIN_EMAIL,
-        subject:     `[CANDIDATURE] ${program} — ${fullName}`,
-        html:        htmlAdmin,
-        attachments,
-      }),
-      transporter.sendMail({
-        from:    `"Green Up Academy — Admissions" <${process.env.EMAIL_USER}>`,
-        to:      email,
-        subject: `✅ Candidature reçue — ${program}`,
-        html:    htmlConfirm,
-      }),
-    ]);
-
-    console.log(`[EMAIL] Admin: ${ADMIN_EMAIL} ✓ | Candidat: ${email} ✓`);
-    res.json({ success: true, message: 'Candidature envoyée avec succès' });
-
-  } catch (err) {
-    console.error('Erreur candidature:', err);
-    // On retourne succès car la candidature est déjà sauvegardée localement
-    res.json({ success: true, message: 'Candidature enregistrée (erreur email)' });
-  }
-});
-
-// ──────────────────────────────────────────────────────────────────────────────
-// ENDPOINTS — MESSAGERIE CANDIDATURES (Dashboard)
-// ──────────────────────────────────────────────────────────────────────────────
-
-// GET — lire toutes les candidatures
-app.get('/api/applications', (req, res) => {
-  try {
-    res.json(JSON.parse(fs.readFileSync(APPLICATIONS_FILE, 'utf8')));
-  } catch {
-    res.json([]);
-  }
-});
-
-// PATCH — marquer comme lu / changer statut
-app.patch('/api/applications/:id', (req, res) => {
-  try {
-    const { id }     = req.params;
-    const { status, read } = req.body;
-    let apps = JSON.parse(fs.readFileSync(APPLICATIONS_FILE, 'utf8'));
-    const idx = apps.findIndex(a => a.id === parseInt(id));
-    if (idx === -1) return res.status(404).json({ error: 'Introuvable' });
-    if (status !== undefined) apps[idx].status = status;
-    if (read   !== undefined) apps[idx].read   = read;
-    fs.writeFileSync(APPLICATIONS_FILE, JSON.stringify(apps, null, 2));
-    res.json({ success: true, application: apps[idx] });
-  } catch (err) {
-    res.status(500).json({ error: 'Erreur mise à jour' });
-  }
-});
-
-// DELETE — supprimer une candidature
-app.delete('/api/applications/:id', (req, res) => {
-  try {
-    let apps = JSON.parse(fs.readFileSync(APPLICATIONS_FILE, 'utf8'));
-    apps = apps.filter(a => a.id !== parseInt(req.params.id));
-    fs.writeFileSync(APPLICATIONS_FILE, JSON.stringify(apps, null, 2));
-    res.json({ success: true });
-  } catch {
-    res.status(500).json({ error: 'Erreur suppression' });
-  }
-});
-
-// ──────────────────────────────────────────────────────────────────────────────
-// ENDPOINTS — CMS
-// ──────────────────────────────────────────────────────────────────────────────
+// ─── CONTENU CMS ───────────────────────────────────────────────────────────
 app.get('/api/content', (req, res) => {
-  try { res.json(JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'))); }
-  catch { res.status(500).json({ error: 'Lecture impossible' }); }
+  res.json(readJSON(CONTENT_FILE, initialContent));
 });
 
 app.post('/api/content', (req, res) => {
   try {
-    if (!req.body || typeof req.body !== 'object') return res.status(400).json({ error: 'Données invalides' });
-    fs.writeFileSync(CONTENT_FILE, JSON.stringify(req.body, null, 2));
+    const current = readJSON(CONTENT_FILE, initialContent);
+    const updated = { ...current, ...req.body };
+    writeJSON(CONTENT_FILE, updated);
     res.json({ success: true });
-  } catch { res.status(500).json({ error: 'Sauvegarde impossible' }); }
+  } catch (e) {
+    res.status(500).json({ error: 'Sauvegarde impossible' });
+  }
 });
 
-// ──────────────────────────────────────────────────────────────────────────────
+// PATCH section spécifique
+app.patch('/api/content/:section', (req, res) => {
+  try {
+    const content = readJSON(CONTENT_FILE, initialContent);
+    content[req.params.section] = req.body;
+    writeJSON(CONTENT_FILE, content);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Erreur mise à jour' });
+  }
+});
+
+// ─── UPLOAD IMAGE ──────────────────────────────────────────────────────────
+app.post('/api/upload-image', upload.single('image'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'Aucun fichier' });
+  const url = `/uploads/${req.file.filename}`;
+  res.json({ success: true, url, filename: req.file.filename });
+});
+
+// ─── ACTUALITÉS ────────────────────────────────────────────────────────────
+app.get('/api/news', (req, res) => {
+  const news = readJSON(NEWS_FILE, []);
+  const { published } = req.query;
+  if (published === 'true') return res.json(news.filter(n => n.published));
+  res.json(news);
+});
+
+app.post('/api/news', (req, res) => {
+  const news = readJSON(NEWS_FILE, []);
+  const item = {
+    ...req.body,
+    id:    Date.now(),
+    date:  req.body.date || new Date().toISOString(),
+    likes: 0,
+    views: 0,
+    slug:  req.body.slug || req.body.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+  };
+  news.unshift(item);
+  writeJSON(NEWS_FILE, news);
+  res.json({ success: true, item });
+});
+
+app.put('/api/news/:id', (req, res) => {
+  const news = readJSON(NEWS_FILE, []);
+  const idx  = news.findIndex(n => n.id === parseInt(req.params.id));
+  if (idx === -1) return res.status(404).json({ error: 'Introuvable' });
+  news[idx] = { ...news[idx], ...req.body, id: news[idx].id };
+  writeJSON(NEWS_FILE, news);
+  res.json({ success: true, item: news[idx] });
+});
+
+app.delete('/api/news/:id', (req, res) => {
+  let news = readJSON(NEWS_FILE, []);
+  news = news.filter(n => n.id !== parseInt(req.params.id));
+  writeJSON(NEWS_FILE, news);
+  res.json({ success: true });
+});
+
+// Like une actualité (public)
+app.post('/api/news/:id/like', (req, res) => {
+  const news = readJSON(NEWS_FILE, []);
+  const item = news.find(n => n.id === parseInt(req.params.id));
+  if (!item) return res.status(404).json({ error: 'Introuvable' });
+  item.likes = (item.likes || 0) + 1;
+  writeJSON(NEWS_FILE, news);
+  res.json({ success: true, likes: item.likes });
+});
+
+// Vue une actualité (public)
+app.post('/api/news/:id/view', (req, res) => {
+  const news = readJSON(NEWS_FILE, []);
+  const item = news.find(n => n.id === parseInt(req.params.id));
+  if (!item) return res.status(404).json({ error: 'Introuvable' });
+  item.views = (item.views || 0) + 1;
+  writeJSON(NEWS_FILE, news);
+  res.json({ success: true, views: item.views });
+});
+
+// ─── MESSAGES DE CONTACT ───────────────────────────────────────────────────
+app.get('/api/messages', (req, res) => {
+  res.json(readJSON(MESSAGES_FILE, []));
+});
+
+app.patch('/api/messages/:id', (req, res) => {
+  const msgs = readJSON(MESSAGES_FILE, []);
+  const idx  = msgs.findIndex(m => m.id === parseInt(req.params.id));
+  if (idx === -1) return res.status(404).json({ error: 'Introuvable' });
+  Object.assign(msgs[idx], req.body);
+  writeJSON(MESSAGES_FILE, msgs);
+  res.json({ success: true });
+});
+
+app.delete('/api/messages/:id', (req, res) => {
+  let msgs = readJSON(MESSAGES_FILE, []);
+  msgs = msgs.filter(m => m.id !== parseInt(req.params.id));
+  writeJSON(MESSAGES_FILE, msgs);
+  res.json({ success: true });
+});
+
+// ─── ENVOI DE CONTACT ──────────────────────────────────────────────────────
+app.post('/api/send', async (req, res) => {
+  const { name, email, subject, message, phone } = req.body;
+
+  // Sauvegarder dans messages.json
+  const msgs = readJSON(MESSAGES_FILE, []);
+  const newMsg = {
+    id: Date.now(), type: 'contact',
+    name, email, phone, subject, message,
+    date: new Date().toISOString(), read: false, archived: false,
+  };
+  msgs.unshift(newMsg);
+  writeJSON(MESSAGES_FILE, msgs);
+
+  // Envoyer par email
+  const html = `
+  <div style="font-family:Arial,sans-serif;max-width:600px;">
+    <div style="background:linear-gradient(135deg,#1FAB89,#15896B);padding:28px;border-radius:12px 12px 0 0;">
+      <h2 style="color:white;margin:0;">📩 Nouveau message de contact</h2>
+    </div>
+    <div style="background:#f9f9f9;padding:24px;border-radius:0 0 12px 12px;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr><td style="padding:8px;color:#666;width:130px"><b>Nom</b></td><td style="padding:8px;">${name}</td></tr>
+        <tr style="background:#f0f0f0"><td style="padding:8px;color:#666"><b>Email</b></td><td style="padding:8px;"><a href="mailto:${email}">${email}</a></td></tr>
+        ${phone ? `<tr><td style="padding:8px;color:#666"><b>Téléphone</b></td><td style="padding:8px;">${phone}</td></tr>` : ''}
+        <tr style="background:#f0f0f0"><td style="padding:8px;color:#666"><b>Sujet</b></td><td style="padding:8px;">${subject || '—'}</td></tr>
+      </table>
+      <div style="margin-top:16px;background:white;padding:16px;border-left:4px solid #1FAB89;border-radius:4px;">
+        <p style="margin:0;line-height:1.7;">${(message || '').replace(/\n/g, '<br>')}</p>
+      </div>
+      <p style="margin-top:16px;font-size:12px;color:#999;">Message reçu le ${new Date().toLocaleString('fr-FR')}</p>
+    </div>
+  </div>`;
+
+  try {
+    await sendEmail({ to: ADMIN_EMAIL, replyTo: email, subject: `📩 Contact: ${subject || `Message de ${name}`}`, html });
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Erreur email contact:', err.message);
+    res.json({ success: true, warning: 'Sauvegardé mais email non envoyé' });
+  }
+});
+
+// ─── CANDIDATURES ──────────────────────────────────────────────────────────
+app.get('/api/applications', (req, res) => {
+  res.json(readJSON(APPLICATIONS_FILE, []));
+});
+
+app.patch('/api/applications/:id', (req, res) => {
+  const apps = readJSON(APPLICATIONS_FILE, []);
+  const idx  = apps.findIndex(a => a.id === parseInt(req.params.id));
+  if (idx === -1) return res.status(404).json({ error: 'Introuvable' });
+  Object.assign(apps[idx], req.body);
+  writeJSON(APPLICATIONS_FILE, apps);
+  res.json({ success: true, application: apps[idx] });
+});
+
+app.delete('/api/applications/:id', (req, res) => {
+  let apps = readJSON(APPLICATIONS_FILE, []);
+  apps = apps.filter(a => a.id !== parseInt(req.params.id));
+  writeJSON(APPLICATIONS_FILE, apps);
+  res.json({ success: true });
+});
+
+// Répondre à une candidature
+app.post('/api/applications/:id/reply', async (req, res) => {
+  const { subject, message, status } = req.body;
+  const apps = readJSON(APPLICATIONS_FILE, []);
+  const app_ = apps.find(a => a.id === parseInt(req.params.id));
+  if (!app_) return res.status(404).json({ error: 'Introuvable' });
+
+  if (status) {
+    app_.status = status;
+    writeJSON(APPLICATIONS_FILE, apps);
+  }
+
+  const statusColors = { accepte: '#27ae60', refuse: '#e74c3c', en_etude: '#f39c12', nouveau: '#3498db' };
+  const statusLabels = { accepte: '✅ Candidature acceptée', refuse: '❌ Candidature refusée', en_etude: '⏳ En cours d\'étude', nouveau: '📋 Nouveau' };
+
+  const html = `
+  <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+    <div style="background:linear-gradient(135deg,#1FAB89,#15896B);padding:32px;border-radius:12px 12px 0 0;text-align:center;">
+      <h1 style="color:white;margin:0;font-size:22px;">Green Up Academy</h1>
+      <p style="color:rgba(255,255,255,.8);margin:8px 0 0;">Service des Admissions</p>
+    </div>
+    <div style="background:white;padding:32px;">
+      ${status ? `<div style="background:${statusColors[status]}15;border:1px solid ${statusColors[status]};border-radius:8px;padding:12px;margin-bottom:20px;text-align:center;font-weight:700;color:${statusColors[status]};">${statusLabels[status]}</div>` : ''}
+      <p>Bonjour <strong>${app_.firstName}</strong>,</p>
+      <div style="line-height:1.8;color:#444;">${message.replace(/\n/g, '<br>')}</div>
+      <hr style="border:none;border-top:1px solid #eee;margin:24px 0;">
+      <p style="font-size:13px;color:#888;">Pour toute question : <a href="mailto:${ADMIN_EMAIL}">${ADMIN_EMAIL}</a> — (+33) 7 51 36 09 44</p>
+    </div>
+    <div style="background:#2D2D2D;padding:16px;text-align:center;border-radius:0 0 12px 12px;">
+      <p style="color:#1FAB89;margin:0;font-weight:700;">Green Up Academy</p>
+      <p style="color:#999;font-size:12px;margin:4px 0 0;">Boussy-Saint-Antoine, Essonne (91)</p>
+    </div>
+  </div>`;
+
+  try {
+    await sendEmail({ to: app_.email, subject: subject || `Réponse à votre candidature — ${app_.program}`, html });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur envoi email: ' + err.message });
+  }
+});
+
+// ─── CANDIDATURE COMPLÈTE AVEC FICHIERS ────────────────────────────────────
+app.post('/api/send-application',
+  upload.fields([
+    { name: 'cv',      maxCount: 1 },
+    { name: 'letter',  maxCount: 1 },
+    { name: 'diploma', maxCount: 3 },
+    { name: 'id',      maxCount: 1 },
+    { name: 'photo',   maxCount: 1 },
+  ]),
+  async (req, res) => {
+    try {
+      const {
+        firstName, lastName, email, phone,
+        birthDate, birthPlace, nationality, address,
+        diploma, school, specialite, year, gpa,
+        program, programNiveau, startDate,
+        motivation, experience,
+      } = req.body;
+
+      const fullName = `${firstName} ${lastName}`;
+      const files = req.files || {};
+
+      // Sauvegarder la candidature
+      const apps = readJSON(APPLICATIONS_FILE, []);
+      const newApp = {
+        id: Date.now(),
+        date: new Date().toISOString(),
+        firstName, lastName, fullName,
+        email, phone, birthDate, birthPlace, nationality, address,
+        diploma, school, specialite, year, gpa,
+        program, programNiveau, startDate,
+        motivation, experience,
+        files: Object.entries(files).reduce((acc, [key, arr]) => {
+          acc[key] = arr.map(f => ({ name: f.originalname, path: f.path, url: `/uploads/${f.filename}` }));
+          return acc;
+        }, {}),
+        status: 'nouveau',
+        read: false,
+      };
+      apps.unshift(newApp);
+      writeJSON(APPLICATIONS_FILE, apps);
+
+      // Email admin
+      const filesList = Object.entries(files).map(([key, arr]) =>
+        `<tr><td style="padding:6px;color:#666">${key.toUpperCase()}</td><td style="padding:6px;color:#1FAB89">✅ ${arr.map(f => f.originalname).join(', ')}</td></tr>`
+      ).join('');
+
+      const htmlAdmin = `
+      <div style="font-family:Arial,sans-serif;max-width:680px;">
+        <div style="background:linear-gradient(135deg,#1FAB89,#15896B);padding:32px;border-radius:12px 12px 0 0;text-align:center;">
+          <h1 style="color:white;margin:0;">📋 Nouvelle Candidature</h1>
+          <div style="background:rgba(255,255,255,.2);display:inline-block;padding:6px 20px;border-radius:20px;margin-top:10px;color:white;font-size:14px;">${program} — ${programNiveau}</div>
+        </div>
+        <div style="background:#f9f9f9;padding:24px;border-radius:0 0 12px 12px;">
+          <h3 style="color:#1FAB89;border-bottom:2px solid #1FAB89;padding-bottom:8px;">👤 Identité</h3>
+          <table style="width:100%;border-collapse:collapse;">
+            <tr><td style="padding:6px;color:#666;width:40%"><b>Nom complet</b></td><td style="padding:6px">${fullName}</td></tr>
+            <tr style="background:#f0f0f0"><td style="padding:6px;color:#666"><b>Email</b></td><td style="padding:6px"><a href="mailto:${email}">${email}</a></td></tr>
+            <tr><td style="padding:6px;color:#666"><b>Téléphone</b></td><td style="padding:6px">${phone}</td></tr>
+            <tr style="background:#f0f0f0"><td style="padding:6px;color:#666"><b>Naissance</b></td><td style="padding:6px">${birthDate || '—'} à ${birthPlace || '—'}</td></tr>
+            <tr><td style="padding:6px;color:#666"><b>Nationalité</b></td><td style="padding:6px">${nationality || '—'}</td></tr>
+            <tr style="background:#f0f0f0"><td style="padding:6px;color:#666"><b>Adresse</b></td><td style="padding:6px">${address || '—'}</td></tr>
+          </table>
+          <h3 style="color:#1FAB89;border-bottom:2px solid #1FAB89;padding-bottom:8px;margin-top:20px;">🎓 Parcours académique</h3>
+          <table style="width:100%;border-collapse:collapse;">
+            <tr><td style="padding:6px;color:#666;width:40%"><b>Diplôme</b></td><td style="padding:6px">${diploma} (${year})</td></tr>
+            <tr style="background:#f0f0f0"><td style="padding:6px;color:#666"><b>Établissement</b></td><td style="padding:6px">${school}</td></tr>
+            <tr><td style="padding:6px;color:#666"><b>Spécialité</b></td><td style="padding:6px">${specialite}</td></tr>
+            ${gpa ? `<tr style="background:#f0f0f0"><td style="padding:6px;color:#666"><b>Moyenne</b></td><td style="padding:6px">${gpa}</td></tr>` : ''}
+          </table>
+          <h3 style="color:#1FAB89;border-bottom:2px solid #1FAB89;padding-bottom:8px;margin-top:20px;">✍️ Motivation</h3>
+          <div style="background:white;padding:16px;border-left:4px solid #1FAB89;border-radius:4px;line-height:1.7;">${(motivation || '').replace(/\n/g, '<br>')}</div>
+          ${experience ? `<h3 style="color:#1FAB89;border-bottom:2px solid #1FAB89;padding-bottom:8px;margin-top:20px;">💼 Expérience</h3><div style="background:white;padding:16px;border-left:4px solid #4ECDC4;border-radius:4px;line-height:1.7;">${experience.replace(/\n/g, '<br>')}</div>` : ''}
+          <h3 style="color:#1FAB89;border-bottom:2px solid #1FAB89;padding-bottom:8px;margin-top:20px;">📎 Documents joints</h3>
+          <table style="width:100%;border-collapse:collapse;">${filesList || '<tr><td colspan="2" style="padding:8px;color:#e74c3c;">Aucun document fourni</td></tr>'}</table>
+          <div style="margin-top:20px;background:#1FAB8910;border:1px solid #1FAB89;padding:12px;border-radius:8px;">
+            <b>Rentrée souhaitée :</b> ${startDate} | <b>Programme :</b> ${program} | <b>Niveau :</b> ${programNiveau}
+          </div>
+        </div>
+      </div>`;
+
+      const htmlCandidat = `
+      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+        <div style="background:linear-gradient(135deg,#1FAB89,#15896B);padding:32px;border-radius:12px 12px 0 0;text-align:center;">
+          <div style="font-size:56px;margin-bottom:8px;">✅</div>
+          <h1 style="color:white;margin:0;font-size:24px;">Candidature reçue !</h1>
+          <p style="color:rgba(255,255,255,.8);margin:8px 0 0;">Green Up Academy — Admissions 2026</p>
+        </div>
+        <div style="background:white;padding:32px;">
+          <p>Bonjour <strong>${firstName}</strong>,</p>
+          <p style="color:#555;line-height:1.8;">Votre candidature pour la formation <strong style="color:#1FAB89">${program}</strong> a bien été reçue et enregistrée. Notre équipe pédagogique l'étudiera dans les meilleurs délais.</p>
+          <div style="background:#f0fdf9;border:2px solid #1FAB89;border-radius:12px;padding:20px;margin:20px 0;">
+            <p style="margin:0 0 12px;font-weight:700;color:#1FAB89;font-size:13px;text-transform:uppercase;">📋 Récapitulatif de votre candidature</p>
+            <table style="width:100%;border-collapse:collapse;font-size:14px;">
+              <tr><td style="padding:6px 0;color:#666;width:45%">Formation</td><td style="color:#2D2D2D;font-weight:600">${program}</td></tr>
+              <tr><td style="padding:6px 0;color:#666">Niveau</td><td style="color:#2D2D2D;font-weight:600">${programNiveau}</td></tr>
+              <tr><td style="padding:6px 0;color:#666">Rentrée souhaitée</td><td style="color:#2D2D2D;font-weight:600">${startDate}</td></tr>
+              <tr><td style="padding:6px 0;color:#666">Délai de réponse</td><td style="color:#1FAB89;font-weight:700">⏱ Sous 48h ouvrées</td></tr>
+            </table>
+          </div>
+          <div style="background:#FFF3CD;border:1px solid #FFEAA7;border-radius:8px;padding:16px;margin:16px 0;">
+            <p style="margin:0;color:#856404;font-size:14px;"><strong>📝 Prochaine étape :</strong> Si votre dossier est retenu, vous serez contacté(e) pour un entretien de motivation. Gardez votre téléphone disponible !</p>
+          </div>
+          <p style="color:#666;font-size:14px;">Une question ? N'hésitez pas à nous contacter :<br>
+          📧 <a href="mailto:${ADMIN_EMAIL}" style="color:#1FAB89">${ADMIN_EMAIL}</a><br>
+          📞 <strong>(+33) 7 51 36 09 44</strong></p>
+        </div>
+        <div style="background:#2D2D2D;padding:18px;text-align:center;border-radius:0 0 12px 12px;">
+          <p style="color:#1FAB89;margin:0;font-weight:700;">Green Up Academy</p>
+          <p style="color:#999;font-size:12px;margin:4px 0 0;">Boussy-Saint-Antoine, Essonne (91)</p>
+        </div>
+      </div>`;
+
+      try {
+        await Promise.all([
+          sendEmail({ to: ADMIN_EMAIL, replyTo: email, subject: `[CANDIDATURE] ${program} — ${fullName}`, html: htmlAdmin }),
+          sendEmail({ to: email, subject: `✅ Candidature reçue — ${program} | Green Up Academy`, html: htmlCandidat }),
+        ]);
+        console.log(`[EMAIL] Admin ✓ | Candidat: ${email} ✓`);
+      } catch (emailErr) {
+        console.error('[EMAIL ERROR]', emailErr.message);
+      }
+
+      res.json({ success: true, message: 'Candidature enregistrée avec succès' });
+
+    } catch (err) {
+      console.error('Erreur candidature:', err);
+      res.status(500).json({ error: 'Erreur serveur: ' + err.message });
+    }
+  }
+);
+
+// ─── PARTENAIRES ───────────────────────────────────────────────────────────
+app.get('/api/partners', (req, res) => {
+  const content = readJSON(CONTENT_FILE, initialContent);
+  res.json(content.partners || []);
+});
+
+// ─── STATUS SERVEUR ────────────────────────────────────────────────────────
+app.get('/api/status', (req, res) => {
+  const emailConfigured = !!(
+    (process.env.GMAIL_CLIENT_ID && process.env.GMAIL_REFRESH_TOKEN) ||
+    (process.env.EMAIL_USER && process.env.EMAIL_PASS)
+  );
+  res.json({
+    status: 'ok',
+    version: '2.0.0',
+    emailConfigured,
+    emailMode: process.env.GMAIL_CLIENT_ID ? 'OAuth2' : (process.env.EMAIL_USER ? 'App Password' : 'Non configuré'),
+    adminEmail: ADMIN_EMAIL,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// ─── DÉMARRAGE ─────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`\n🚀 Serveur Green Up Academy — port ${PORT}`);
-  console.log(`📧 Email admin : ${ADMIN_EMAIL}`);
-  console.log(`📁 Candidatures : ${APPLICATIONS_FILE}`);
-  console.log(`📝 CMS : ${CONTENT_FILE}\n`);
+  console.log(`\n🚀 Green Up Academy Server — Port ${PORT}`);
+  console.log(`📧 Admin : ${ADMIN_EMAIL}`);
+  console.log(`🔑 Email : ${process.env.GMAIL_CLIENT_ID ? 'OAuth2 Gmail' : process.env.EMAIL_USER ? 'App Password' : '⚠️  Non configuré'}`);
+  console.log(`📁 Données : ${DATA_DIR}`);
+  console.log(`\n📖 Config email dans .env :`);
+  console.log(`   Option 1 (OAuth2 - recommandé) :`);
+  console.log(`     GMAIL_CLIENT_ID=votre_client_id`);
+  console.log(`     GMAIL_CLIENT_SECRET=votre_client_secret`);
+  console.log(`     GMAIL_REFRESH_TOKEN=votre_refresh_token`);
+  console.log(`     GMAIL_USER=${ADMIN_EMAIL}`);
+  console.log(`   Option 2 (App Password) :`);
+  console.log(`     EMAIL_USER=${ADMIN_EMAIL}`);
+  console.log(`     EMAIL_PASS=xxxx_xxxx_xxxx_xxxx\n`);
 });
