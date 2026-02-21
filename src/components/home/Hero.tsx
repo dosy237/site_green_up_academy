@@ -30,12 +30,7 @@ export function Hero() {
     suffix: '%'
   },
   {
-    value: '500',
-    label: 'Diplômés',
-    suffix: '+'
-  },
-  {
-    value: '50',
+    value: '20',
     label: 'Entreprises partenaires',
     suffix: '+'
   }];
@@ -64,7 +59,7 @@ export function Hero() {
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-[#1FAB89]"></span>
               </span>
               <span className="text-sm font-semibold text-[#1FAB89]">
-                Admissions 2025 — Places limitées
+                Admissions 2026 — Places limitées
               </span>
               <Sparkles className="h-4 w-4 text-[#1FAB89]" />
             </div>
@@ -119,7 +114,7 @@ export function Hero() {
               L'école d'excellence pour les métiers de la{' '}
               <strong className="text-[#1FAB89]">performance énergétique</strong>,
               du <strong className="text-[#2D5016]">Green IT</strong> et du{' '}
-              <strong className="text-[#2D5016]">management durable</strong>.
+              <strong className="text-[#2D5016]">numerique responsable</strong>.
               Formez-vous aux compétences les plus recherchées.
             </p>
 
@@ -164,9 +159,6 @@ export function Hero() {
               </div>
               <div className="text-sm">
                 <p className="font-semibold text-[#2D2D2D]">
-                  +500 étudiants formés
-                </p>
-                <p className="text-[#696969]">
                   Rejoignez notre communauté
                 </p>
               </div>

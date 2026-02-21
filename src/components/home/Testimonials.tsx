@@ -1,39 +1,210 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 const testimonials = [
-{
-  id: 1,
-  name: 'donfack synthia c.',
-  role: 'Etudiante ',
-  company: 'GREEN UP ACADEMY',
-  image: 'https://randomuser.me/api/portraits/men/32.jpg',
-  program: 'LICENCE 3 DEV',
-  quote:
-  "Green Up Academy m'a permis de transformer ma passion pour l'informatique en une carrière qui a du sens. Aujourd'hui, j'aide les grandes entreprises à réduire l'empreinte carbone de leurs systèmes d'information.",
-  rating: 5
-},
-{
-  id: 2,
-  name: 'Sarah Martin',
-  role: 'Cheffe de projet RSE',
-  company: "L'Oréal",
-  image: 'https://randomuser.me/api/portraits/women/44.jpg',
-  program: 'Master Management Durable 2023',
-  quote:
-  "L'alternance chez L'Oréal pendant ma formation a été un véritable tremplin. Les cours étaient directement applicables et l'équipe pédagogique exceptionnelle. Je recommande à 100%.",
-  rating: 5
-},
-{
-  id: 3,
-  name: 'Lucas Bernard',
-  role: 'Ingénieur Efficacité Énergétique',
-  company: 'EDF',
-  image: 'https://randomuser.me/api/portraits/men/86.jpg',
-  program: 'Bachelor Performance Énergétique 2022',
-  quote:
-  "Une formation complète qui m'a donné toutes les compétences techniques et relationnelles pour réussir. Le réseau d'anciens est un vrai plus pour trouver des opportunités.",
-  rating: 5
-}];
+  // 10 étudiants en 1ère année
+  {
+    id: 1,
+    name: 'Aminata Koné',
+    role: 'Étudiante en alternance',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant1.png',
+    program: 'Licence 1 – Dev Web',
+    quote: "Dès la première semaine, j'ai compris que cette école était différente. Les cours sont concrets et les formateurs vraiment disponibles. Je ne regrette pas mon choix.",
+    rating: 5
+  },
+  {
+    id: 2,
+    name: 'Kevin Mensah',
+    role: 'Apprenti développeur',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant2.png',
+    program: 'Licence 1 – Dev Web',
+    quote: "L'ambiance est super et les projets qu'on réalise sont vraiment professionnels. En quelques mois, j'ai déjà un portfolio solide pour décrocher mon alternance.",
+    rating: 5
+  },
+  {
+    id: 3,
+    name: 'Fatou Diallo',
+    role: 'Étudiante en formation',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant3.png',
+    program: 'Licence 1 – Design',
+    quote: "Je voulais une formation où je pourrais apprendre et travailler en même temps. Green Up Academy m'a offert exactement ça, avec un accompagnement personnalisé.",
+    rating: 5
+  },
+  {
+    id: 4,
+    name: 'Jean-Baptiste Nkurunziza',
+    role: 'Alternant cybersécurité',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant4.png',
+    program: 'Licence 1 – Sécurité & Réseau',
+    quote: "Les intervenants sont des professionnels du secteur. Ce qu'on apprend en cours, on l'applique directement en entreprise. C'est une formation très valorisante.",
+    rating: 5
+  },
+  {
+    id: 5,
+    name: 'Sophie Tran',
+    role: 'Étudiante en alternance',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant5.png',
+    program: 'Licence 1 – Dev Web',
+    quote: "Green Up Academy m'a aidée à construire mon projet professionnel. Le suivi est régulier et les profs prennent vraiment le temps d'expliquer. Je recommande à 100%.",
+    rating: 5
+  },
+  {
+    id: 6,
+    name: 'Moussa Traoré',
+    role: 'Apprenti réseau',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant6.png',
+    program: 'Licence 1 – Sécurité & Réseau',
+    quote: "Venir d'une reconversion professionnelle était un défi, mais l'école m'a accompagné à chaque étape. Aujourd'hui je me sens vraiment compétent dans mon domaine.",
+    rating: 5
+  },
+  {
+    id: 7,
+    name: 'Clara Owono',
+    role: 'Étudiante designer',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant7.png',
+    program: 'Licence 1 – Design',
+    quote: "La pédagogie par projets est vraiment efficace. On apprend en faisant, et les retours des formateurs sont constructifs. C'est motivant du début à la fin.",
+    rating: 5
+  },
+  {
+    id: 8,
+    name: 'Ibrahim Sy',
+    role: 'Apprenti développeur',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant8.png',
+    program: 'Licence 1 – Dev Web',
+    quote: "En première année, j'ai déjà participé à un projet réel pour une PME. Cette expérience m'a ouvert les yeux sur ce que je veux faire de ma carrière.",
+    rating: 5
+  },
+  {
+    id: 9,
+    name: 'Lucie Bambara',
+    role: 'Étudiante en alternance',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant9.png',
+    program: 'Licence 1 – Design',
+    quote: "L'école est moderne, les équipements aussi. On travaille sur des outils professionnels dès la première année. Ça change vraiment la donne pour trouver une alternance.",
+    rating: 5
+  },
+  {
+    id: 10,
+    name: 'Nathan Ekwueme',
+    role: 'Alternant IT',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant10.png',
+    program: 'Licence 1 – Sécurité & Réseau',
+    quote: "Ce que j'apprécie le plus, c'est la bienveillance de toute l'équipe pédagogique. On se sent soutenu et poussé à donner le meilleur de soi-même.",
+    rating: 5
+  },
+  // 10 étudiants en 3ème année
+  {
+    id: 11,
+    name: 'Donfack Synthia',
+    role: 'Étudiante Licence 3',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant11.png',
+    program: 'Licence 3 – Dev Web',
+    quote: "Trois ans après mes débuts ici, je peux dire que Green Up Academy m'a transformée professionnellement. Je travaille aujourd'hui chez un grand groupe et je gère des projets réels.",
+    rating: 5
+  },
+  {
+    id: 12,
+    name: 'Raphaël Ndjock',
+    role: 'Développeur Full Stack',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant12.png',
+    program: 'Licence 3 – Dev Web',
+    quote: "En 3ème année, le niveau technique est vraiment élevé. On maîtrise des stacks modernes et on est prêt pour le marché du travail bien avant la fin de la formation.",
+    rating: 5
+  },
+  {
+    id: 13,
+    name: 'Aïssatou Barry',
+    role: 'Ingénieure Cybersécurité',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant13.png',
+    program: 'Licence 3 – Sécurité & Réseau',
+    quote: "Green Up Academy m'a donné les outils pour évoluer rapidement. Dès ma 3ème année, j'avais déjà reçu une offre d'emploi de mon entreprise d'alternance.",
+    rating: 5
+  },
+  {
+    id: 14,
+    name: 'Pierre Akono',
+    role: 'Designer UX/UI Senior',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant14.png',
+    program: 'Licence 3 – Design',
+    quote: "Le portfolio que j'ai construit pendant ces 3 années m'a ouvert beaucoup de portes. Les projets réalisés avec les entreprises partenaires font vraiment la différence.",
+    rating: 5
+  },
+  {
+    id: 15,
+    name: 'Mariame Coulibaly',
+    role: 'Chargée de projet IT',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant15.png',
+    program: 'Licence 3 – Dev Web',
+    quote: "Ce que j'ai appris ici va bien au-delà du technique. La gestion de projet, le travail en équipe, la communication client — tout ça est enseigné avec sérieux.",
+    rating: 5
+  },
+  {
+    id: 16,
+    name: 'Samuel Bilong',
+    role: 'Expert Réseau',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant16.png',
+    program: 'Licence 3 – Sécurité & Réseau',
+    quote: "Arriver en 3ème année, c'est être en confiance totale. La progression est bien pensée et on voit clairement l'évolution entre la première et la dernière année.",
+    rating: 5
+  },
+  {
+    id: 17,
+    name: 'Yasmine Hassane',
+    role: 'Développeuse Mobile',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant17.png',
+    program: 'Licence 3 – Dev Web',
+    quote: "J'ai choisi Green Up Academy pour son sérieux et son côté humain. Trois ans plus tard, je n'aurais pas fait un autre choix. C'est une école qui prépare vraiment à la réalité.",
+    rating: 5
+  },
+  {
+    id: 18,
+    name: 'Fabrice Ombolo',
+    role: 'Analyste Sécurité',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant18.png',
+    program: 'Licence 3 – Sécurité & Réseau',
+    quote: "Les certifications préparées en 3ème année ont vraiment boosté mon CV. Mon employeur était impressionné par le niveau de compétence acquis ici.",
+    rating: 5
+  },
+  {
+    id: 19,
+    name: 'Nadia Ouédraogo',
+    role: 'Designer Graphique',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant19.png',
+    program: 'Licence 3 – Design',
+    quote: "La dernière année est intense mais tellement enrichissante. On travaille sur des briefs réels, on rencontre des clients, et on défend nos projets face à des professionnels.",
+    rating: 5
+  },
+  {
+    id: 20,
+    name: 'Thierry Nguema',
+    role: 'Chef de projet Digital',
+    company: 'GREEN UP ACADEMY',
+    image: '/src/assets/images/etudiants/etudiant20.png',
+    program: 'Licence 3 – Dev Web',
+    quote: "Green Up Academy m'a appris à aller au bout des choses. Le niveau d'exigence en 3ème année forge le caractère et prépare réellement au monde professionnel.",
+    rating: 5
+  }
+];
+
 
 export function Testimonials() {
   const [activeIndex, setActiveIndex] = useState(0);

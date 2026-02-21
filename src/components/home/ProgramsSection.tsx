@@ -4,11 +4,11 @@ import { Button } from '../ui/Button';
 const programs = [
 {
   id: 1,
-  title: 'Bachelor Performance Énergétique',
+  title: 'Bachelor Developpement logiciel ',
   subtitle: 'Le fondement de votre expertise',
   duration: '3 ans',
   level: 'Bac+3',
-  students: '120',
+  students: '10 ',
   image:
   'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
   color: 'from-emerald-500 to-teal-600',
@@ -26,7 +26,7 @@ const programs = [
   subtitle: "L'alliance du numérique responsable",
   duration: '2 ans',
   level: 'Bac+5',
-  students: '80',
+  students: '4',
   image:
   'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
   color: 'from-blue-500 to-indigo-600',
@@ -35,19 +35,21 @@ const programs = [
   highlights: ['Sécurité des SI', 'Data centers verts', 'IA éthique']
 },
 {
-  id: 3,
-  title: 'Master Management Durable',
-  subtitle: 'Pilotez la transformation',
-  duration: '2 ans',
-  level: 'Bac+5',
-  students: '60',
-  image:
-  'https://images.unsplash.com/photo-1542601906990-b4d3fb7d5fa5?auto=format&fit=crop&w=800&q=80',
-  color: 'from-amber-500 to-orange-600',
-  description:
-  'Devenez le stratège RSE dont les entreprises ont besoin. Finance verte, économie circulaire, leadership responsable.',
-  highlights: ['Stratégie RSE', 'Finance durable', 'Conduite du changement']
-}];
+    id: 3,
+    title: 'Bachelor design ',
+    subtitle: "devenez expert en conception visuelle et experience utilisateur ",
+    duration: '3 ans',
+    level: 'Bac+3',
+    students: '10',
+    image:
+    'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
+    color: 'from-purple-500 to-pink-600',
+    description:
+    'Devenez expert en efficacité énergétique des bâtiments et des procédés industriels.',
+      highlights: ['design ui ux ', 'Design graphique ', 'motion design ']
+
+  },
+];
 
 export function ProgramsSection() {
   const [activeProgram, setActiveProgram] = useState(0);

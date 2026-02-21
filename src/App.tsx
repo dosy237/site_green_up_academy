@@ -23,11 +23,11 @@ export function App() {
       case 'home':
         return <HomePage />;
       case 'programs':
-        return <ProgramsPage />;
+        return <ProgramsPage  onNavigate={setCurrentPage}  />;
       case 'research':
-        return <ResearchPage />;
+        return <ResearchPage  onNavigate={setCurrentPage}  />;
       case 'governance':
-        return <GovernancePage />;
+        return <GovernancePage onNavigate={setCurrentPage} />;
       case 'student-life':
         return <StudentLifePage />;
       case 'admissions':

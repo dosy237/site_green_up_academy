@@ -137,8 +137,8 @@ export function Header({
               onClick={() => handleNavClick('home')}>
 
               <img 
-                src="/src/Frame%205.svg" 
-                alt="Green Up Academy" 
+               src="/public/images/logo/logo.png"
+               alt="Green Up Academy" 
                 className="h-12 sm:h-14 w-auto group-hover:opacity-80 transition-opacity"
               />
             </div>

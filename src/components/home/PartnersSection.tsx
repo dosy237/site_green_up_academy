@@ -1,37 +1,12 @@
 // React default import not required with new JSX transform
 const partners = [
-{
-  name: 'EDF',
-  logo: 'EDF'
-},
-{
-  name: 'Schneider Electric',
-  logo: 'SCHNEIDER'
-},
-{
-  name: 'Capgemini',
-  logo: 'CAPGEMINI'
-},
-{
-  name: 'Engie',
-  logo: 'ENGIE'
-},
-{
-  name: 'Veolia',
-  logo: 'VEOLIA'
-},
-{
-  name: 'TotalEnergies',
-  logo: 'TOTAL'
-},
-{
-  name: 'BNP Paribas',
-  logo: 'BNP'
-},
-{
-  name: 'Orange',
-  logo: 'ORANGE'
-}];
+  { name: 'Qualiopi', logo: 'QUALIOPI' },
+  { name: 'France Compétences', logo: 'FRANCE COMPÉTENCES' },
+  { name: 'Académie de Paris', logo: 'ACADÉMIE DE PARIS' },
+  { name: 'Caution Bancaire', logo: 'CAUTION BANCAIRE' },
+  { name: 'JFN Institut of Technology', logo: 'JFN TECHNOLOGY' },
+  { name: 'Institut Universitaire Évangélique du Cameroun', logo: 'IUEC' },
+];
 
 export function PartnersSection() {
   return (
@@ -42,7 +17,7 @@ export function PartnersSection() {
             Ils nous font confiance
           </p>
           <h3 className="text-2xl font-bold text-light-text dark:text-dark-text mt-2">
-            +50 entreprises partenaires
+            Nos partenaires & accréditations
           </h3>
         </div>
 

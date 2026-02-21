@@ -2,8 +2,7 @@
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Microscope, Cpu, Globe, ArrowRight } from 'lucide-react';
-export function ResearchPage() {
-  const labs = [
+export function ResearchPage({ onNavigate }: { onNavigate?: (page: string) => void }) {  const labs = [
   {
     title: 'Green IT Lab',
     icon: Cpu,
@@ -95,13 +94,19 @@ export function ResearchPage() {
               <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm">
                 {lab.desc}
               </p>
-              <div className="inline-flex items-center text-secondary font-medium text-sm">
-                {lab.projects} Projets en cours{' '}
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </div>
+              <button
+  onClick={() => onNavigate && onNavigate('contact')}
+  className="inline-flex items-center text-secondary font-medium text-sm hover:underline cursor-pointer"
+>
+  {lab.projects} Projets en cours
+  <ArrowRight className="ml-1 h-4 w-4" />
+</button>
             </Card>
           )}
         </div>
+        <p className="text-center text-sm text-gray-400 dark:text-gray-500 mt-8 italic">
+         Cliquez sur un projet pour nous contacter et en savoir plus.
+        </p>
       </div>
 
       {/* Call to Action */}
