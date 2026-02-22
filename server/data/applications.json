@@ -1,5 +1,60 @@
 [
   {
+    "id": 1771769686893,
+    "date": "2026-02-22T14:14:46.893Z",
+    "firstName": "synthia ",
+    "lastName": "donfack ",
+    "fullName": "synthia  donfack ",
+    "email": "eranistechnology@gmail.com",
+    "phone": "650245062",
+    "birthDate": "2005-02-06",
+    "birthPlace": "Fondonera ",
+    "nationality": "camerounaise ",
+    "address": "yaoundé, cameroun",
+    "diploma": "Baccalauréat",
+    "school": "lycee clasique de bandjoun",
+    "specialite": "scientifique ",
+    "year": "2021",
+    "gpa": "12.50",
+    "program": "Bachelor Administration des Entreprises",
+    "programNiveau": "Bac+3",
+    "startDate": "Septembre 2026",
+    "motivation": "fhldxvjkfdujfhojdfhouhfuhfduhfdufdufhdufrdhfduhfdujhfdujfdoujfdjfjhgfjfdfljfdhljfdhfdjlfd",
+    "experience": "foifofduohfdujfghgfjgfjhgfuhgdfuhdfhgfuhgfuhguigfduhgfuhgfhufhufhugfouhdfghugf",
+    "files": {
+      "cv": [
+        {
+          "name": "YAMA_BEAUTY_Backlog-2-1.pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1771769686833_YAMA_BEAUTY_Backlog-2-1.pdf",
+          "url": "/uploads/1771769686833_YAMA_BEAUTY_Backlog-2-1.pdf"
+        }
+      ],
+      "letter": [
+        {
+          "name": "YAMA_BEAUTY_Backlog.pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1771769686834_YAMA_BEAUTY_Backlog.pdf",
+          "url": "/uploads/1771769686834_YAMA_BEAUTY_Backlog.pdf"
+        }
+      ],
+      "diploma": [
+        {
+          "name": "YAMA_BEAUTY_Backlog-1.pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1771769686835_YAMA_BEAUTY_Backlog-1.pdf",
+          "url": "/uploads/1771769686835_YAMA_BEAUTY_Backlog-1.pdf"
+        }
+      ],
+      "id": [
+        {
+          "name": "proton-recovery-kit-1.pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1771769686835_proton-recovery-kit-1.pdf",
+          "url": "/uploads/1771769686835_proton-recovery-kit-1.pdf"
+        }
+      ]
+    },
+    "status": "nouveau",
+    "read": false
+  },
+  {
     "id": 1771723226819,
     "date": "2026-02-22T01:20:26.819Z",
     "fullName": "undefined undefined",

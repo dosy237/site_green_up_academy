@@ -1,7 +1,7 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Check, ArrowRight, ArrowLeft, X,
-  User, GraduationCap, Star, FileText, ChevronDown, AlertCircle
+  User, GraduationCap, Star, FileText, ChevronDown, AlertCircle, Loader2
 } from 'lucide-react';
 
 // ─── Formations ────────────────────────────────────────────────────────────────
@@ -140,11 +140,11 @@ function SelectField({
 
 // ─── Zone upload d'un fichier ──────────────────────────────────────────────────
 function UploadZone({
-  label, desc, accept, maxMb, required, icon, file, onFile, error,
+  label, desc, accept, maxMb, required, icon, file, onFile, error, docKey,
 }: {
   label: string; desc: string; accept: string;
   maxMb: number; required: boolean; icon: string;
-  file: File | null; onFile: (f: File | null) => void; error?: string;
+  file: File | null; onFile: (f: File | null) => void; error?: string; docKey?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -222,7 +222,7 @@ function UploadZone({
         <div className="flex-1 min-w-0">
           {hasFile ? (
             <>
-              <p className="text-sm font-bold text-[#1FAB89]">✅ Fichier ajouté</p>
+              <p className="text-sm font-bold text-[#1FAB89]"> Fichier ajouté</p>
               <p className="text-xs text-[#696969] truncate">{file?.name}</p>
               <p className="text-xs text-[#B0B0B0]">{formatSize(file?.size || 0)}</p>
             </>
@@ -271,8 +271,7 @@ export function AdmissionsPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [files, setFiles] = useState<FileState>(INIT_FILES);
 
-  const formation = FORMATIONS.find(f => f.value === form.program);
-  if (!formation) return null;
+  const formation = FORMATIONS.find(f => f.value === form.program) ?? FORMATIONS[0];
 
   const STEPS = [
     { n: 1, label: 'Identité',   icon: User },
@@ -363,7 +362,7 @@ export function AdmissionsPage() {
       if (files.diploma) fd.append('diploma', files.diploma, files.diploma.name);
       if (files.id)      fd.append('id',      files.id,      files.id.name);
 
-      const res = await fetch('http://localhost:4000/api/send-application', {
+      const res = await fetch('/api/send-application', {
         method: 'POST',
         body: fd,
       });

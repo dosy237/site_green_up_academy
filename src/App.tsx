@@ -25,24 +25,12 @@ function AppContent() {
     window.scrollTo(0, 0);
   }, [currentPage]);
 
-  // Rediriger du dashboard si pas admin
-  useEffect(() => {
-    if (currentPage === 'dashboard' && user?.role !== 'admin') {
-      setCurrentPage('home');
-    }
-  }, [user, currentPage]);
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
       </div>
     );
-  }
-
-  // Page de login si pas authentifié
-  if (!user) {
-    return <LoginPage onLoginSuccess={() => setCurrentPage('home')} />;
   }
 
   const renderPage = () => {
@@ -64,7 +52,11 @@ function AppContent() {
       case 'contact':
         return <ContactPage />;
       case 'dashboard':
-        // Protéger l'accès au dashboard
+        // Si pas connecté, afficher la page de connexion
+        if (!user) {
+          return <LoginPage onLoginSuccess={() => setCurrentPage('dashboard')} />;
+        }
+        // Si connecté mais pas admin
         if (user?.role !== 'admin') {
           return (
             <div className="min-h-screen flex items-center justify-center">

@@ -1,0 +1,26 @@
+# Fichiers sensibles — NE JAMAIS commiter
+.env
+.env.local
+.env.production
+
+# Dépendances
+node_modules/
+
+# Uploads et données
+uploads/
+data/
+
+# Build frontend
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/settings.json

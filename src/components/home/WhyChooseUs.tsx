@@ -9,6 +9,7 @@ import {
   Globe,
   ArrowUpRight } from
 'lucide-react';
+import { apiUrl } from '../../lib/api';
 
 const iconMap: Record<string, any> = {
   Zap, Users, MapPin, Briefcase, Award, Globe
@@ -18,7 +19,7 @@ export function WhyChooseUs() {
   const [features, setFeatures] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/content')
+    fetch(apiUrl('/api/content'))
       .then(res => res.json())
       .then(data => {
         if (data.whyChooseUs) {

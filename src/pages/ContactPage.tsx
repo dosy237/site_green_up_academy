@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { MapPin, Phone, Mail, Clock, User } from 'lucide-react';
+import { apiUrl } from '../lib/api';
 
 export function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
@@ -14,7 +15,7 @@ export function ContactPage() {
   });
 
   React.useEffect(() => {
-    fetch('http://localhost:4000/api/content')
+    fetch(apiUrl('/api/content'))
       .then(res => res.json())
       .then(data => {
         if (data.contact) {
@@ -33,7 +34,7 @@ export function ContactPage() {
     e.preventDefault();
     setStatus('loading');
     try {
-      const res = await fetch('http://localhost:4000/api/send', {
+      const res = await fetch(apiUrl('/api/send'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),

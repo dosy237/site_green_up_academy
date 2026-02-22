@@ -9,15 +9,14 @@ const programs = [
   duration: '3 ans',
   level: 'Bac+3',
   students: '10 ',
-  image:
-  'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
+  image: '/images/enseignant/code.jpeg',
   color: 'from-emerald-500 to-teal-600',
   description:
-  "Maîtrisez l'efficacité énergétique des bâtiments et des procédés industriels. Une formation complète alliant théorie et pratique terrain.",
+  "Maîtrisez le développement fullstack et les bonnes pratiques du génie logiciel. Une formation complète alliant code, architecture et projets concrets.",
   highlights: [
-  'Audit énergétique',
-  'Réglementation thermique',
-  'BIM & Modélisation']
+  'Dev Fullstack',
+  'Architecture logicielle',
+  'Projets en alternance']
 
 },
 {

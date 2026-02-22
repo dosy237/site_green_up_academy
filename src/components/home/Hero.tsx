@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowRight, Play, ChevronDown, Sparkles } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { ParticleBackground } from './ParticleBackground';
+import { apiUrl } from '../../lib/api';
 export function Hero() {
   const [isVisible, setIsVisible] = useState(false);
   const [content, setContent] = useState({
@@ -11,7 +12,7 @@ export function Hero() {
 
   useEffect(() => {
     setIsVisible(true);
-    fetch('http://localhost:4000/api/content')
+    fetch(apiUrl('/api/content'))
       .then(res => res.json())
       .then(data => {
         if (data.hero) setContent(data.hero);

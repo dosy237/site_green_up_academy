@@ -470,8 +470,8 @@ export function BlogPage() {
         <div className="flex gap-2 bg-white dark:bg-dark-surface rounded-2xl p-1.5 border border-gray-100 dark:border-gray-800 shadow-sm">
           {[
             { key: 'tous', label: 'Tous les événements' },
-            { key: 'en-cours', label: '🔴 En cours' },
-            { key: 'a-venir', label: '📅 À venir' },
+            { key: 'en-cours', label: ' En cours' },
+            { key: 'a-venir', label: ' À venir' },
           ].map(f => (
             <button
               key={f.key}
