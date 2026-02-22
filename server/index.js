@@ -8,6 +8,7 @@ const { google } = require('googleapis');
 const fs         = require('fs');
 const path       = require('path');
 const crypto     = require('crypto');
+const jwt        = require('jsonwebtoken');
 
 const app = express();
 app.use(cors());
@@ -21,12 +22,40 @@ const APPLICATIONS_FILE = path.join(DATA_DIR, 'applications.json');
 const MESSAGES_FILE     = path.join(DATA_DIR, 'messages.json');
 const ANALYTICS_FILE    = path.join(DATA_DIR, 'analytics.json');
 const NEWS_FILE         = path.join(DATA_DIR, 'news.json');
+const USERS_FILE        = path.join(DATA_DIR, 'users.json');
 const UPLOADS_DIR       = path.join(__dirname, 'uploads');
 const PORT              = process.env.PORT || 4000;
 const ADMIN_EMAIL       = process.env.ADMIN_EMAIL || 'dosyca35@gmail.com';
+const JWT_SECRET        = process.env.JWT_SECRET || 'gua_secret_key_2026_change_in_production' ;
 
 // Créer les dossiers
 [DATA_DIR, UPLOADS_DIR].forEach(d => { if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true }); });
+
+// ─── GESTIONNAIRE DE FICHIERS UTILISATEURS ──────────────────────────────────
+const initialUsers = [
+  { id: '1', username: 'admin', password: 'gua2026', role: 'admin' }
+];
+
+function readUsers() {
+  try {
+    if (!fs.existsSync(USERS_FILE)) {
+      fs.writeFileSync(USERS_FILE, JSON.stringify(initialUsers, null, 2));
+      return initialUsers;
+    }
+    return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+  } catch (err) {
+    console.error('Erreur lecture utilisateurs:', err.message);
+    return initialUsers;
+  }
+}
+
+function saveUsers(users) {
+  try {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+  } catch (err) {
+    console.error('Erreur sauvegarde utilisateurs:', err.message);
+  }
+}
 
 // ─── CONFIGURATION GMAIL OAUTH2 ────────────────────────────────────────────
 // Dans votre .env :
@@ -684,6 +713,109 @@ app.post('/api/send-application',
 app.get('/api/partners', (req, res) => {
   const content = readJSON(CONTENT_FILE, initialContent);
   res.json(content.partners || []);
+});
+
+// ─── AUTHENTIFICATION ──────────────────────────────────────────────────────
+// Middleware de vérification JWT
+function verifyToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'Token manquant' });
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ error: 'Token invalide' });
+    }
+    req.user = decoded;
+    next();
+  });
+}
+
+// Route de login
+app.post('/api/auth/login', (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Identifiants manquants' });
+    }
+
+    const users = readUsers();
+    const user = users.find(u => u.username === username && u.password === password);
+
+    if (!user) {
+      return res.status(401).json({ error: 'Identifiants invalides' });
+    }
+
+    // Générer un JWT
+    const token = jwt.sign(
+      { id: user.id, username: user.username, role: user.role },
+      JWT_SECRET,
+      { expiresIn: '8h' }
+    );
+
+    res.json({
+      token,
+      user: { id: user.id, username: user.username, role: user.role }
+    });
+  } catch (err) {
+    console.error('Erreur login:', err);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+// Route de vérification du token
+app.get('/api/auth/me', verifyToken, (req, res) => {
+  try {
+    const users = readUsers();
+    const user = users.find(u => u.id === req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' });
+    }
+
+    res.json({
+      id: user.id,
+      username: user.username,
+      role: user.role
+    });
+  } catch (err) {
+    console.error('Erreur vérification:', err);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+// Route pour changer le mot de passe admin
+app.post('/api/auth/change-password', verifyToken, (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Accès administrateur requis' });
+    }
+
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ error: 'Données manquantes' });
+    }
+
+    let users = readUsers();
+    const user = users.find(u => u.id === req.user.id);
+
+    if (!user || user.password !== currentPassword) {
+      return res.status(401).json({ error: 'Mot de passe actuel incorrect' });
+    }
+
+    user.password = newPassword;
+    saveUsers(users);
+
+    res.json({ success: true, message: 'Mot de passe mis à jour' });
+  } catch (err) {
+    console.error('Erreur changement password:', err);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
 });
 
 // ─── STATUS SERVEUR ────────────────────────────────────────────────────────

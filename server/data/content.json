@@ -1,0 +1,360 @@
+{
+  "hero": {
+    "title": "Devenez l'Expert de la Transition Écologique",
+    "subtitle": "Formez-vous aux métiers de demain avec nos parcours d'excellence.",
+    "backgroundImage": "",
+    "ctaText": "Candidater maintenant",
+    "ctaSubText": "Admissions 2026 ouvertes"
+  },
+  "about": {
+    "title": "Notre Mission",
+    "text": "Green Up Academy forme les professionnels de demain aux enjeux de la transition écologique et numérique. Une école innovante, 100% en alternance, au cœur de l'Essonne.",
+    "vision": "Former 1000 experts de la transition écologique d'ici 2030.",
+    "values": [
+      "Innovation",
+      "Durabilité",
+      "Excellence",
+      "Engagement"
+    ],
+    "stats": [
+      {
+        "label": "Étudiants formés",
+        "value": "250+"
+      },
+      {
+        "label": "Partenaires entreprises",
+        "value": "80+"
+      },
+      {
+        "label": "Taux d'insertion",
+        "value": "94%"
+      },
+      {
+        "label": "Années d'expérience",
+        "value": "5+"
+      }
+    ]
+  },
+  "programs": [
+    {
+      "id": 1,
+      "title": "Bachelor Administration des Entreprises",
+      "level": "Bac+3",
+      "duration": "3 ans",
+      "description": "Gestion, management et entrepreneuriat en alternance.",
+      "icon": "🏢",
+      "color": "#1FAB89",
+      "details": "Formation complète en gestion d'entreprise avec focus sur le développement durable.",
+      "outcomes": [
+        "Manager de projet",
+        "Chef de service",
+        "Entrepreneur"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Bachelor Design",
+      "level": "Bac+3",
+      "duration": "3 ans",
+      "description": "UX/UI, design graphique et création visuelle en alternance.",
+      "icon": "🎨",
+      "color": "#4ECDC4",
+      "details": "Maîtrisez les outils du design moderne avec une approche éco-responsable.",
+      "outcomes": [
+        "UX Designer",
+        "Designer Graphique",
+        "Directeur Artistique"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Bachelor Développement Logiciel",
+      "level": "Bac+3",
+      "duration": "3 ans",
+      "description": "Web, mobile et applications full-stack en alternance.",
+      "icon": "💻",
+      "color": "#45B7D1",
+      "details": "Développez des solutions numériques innovantes et sobres en énergie.",
+      "outcomes": [
+        "Développeur Full-Stack",
+        "Ingénieur Logiciel",
+        "CTO"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Bachelor Administration Réseau",
+      "level": "Bac+3",
+      "duration": "3 ans",
+      "description": "Infrastructure, sécurité et systèmes en alternance.",
+      "icon": "🔗",
+      "color": "#96CEB4",
+      "details": "Maîtrisez l'infrastructure informatique moderne et éco-efficace.",
+      "outcomes": [
+        "Administrateur Réseau",
+        "Ingénieur Cloud",
+        "DSI"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Master Cybersécurité & Green IT",
+      "level": "Bac+5",
+      "duration": "2 ans",
+      "description": "Sécurité numérique et sobriété énergétique.",
+      "icon": "🔒",
+      "color": "#FFEAA7",
+      "details": "Devenez expert en cybersécurité avec une vision Green IT.",
+      "outcomes": [
+        "RSSI",
+        "Consultant Cybersécurité",
+        "Ethical Hacker"
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Master Performance Énergétique",
+      "level": "Bac+5",
+      "duration": "2 ans",
+      "description": "Audit, rénovation et efficacité des bâtiments.",
+      "icon": "⚡",
+      "color": "#DDA0DD",
+      "details": "Spécialisez-vous dans l'efficacité énergétique des bâtiments.",
+      "outcomes": [
+        "Auditeur Énergétique",
+        "Consultant RSE",
+        "Directeur Développement Durable"
+      ]
+    }
+  ],
+  "whyChooseUs": [
+    {
+      "id": 1,
+      "title": "Innovation Pédagogique",
+      "description": "Méthodes actives, projets réels, hackathons et ateliers pratiques.",
+      "stat": "40+",
+      "statLabel": "Projets/an",
+      "icon": "Zap",
+      "color": "#1FAB89"
+    },
+    {
+      "id": 2,
+      "title": "100% Alternance",
+      "description": "Rémunéré pendant toute la durée de vos études.",
+      "stat": "0€",
+      "statLabel": "Frais de scolarité",
+      "icon": "Briefcase",
+      "color": "#4ECDC4"
+    },
+    {
+      "id": 3,
+      "title": "Experts de Terrain",
+      "description": "Intervenants professionnels en activité dans leur domaine.",
+      "stat": "85%",
+      "statLabel": "Pros actifs",
+      "icon": "Users",
+      "color": "#45B7D1"
+    },
+    {
+      "id": 4,
+      "title": "Insertion Garantie",
+      "description": "Accompagnement emploi et réseau entreprises actif.",
+      "stat": "94%",
+      "statLabel": "Taux insertion",
+      "icon": "TrendingUp",
+      "color": "#96CEB4"
+    }
+  ],
+  "testimonials": [
+    {
+      "id": 1,
+      "name": "Marie Dubois",
+      "program": "Bachelor Dev Logiciel",
+      "year": "2023",
+      "text": "Une formation exceptionnelle qui m'a permis de décrocher un CDI dès la fin de mes études.",
+      "avatar": "",
+      "rating": 5,
+      "company": "TechCorp Paris"
+    },
+    {
+      "id": 2,
+      "name": "Karim Mansour",
+      "program": "Master Cybersécurité",
+      "year": "2024",
+      "text": "Le réseau entreprises de Green Up Academy est incroyable. J'ai trouvé mon alternance en 2 semaines.",
+      "avatar": "",
+      "rating": 5,
+      "company": "SecureNet"
+    }
+  ],
+  "cta": {
+    "title": "Prêt à transformer votre avenir ?",
+    "subtitle": "Candidatures 2026 ouvertes. Places limitées.",
+    "dates": [
+      {
+        "label": "30 Juin",
+        "sub": "Clôture candidatures"
+      },
+      {
+        "label": "6 formations",
+        "sub": "Disponibles"
+      },
+      {
+        "label": "48h",
+        "sub": "Réponse admission"
+      }
+    ]
+  },
+  "contact": {
+    "director": "Charles Giscard Fongang",
+    "email": "contact@green-up-academy.com",
+    "phone": "(+33) 7 51 36 09 44",
+    "address": "Boussy-Saint-Antoine, 91480 Essonne",
+    "mapEmbed": "",
+    "hours": "Lun–Ven : 9h–18h",
+    "socialLinks": {
+      "linkedin": "",
+      "instagram": "",
+      "facebook": "",
+      "twitter": ""
+    }
+  },
+  "partners": [
+    {
+      "id": 1,
+      "name": "Partenaire 1",
+      "logo": "",
+      "url": "",
+      "category": "Entreprise"
+    }
+  ],
+  "admission": {
+    "title": "Candidatez en ligne",
+    "subtitle": "Rejoignez Green Up Academy pour la rentrée 2026",
+    "steps": [
+      {
+        "num": 1,
+        "title": "Dépôt de dossier",
+        "desc": "Remplissez le formulaire et uploadez vos documents."
+      },
+      {
+        "num": 2,
+        "title": "Étude du dossier",
+        "desc": "Notre équipe pédagogique étudie votre candidature sous 48h."
+      },
+      {
+        "num": 3,
+        "title": "Entretien",
+        "desc": "Si votre profil correspond, nous vous contactons pour un entretien."
+      },
+      {
+        "num": 4,
+        "title": "Réponse",
+        "desc": "Vous recevez notre décision par email dans les 72h suivant l'entretien."
+      }
+    ],
+    "documentsRequired": [
+      {
+        "key": "cv",
+        "label": "Curriculum Vitae (CV)",
+        "required": true,
+        "formats": "PDF, DOC, DOCX",
+        "maxSize": "5MB"
+      },
+      {
+        "key": "letter",
+        "label": "Lettre de motivation",
+        "required": true,
+        "formats": "PDF, DOC, DOCX",
+        "maxSize": "5MB"
+      },
+      {
+        "key": "diploma",
+        "label": "Relevé(s) de notes / Diplôme(s)",
+        "required": true,
+        "formats": "PDF, JPG, PNG",
+        "maxSize": "10MB"
+      },
+      {
+        "key": "id",
+        "label": "Pièce d'identité",
+        "required": true,
+        "formats": "PDF, JPG, PNG",
+        "maxSize": "5MB"
+      },
+      {
+        "key": "photo",
+        "label": "Photo d'identité",
+        "required": false,
+        "formats": "JPG, PNG",
+        "maxSize": "2MB"
+      }
+    ],
+    "faq": [
+      {
+        "q": "Quels sont les frais de scolarité ?",
+        "a": "Green Up Academy est 100% en alternance, donc 0€ de frais à votre charge. L'entreprise finance votre formation."
+      },
+      {
+        "q": "Quelle est la durée des formations ?",
+        "a": "Les Bachelors durent 3 ans (Bac+3) et les Masters 2 ans (Bac+5)."
+      },
+      {
+        "q": "Faut-il trouver son alternance soi-même ?",
+        "a": "Notre service relations entreprises vous accompagne dans votre recherche d'alternance."
+      }
+    ]
+  },
+  "header": {
+    "logo": "",
+    "logoText": "Green Up Academy",
+    "navLinks": [
+      {
+        "label": "Accueil",
+        "href": "#hero"
+      },
+      {
+        "label": "Formations",
+        "href": "#programs"
+      },
+      {
+        "label": "Pourquoi nous",
+        "href": "#why"
+      },
+      {
+        "label": "Témoignages",
+        "href": "#testimonials"
+      },
+      {
+        "label": "Actualités",
+        "href": "#news"
+      },
+      {
+        "label": "Contact",
+        "href": "#contact"
+      }
+    ],
+    "ctaText": "Candidater",
+    "ctaHref": "#admission"
+  },
+  "footer": {
+    "description": "Former les experts de la transition écologique et numérique.",
+    "copyright": "© 2026 Green Up Academy. Tous droits réservés.",
+    "links": [
+      {
+        "label": "Mentions légales",
+        "href": "/mentions-legales"
+      },
+      {
+        "label": "Politique de confidentialité",
+        "href": "/confidentialite"
+      }
+    ]
+  },
+  "seo": {
+    "title": "Green Up Academy — École de la Transition Écologique",
+    "description": "Formez-vous aux métiers de demain avec Green Up Academy. Bachelor et Master en alternance, 100% gratuit.",
+    "keywords": "école alternance, transition écologique, cybersécurité, développement logiciel, Essonne",
+    "ogImage": ""
+  }
+}

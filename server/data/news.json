@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "title": "Ouverture des candidatures 2026",
+    "slug": "candidatures-2026",
+    "excerpt": "Les candidatures pour la rentrée 2026 sont officiellement ouvertes !",
+    "content": "...",
+    "image": "",
+    "date": "2026-02-21T23:13:31.203Z",
+    "author": "Green Up Academy",
+    "category": "Admissions",
+    "published": true,
+    "likes": 0,
+    "views": 0,
+    "tags": [
+      "admission",
+      "2026"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Green Up remporte le prix de l'Innovation Pédagogique",
+    "slug": "prix-innovation",
+    "excerpt": "Notre école primée pour ses méthodes innovantes.",
+    "content": "...",
+    "image": "",
+    "date": "2026-02-14T23:13:31.204Z",
+    "author": "Équipe GUA",
+    "category": "Actualité",
+    "published": true,
+    "likes": 0,
+    "views": 0,
+    "tags": [
+      "prix",
+      "innovation"
+    ]
+  }
+]

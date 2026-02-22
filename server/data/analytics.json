@@ -1,0 +1,29 @@
+{
+  "pageViews": {
+    "total": 0,
+    "today": 0,
+    "thisWeek": 0,
+    "thisMonth": 0
+  },
+  "visitors": {
+    "total": 0,
+    "unique": 0
+  },
+  "dailyViews": [],
+  "pageBreakdown": {},
+  "applicationStats": {
+    "total": 0,
+    "nouveau": 0,
+    "en_etude": 0,
+    "accepte": 0,
+    "refuse": 0
+  },
+  "contactStats": {
+    "total": 0,
+    "todayTotal": 0
+  },
+  "newsStats": {
+    "totalLikes": 0,
+    "totalViews": 0
+  }
+}

@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1771723214481,
+    "type": "contact",
+    "name": "Test User",
+    "email": "test@example.com",
+    "subject": "Test Email",
+    "message": "This is a test email from Green Up Academy",
+    "date": "2026-02-22T01:20:14.481Z",
+    "read": false,
+    "archived": false
+  }
+]

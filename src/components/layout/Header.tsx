@@ -11,24 +11,30 @@ import {
   Twitter,
   Linkedin,
   Instagram,
-  ChevronDown } from
+  ChevronDown,
+  LogOut } from
 'lucide-react';
 import { Button } from '../ui/Button';
+import { useAuth } from '../../contexts/AuthContext';
+
 interface HeaderProps {
   theme: 'light' | 'dark';
   toggleTheme: () => void;
   onNavigate: (page: string) => void;
   currentPage: string;
 }
+
 export function Header({
   theme,
   toggleTheme,
   onNavigate,
   currentPage
 }: HeaderProps) {
+  const { user, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -36,55 +42,62 @@ export function Header({
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  const navItems = [
-  {
-    name: 'Accueil',
-    id: 'home'
-  },
-  {
-    name: "L'École",
-    id: 'school',
-    dropdown: [
-    {
-      name: 'Gouvernance',
-      id: 'governance'
-    },
-    {
-      name: 'Recherche & Innovation',
-      id: 'research'
-    },
-    {
-      name: 'Vie Étudiante',
-      id: 'student-life'
-    }]
 
-  },
-  {
-    name: 'Programmes',
-    id: 'programs'
-  },
-  {
-    name: 'Admissions',
-    id: 'admissions'
-  },
-  {
-    name: 'Actualités',
-    id: 'blog'
-  },
-  {
-    name: 'Contact',
-    id: 'contact'
-  },
-  {
-    name: 'Dashboard',
-    id: 'dashboard'
-  }];
+  const navItems = [
+    {
+      name: 'Accueil',
+      id: 'home'
+    },
+    {
+      name: "L'École",
+      id: 'school',
+      dropdown: [
+        {
+          name: 'Gouvernance',
+          id: 'governance'
+        },
+        {
+          name: 'Recherche & Innovation',
+          id: 'research'
+        },
+        {
+          name: 'Vie Étudiante',
+          id: 'student-life'
+        }]
+    },
+    {
+      name: 'Programmes',
+      id: 'programs'
+    },
+    {
+      name: 'Admissions',
+      id: 'admissions'
+    },
+    {
+      name: 'Actualités',
+      id: 'blog'
+    },
+    {
+      name: 'Contact',
+      id: 'contact'
+    },
+    ...(user?.role === 'admin' ? [{
+      name: 'Dashboard',
+      id: 'dashboard'
+    }] : [])
+  ];
 
   const handleNavClick = (id: string) => {
     onNavigate(id);
     setIsMobileMenuOpen(false);
     setActiveDropdown(null);
   };
+
+  const handleLogout = () => {
+    logout();
+    handleNavClick('home');
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300`}>
@@ -137,7 +150,7 @@ export function Header({
               onClick={() => handleNavClick('home')}>
 
               <img 
-               src="/public/images/logo/logo.png"
+               src="/images/logo/logo.png"
                alt="Green Up Academy" 
                 className="h-12 sm:h-14 w-auto group-hover:opacity-80 transition-opacity"
               />
@@ -175,13 +188,6 @@ export function Header({
 
             {/* Actions */}
             <div className="hidden lg:flex items-center gap-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleNavClick('dashboard')}
-                className="text-xs border-gray-200 dark:border-gray-700">
-                Admin
-              </Button>
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300"
@@ -193,13 +199,37 @@ export function Header({
                 <Moon className="h-5 w-5" />
                 }
               </button>
-              <Button
-                size="md"
-                className="bg-accent hover:bg-accent-dark text-white shadow-lg shadow-accent/20 border-none"
-                onClick={() => handleNavClick('admissions')}>
 
-                Postuler
-              </Button>
+              {/* User Menu */}
+              {user && (
+                <div className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-700">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {user.username}
+                    {user.role === 'admin' && (
+                      <span className="ml-2 inline-block px-2 py-1 text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded">
+                        Admin
+                      </span>
+                    )}
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300"
+                    title="Déconnexion"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+
+              {user?.role !== 'admin' && (
+                <Button
+                  size="md"
+                  className="bg-accent hover:bg-accent-dark text-white shadow-lg shadow-accent/20 border-none"
+                  onClick={() => handleNavClick('admissions')}>
+
+                  Postuler
+                </Button>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -272,18 +302,41 @@ export function Header({
               }
               </div>
             )}
-            <div className="pt-6 px-4">
-              <Button
-                className="w-full justify-center bg-accent hover:bg-accent-dark text-white"
-                size="lg"
-                onClick={() => handleNavClick('admissions')}>
+            
+            {/* Mobile User Info */}
+            {user && (
+              <div className="pt-6 px-4 border-t border-gray-200 dark:border-gray-700 mt-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="font-semibold text-gray-900 dark:text-white">{user.username}</p>
+                    {user.role === 'admin' && (
+                      <span className="text-xs font-semibold text-green-600">Administrateur</span>
+                    )}
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
+                  >
+                    <LogOut className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                  </button>
+                </div>
+              </div>
+            )}
 
-                Postuler maintenant
-              </Button>
-            </div>
+            {user?.role !== 'admin' && (
+              <div className="pt-6 px-4">
+                <Button
+                  className="w-full justify-center bg-accent hover:bg-accent-dark text-white"
+                  size="lg"
+                  onClick={() => handleNavClick('admissions')}>
+
+                  Postuler maintenant
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </header>);
-
+    </header>
+  );
 }

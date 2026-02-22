@@ -279,7 +279,7 @@ export function Hero() {
       <div className="relative z-10 bg-gradient-to-r from-primary via-primary-dark to-primary py-8 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) =>
+            {stats.map((stat, index) => (
             <div
               key={index}
               className={`text-center text-white transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
@@ -295,7 +295,7 @@ export function Hero() {
                   {stat.label}
                 </p>
               </div>
-            )}
+            ))}
           </div>
         </div>
       </div>

@@ -10,29 +10,29 @@ export function GovernancePage({ onNavigate }: { onNavigate?: (page: string) => 
       name: 'Charles Giscard Fongang',
       role: 'Président & Directeur Pédagogique',
       bio: "Fondateur de Green Up Academy, expert en stratégie numérique et transition écologique. Il pilote la vision pédagogique et académique de l'école.",
-      image: '/images/enseignants/charles.png'
+      image: '/images/enseignant/charles.png'
     },
     {
       name: 'Nady Belocime',
       role: 'Directrice Générale',
       bio: "Responsable de la gestion opérationnelle et du développement de l'école. Elle accompagne les étudiants et pilote les partenariats stratégiques.",
-      image: '/images/enseignants/nady.png'
+      image: '/images/enseignant/nady.png'
     }
   ];
 
   const equipe = [
-    { name: 'Meryl Dupont', role: 'Responsable Pédagogique', image: '/images/enseignants/meryl.png' },
-    { name: 'Salif Koné', role: 'Formateur Dev Web', image: '/images/enseignants/salif.png' },
-    { name: 'Salamé Diallo', role: 'Formatrice Design', image: '/images/enseignants/salame.png' },
-    { name: 'Basile Starynkevich', role: 'Formateur Cybersécurité', image: '/images/enseignants/basil.png' },
-    { name: 'Mathieu Renard', role: 'Formateur Réseau', image: '/images/enseignants/math.png' },
-    { name: 'Sophie Manager', role: 'Responsable Administrative', image: '/images/enseignants/manager.png' },
+    { name: 'Meryl Dupont', role: 'Responsable Pédagogique', image: '/images/enseignant/meryl.png' },
+    { name: 'Salif Koné', role: 'Formateur Dev Web', image: '/images/enseignant/salif.png' },
+    { name: 'Salamé Diallo', role: 'Formatrice Design', image: '/images/enseignant/salame.png' },
+    { name: 'Basile Starynkevich', role: 'Formateur Cybersécurité', image: '/images/enseignant/basil.png' },
+    { name: 'Mathieu Renard', role: 'Formateur Réseau', image: '/images/enseignant/math.png' },
+    { name: 'Sophie Manager', role: 'Responsable Administrative', image: '/images/enseignant/manager.png' },
   ];
 
   const scientifique = [
     {
       name: 'Charles Giscard Fongang',
-      image: '/images/enseignants/charles.png',
+      image: '/images/enseignant/charles.png',
       travaux: [
         'Intelligence artificielle appliquée à la transition écologique',
         'Optimisation énergétique des systèmes numériques',
@@ -41,7 +41,7 @@ export function GovernancePage({ onNavigate }: { onNavigate?: (page: string) => 
     },
     {
       name: 'Basile Starynkevich',
-      image: '/images/enseignants/basil.png',
+      image: '/images/enseignant/basil.png',
       travaux: [
         'Cybersécurité des infrastructures critiques',
         'Green IT et sobriété numérique',

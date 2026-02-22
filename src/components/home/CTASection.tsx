@@ -1,4 +1,3 @@
-import React from 'react';
 import { ArrowRight, Calendar, Users, Clock } from 'lucide-react';
 import { Button } from '../ui/Button';
 export function CTASection() {

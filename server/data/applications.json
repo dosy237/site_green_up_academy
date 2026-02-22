@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1771723226819,
+    "date": "2026-02-22T01:20:26.819Z",
+    "fullName": "undefined undefined",
+    "email": "jean@example.com",
+    "program": "Bachelor Développement Logiciel",
+    "files": {
+      "cv": [
+        {
+          "name": "test_file.txt",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1771723226818_test_file.txt",
+          "url": "/uploads/1771723226818_test_file.txt"
+        }
+      ]
+    },
+    "status": "nouveau",
+    "read": false
+  },
+  {
+    "id": 1771723221891,
+    "date": "2026-02-22T01:20:21.891Z",
+    "fullName": "undefined undefined",
+    "email": "jean@example.com",
+    "program": "Bachelor Développement Logiciel",
+    "files": {
+      "cv": [
+        {
+          "name": "test_cv.txt",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1771723221882_test_cv.txt",
+          "url": "/uploads/1771723221882_test_cv.txt"
+        }
+      ]
+    },
+    "status": "nouveau",
+    "read": false
+  }
+]

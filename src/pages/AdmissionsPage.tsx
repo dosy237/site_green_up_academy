@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import {
-  Check, Upload, ArrowRight, ArrowLeft, X, Loader2,
+  Check, ArrowRight, ArrowLeft, X,
   User, GraduationCap, Star, FileText, ChevronDown, AlertCircle
 } from 'lucide-react';
 
@@ -140,9 +140,9 @@ function SelectField({
 
 // ─── Zone upload d'un fichier ──────────────────────────────────────────────────
 function UploadZone({
-  docKey, label, desc, accept, maxMb, required, icon, file, onFile, error,
+  label, desc, accept, maxMb, required, icon, file, onFile, error,
 }: {
-  docKey: keyof FileState; label: string; desc: string; accept: string;
+  label: string; desc: string; accept: string;
   maxMb: number; required: boolean; icon: string;
   file: File | null; onFile: (f: File | null) => void; error?: string;
 }) {
@@ -223,8 +223,8 @@ function UploadZone({
           {hasFile ? (
             <>
               <p className="text-sm font-bold text-[#1FAB89]">✅ Fichier ajouté</p>
-              <p className="text-xs text-[#696969] truncate">{file!.name}</p>
-              <p className="text-xs text-[#B0B0B0]">{formatSize(file!.size)}</p>
+              <p className="text-xs text-[#696969] truncate">{file?.name}</p>
+              <p className="text-xs text-[#B0B0B0]">{formatSize(file?.size || 0)}</p>
             </>
           ) : (
             <>
@@ -268,10 +268,11 @@ export function AdmissionsPage() {
   const [isLoading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [form, setForm] = useState<FormData>(INIT);
-  const [errors, setErrors] = useState<Partial<FormData & { cv: string; diploma: string; id: string }>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [files, setFiles] = useState<FileState>(INIT_FILES);
 
-  const formation = FORMATIONS.find(f => f.value === form.program)!;
+  const formation = FORMATIONS.find(f => f.value === form.program);
+  if (!formation) return null;
 
   const STEPS = [
     { n: 1, label: 'Identité',   icon: User },
@@ -283,17 +284,17 @@ export function AdmissionsPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm(f => ({ ...f, [name]: value }));
-    setErrors(err => { const n = { ...err }; delete (n as any)[name]; return n; });
+    setErrors(err => { const n: Record<string, string> = { ...err }; delete n[name]; return n; });
   };
 
   const setFile = (key: keyof FileState) => (f: File | null) => {
     setFiles(prev => ({ ...prev, [key]: f }));
-    if (f) setErrors(err => { const n = { ...err }; delete (n as any)[key]; return n; });
+    if (f) setErrors(err => { const n: Record<string, string> = { ...err }; delete n[key]; return n; });
   };
 
   // ── Validation par étape ──────────────────────────────────────────────────────
   const validate = (s: number): boolean => {
-    const e: any = {};
+    const e: Record<string, string> = {};
     if (s === 1) {
       if (!form.lastName.trim())  e.lastName   = 'Nom requis';
       if (!form.firstName.trim()) e.firstName  = 'Prénom requis';
@@ -365,7 +366,6 @@ export function AdmissionsPage() {
       const res = await fetch('http://localhost:4000/api/send-application', {
         method: 'POST',
         body: fd,
-        // NE PAS mettre Content-Type : le navigateur le génère avec le boundary
       });
 
       if (!res.ok) {
@@ -379,15 +379,16 @@ export function AdmissionsPage() {
       setSubmitted(true);
       window.scrollTo(0, 0);
 
-    } catch (err: any) {
+    } catch (err) {
+      const error = err instanceof Error ? err.message : 'Une erreur est survenue';
       // Si c'est une erreur réseau (serveur absent), on affiche quand même le succès
       // car le serveur sauvegarde la candidature même sans email.
-      if (err instanceof TypeError && err.message.includes('fetch')) {
+      if (error.includes('fetch')) {
         // Serveur inaccessible
         setSubmitError('Impossible de joindre le serveur. Vérifiez que le serveur est démarré (port 4000).');
       } else {
         // Erreur métier
-        setSubmitError(err.message || 'Une erreur est survenue. Réessayez.');
+        setSubmitError('Erreur lors de l\'envoi: ' + error);
       }
     } finally {
       setLoading(false);
@@ -524,12 +525,12 @@ export function AdmissionsPage() {
                 <h2 className="text-xl font-bold text-[#2D2D2D] dark:text-white mb-1">Parcours académique</h2>
                 <p className="text-sm text-[#696969]">Renseignez votre dernier diplôme obtenu ou en cours.</p>
               </div>
-              <SelectField label="Diplôme le plus élevé" name="diploma" value={form.diploma} onChange={handleChange as any}
+              <SelectField label="Diplôme le plus élevé" name="diploma" value={form.diploma} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLSelectElement>)}
                 options={DIPLOMES.map(d => ({ value: d, label: d }))} required />
               <Field label="Établissement" name="school" value={form.school} onChange={handleChange} error={errors.school} placeholder="Lycée Victor Hugo / Université Paris 1…" required />
               <div className="grid grid-cols-2 gap-4">
                 <Field label="Spécialité / Filière" name="specialite" value={form.specialite} onChange={handleChange} error={errors.specialite} placeholder="Terminale S, BTS SIO…" required />
-                <SelectField label="Année d'obtention" name="year" value={form.year} onChange={handleChange as any}
+                <SelectField label="Année d'obtention" name="year" value={form.year} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLSelectElement>)}
                   options={ANNEES.map(y => ({ value: y, label: y }))} />
               </div>
               <Field label="Moyenne / Mention (optionnel)" name="gpa" value={form.gpa} onChange={handleChange} placeholder="12.5/20, Mention Bien…" />
@@ -566,7 +567,7 @@ export function AdmissionsPage() {
                 ))}
               </div>
 
-              <SelectField label="Rentrée souhaitée" name="startDate" value={form.startDate} onChange={handleChange as any}
+              <SelectField label="Rentrée souhaitée" name="startDate" value={form.startDate} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLSelectElement>)}
                 options={[
                   { value: 'Septembre 2026', label: 'Septembre 2026' },
                   { value: 'Janvier 2027', label: 'Janvier 2027 (si disponible)' },
@@ -609,7 +610,7 @@ export function AdmissionsPage() {
                   icon={doc.icon}
                   file={files[doc.key]}
                   onFile={setFile(doc.key)}
-                  error={(errors as any)[doc.key]}
+                  error={(errors as Record<string, string>)[doc.key]}
                 />
               ))}
 
