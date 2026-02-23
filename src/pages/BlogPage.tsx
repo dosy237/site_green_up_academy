@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { MessageCircle, X, Send, Calendar, ChevronRight, Flame } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-
 interface Comment {
   id: number;
   author: string;
@@ -40,9 +39,12 @@ const EMOJIS = ['🔥', '👏', '💡', '🚀', '❤️'];
 
 const initialPosts: Post[] = [
   {
-    id: 1, type: 'event', tag: 'À venir',
+    id: 1,
+    type: 'event',
+    tag: 'À venir',
     tagColor: 'bg-primary text-white',
-    date: '04 Mars 2026', dateRaw: '2026-03-04',
+    date: '04 Mars 2026',
+    dateRaw: '2026-03-04',
     title: 'Green Up Talk Space 🎙️',
     body: "Rendez-vous le 4 mars pour notre premier Green Up Talk Space ! Conférences, tables rondes et échanges autour du numérique responsable et de la transition écologique. Ouvert à tous les étudiants et au grand public.",
     images: [
@@ -63,9 +65,12 @@ const initialPosts: Post[] = [
     pinned: true,
   },
   {
-    id: 2, type: 'event', tag: 'En cours',
+    id: 2,
+    type: 'event',
+    tag: 'En cours',
     tagColor: 'bg-red-500 text-white animate-pulse',
-    date: 'Février 2026', dateRaw: '2026-02-01',
+    date: 'Février 2026',
+    dateRaw: '2026-02-01',
     title: '🏆 Green Hackathon Dev — EN COURS',
     body: "Le BDE Green Spirit organise actuellement un hackathon de développement ! Les équipes sont en pleine action, travaillant sur des solutions innovantes pour la transition numérique. Restez connectés — les projets seront publiés en avril 2026.",
     images: [
@@ -88,9 +93,12 @@ const initialPosts: Post[] = [
     ],
   },
   {
-    id: 3, type: 'event', tag: 'Avril 2026',
+    id: 3,
+    type: 'event',
+    tag: 'Avril 2026',
     tagColor: 'bg-accent text-white',
-    date: 'Avril 2026', dateRaw: '2026-04-01',
+    date: 'Avril 2026',
+    dateRaw: '2026-04-01',
     title: '📦 Publication des projets du Green Hackathon',
     body: "En avril, découvrez tous les projets réalisés lors du Green Hackathon Dev ! Les meilleures solutions seront exposées et les équipes gagnantes récompensées. Une célébration de l'innovation étudiante.",
     images: ['https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=800&q=80'],
@@ -104,9 +112,12 @@ const initialPosts: Post[] = [
     comments: [],
   },
   {
-    id: 4, type: 'event', tag: '18 Mai 2026',
+    id: 4,
+    type: 'event',
+    tag: '18 Mai 2026',
     tagColor: 'bg-secondary text-white',
-    date: '18 Mai 2026', dateRaw: '2026-05-18',
+    date: '18 Mai 2026',
+    dateRaw: '2026-05-18',
     title: '💻 Conférence du Numérique',
     body: "Green Up Academy organise sa grande Conférence du Numérique le 18 mai 2026. Experts, intervenants du secteur et étudiants se retrouvent pour débattre des enjeux du numérique de demain : IA, cybersécurité, sobriété numérique et impact environnemental.",
     images: [
@@ -127,7 +138,6 @@ const initialPosts: Post[] = [
 ];
 
 // ─── Chargement/sauvegarde localStorage ──────────────────────────────────────
-
 function loadPosts(): Post[] {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -151,7 +161,6 @@ function savePosts(posts: Post[]) {
 }
 
 // ─── Utilitaire temps relatif ─────────────────────────────────────────────────
-
 function timeAgo(ts: number): string {
   const diff = Date.now() - ts;
   const mins = Math.floor(diff / 60000);
@@ -163,7 +172,6 @@ function timeAgo(ts: number): string {
 }
 
 // ─── Grille images ────────────────────────────────────────────────────────────
-
 function ImageGrid({ images, onOpen }: { images: string[]; onOpen: (i: number) => void }) {
   if (images.length === 0) return null;
   if (images.length === 1) return (
@@ -194,6 +202,7 @@ function ImageGrid({ images, onOpen }: { images: string[]; onOpen: (i: number) =
       </div>
     </div>
   );
+
   const shown = images.slice(0, 4);
   const extra = images.length - 4;
   return (
@@ -213,7 +222,6 @@ function ImageGrid({ images, onOpen }: { images: string[]; onOpen: (i: number) =
 }
 
 // ─── PostCard ─────────────────────────────────────────────────────────────────
-
 function PostCard({
   post,
   onReact,
@@ -242,7 +250,6 @@ function PostCard({
 
   return (
     <article className="bg-white dark:bg-dark-surface rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
-
       {/* Header */}
       <div className="flex items-start justify-between px-5 pt-5 pb-3">
         <div className="flex items-center gap-3">
@@ -307,15 +314,12 @@ function PostCard({
       {/* Comments */}
       {commentOpen && (
         <div className="border-t border-gray-100 dark:border-gray-800 px-5 pt-4 pb-5 space-y-3 bg-gray-50 dark:bg-dark-bg/50">
-
-          {/* Voir plus */}
           {post.comments.length > 3 && !showAllComments && (
             <button onClick={() => setShowAllComments(true)} className="text-xs text-primary hover:underline">
               Voir les {post.comments.length - 3} commentaires précédents
             </button>
           )}
 
-          {/* Liste commentaires */}
           {visibleComments.map(c => (
             <div key={c.id} className="flex gap-3">
               <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs shrink-0">
@@ -366,18 +370,88 @@ function PostCard({
         </div>
       )}
 
-      {/* Lightbox */}
+      {/* Lightbox améliorée - responsive */}
       {lightboxIdx !== null && (
-        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4" onClick={() => setLightboxIdx(null)}>
-          <button className="absolute top-4 right-4 text-white/60 hover:text-white"><X className="h-7 w-7" /></button>
-          <img src={post.images[lightboxIdx]} alt="" className="max-w-full max-h-[90vh] rounded-2xl object-contain" onClick={e => e.stopPropagation()} />
+        <div
+          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 sm:p-8 touch-none"
+          onClick={() => setLightboxIdx(null)}
+        >
+          {/* Bouton fermer */}
+          <button
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/80 hover:text-white p-3 sm:p-4 rounded-full bg-black/40 hover:bg-black/60 transition-all z-10"
+            onClick={(e) => {
+              e.stopPropagation();
+              setLightboxIdx(null);
+            }}
+            aria-label="Fermer"
+          >
+            <X className="h-7 w-7 sm:h-8 sm:w-8" />
+          </button>
+
+          {/* Conteneur image */}
+          <div
+            className="relative w-full h-full flex items-center justify-center max-w-[95vw] max-h-[90vh] sm:max-w-[90vw] sm:max-h-[88vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={post.images[lightboxIdx]}
+              alt={`Image ${lightboxIdx + 1} de ${post.title}`}
+              className="max-w-full max-h-full object-contain rounded-xl sm:rounded-2xl shadow-2xl transition-transform duration-200"
+              style={{
+                maxWidth: 'calc(100vw - 2rem)',
+                maxHeight: 'calc(100vh - 8rem)',
+              }}
+              draggable={false}
+            />
+          </div>
+
+          {/* Navigation si plusieurs images */}
           {post.images.length > 1 && (
-            <div className="absolute bottom-6 flex gap-2">
-              {post.images.map((_, i) => (
-                <button key={i} onClick={e => { e.stopPropagation(); setLightboxIdx(i); }}
-                  className={`w-2 h-2 rounded-full transition-all ${i === lightboxIdx ? 'bg-white scale-125' : 'bg-white/40'}`} />
-              ))}
-            </div>
+            <>
+              <button
+                className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-3 sm:p-4 rounded-full bg-black/40 hover:bg-black/60 transition-all"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxIdx(prev => prev === 0 ? post.images.length - 1 : prev - 1);
+                }}
+                aria-label="Précédent"
+              >
+                <ChevronRight className="h-7 w-7 sm:h-9 sm:w-9 rotate-180" />
+              </button>
+
+              <button
+                className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-3 sm:p-4 rounded-full bg-black/40 hover:bg-black/60 transition-all"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxIdx(prev => prev === post.images.length - 1 ? 0 : prev + 1);
+                }}
+                aria-label="Suivant"
+              >
+                <ChevronRight className="h-7 w-7 sm:h-9 sm:w-9" />
+              </button>
+
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/60 text-white text-sm sm:text-base px-4 py-2 rounded-full">
+                {lightboxIdx + 1} / {post.images.length}
+              </div>
+
+              <div className="absolute bottom-14 sm:bottom-20 left-1/2 -translate-x-1/2 flex gap-2.5 sm:gap-3">
+                {post.images.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLightboxIdx(i);
+                    }}
+                    className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all ${
+                      i === lightboxIdx
+                        ? 'bg-white scale-125 shadow-md'
+                        : 'bg-white/50 hover:bg-white/80'
+                    }`}
+                    aria-label={`Image ${i + 1}`}
+                  />
+                ))}
+              </div>
+            </>
           )}
         </div>
       )}
@@ -386,12 +460,10 @@ function PostCard({
 }
 
 // ─── Page principale ───────────────────────────────────────────────────────────
-
 export function BlogPage() {
   const [posts, setPosts] = useState<Post[]>(loadPosts);
   const [filter, setFilter] = useState<'tous' | 'en-cours' | 'a-venir'>('tous');
 
-  // Sauvegarde automatique à chaque changement
   useEffect(() => {
     savePosts(posts);
   }, [posts]);
@@ -436,7 +508,6 @@ export function BlogPage() {
 
   return (
     <div className="pt-20 min-h-screen bg-gray-50 dark:bg-dark-bg">
-
       {/* Hero */}
       <div className="bg-white dark:bg-dark-surface border-b border-gray-100 dark:border-gray-800 py-12">
         <div className="max-w-2xl mx-auto px-4 text-center">
@@ -460,7 +531,9 @@ export function BlogPage() {
             { key: 'en-cours', label: '🔴 En cours' },
             { key: 'a-venir', label: '📅 À venir' },
           ].map(f => (
-            <button key={f.key} onClick={() => setFilter(f.key as typeof filter)}
+            <button
+              key={f.key}
+              onClick={() => setFilter(f.key as typeof filter)}
               className={`flex-1 py-2 px-3 rounded-xl text-sm font-medium transition-all ${
                 filter === f.key ? 'bg-primary text-white shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
               }`}
@@ -476,6 +549,7 @@ export function BlogPage() {
         {sorted.length === 0 && (
           <div className="text-center py-16 text-gray-400">Aucun événement dans cette catégorie.</div>
         )}
+
         {sorted.map((post, idx) => (
           <div key={post.id} className="relative">
             {idx < sorted.length - 1 && (
