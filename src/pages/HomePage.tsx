@@ -6,12 +6,12 @@ import { Testimonials } from '../components/home/Testimonials';
 import { PartnersSection } from '../components/home/PartnersSection';
 import { CarbonSimulator } from '../components/home/CarbonSimulator';
 import { CTASection } from '../components/home/CTASection';
-export function HomePage() {
+export function HomePage({ onNavigate }: { onNavigate?: (page: string) => void }) {
   return (
     <main className="overflow-hidden">
       <Hero />
       <PartnersSection />
-      <ProgramsSection />
+      <ProgramsSection onNavigate={onNavigate} />
       <WhyChooseUs />
       <CarbonSimulator />
       <Testimonials />

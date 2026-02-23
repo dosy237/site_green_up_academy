@@ -1,10 +1,18 @@
-/**
- * Configuration de l'URL de l'API
- * En développement : http://localhost:4000
- * En production : URL relative (même domaine)
- */
-export const API_BASE = import.meta.env.PROD
-  ? ''
-  : 'http://localhost:4000';
+// ─────────────────────────────────────────────────────────────────────
+//  api.ts — URL backend selon l'environnement
+//
+//  ▶ EN LOCAL  : garde localhost:4000 (développement)
+//  ▶ AVANT DE PUSH : change PROD_BACKEND par ton URL Render
+//    et passe IS_PROD à true
+// ─────────────────────────────────────────────────────────────────────
 
-export const apiUrl = (path: string) => `${API_BASE}${path}`;
+const IS_PROD = true; // ← mettre true avant de push en production
+
+const DEV_BACKEND  = 'http://localhost:4000';
+const PROD_BACKEND = 'https://site-green-up-academy-backend.onrender.com';
+
+const BASE = IS_PROD ? PROD_BACKEND : DEV_BACKEND;
+
+export function apiUrl(path: string): string {
+  return `${BASE}${path}`;
+}

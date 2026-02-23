@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { MapPin, Phone, Mail, Clock, User } from 'lucide-react';
-import { apiUrl } from '../lib/api';
 
 export function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
@@ -15,7 +14,7 @@ export function ContactPage() {
   });
 
   React.useEffect(() => {
-    fetch(apiUrl('/api/content'))
+    fetch('http://localhost:4000/api/content')
       .then(res => res.json())
       .then(data => {
         if (data.contact) {
@@ -34,7 +33,7 @@ export function ContactPage() {
     e.preventDefault();
     setStatus('loading');
     try {
-      const res = await fetch(apiUrl('/api/send'), {
+      const res = await fetch('http://localhost:4000/api/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -61,7 +60,9 @@ export function ContactPage() {
             Une question sur nos formations ? Notre équipe est là pour vous répondre.
           </p>
           <div className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full font-medium">
-            Réponse sous 24h garantie
+          <div className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full font-medium">
+            Notre équipe vous répondra 
+          </div>
           </div>
         </div>
       </div>

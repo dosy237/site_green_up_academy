@@ -1,3 +1,4 @@
+import { apiUrl } from '../lib/api';
 import React, { useState, useRef } from 'react';
 import {
   Check, ArrowRight, ArrowLeft, X,
@@ -222,7 +223,7 @@ function UploadZone({
         <div className="flex-1 min-w-0">
           {hasFile ? (
             <>
-              <p className="text-sm font-bold text-[#1FAB89]"> Fichier ajouté</p>
+              <p className="text-sm font-bold text-[#1FAB89]">✅ Fichier ajouté</p>
               <p className="text-xs text-[#696969] truncate">{file?.name}</p>
               <p className="text-xs text-[#B0B0B0]">{formatSize(file?.size || 0)}</p>
             </>
@@ -271,7 +272,8 @@ export function AdmissionsPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [files, setFiles] = useState<FileState>(INIT_FILES);
 
-  const formation = FORMATIONS.find(f => f.value === form.program) ?? FORMATIONS[0];
+  const formation = FORMATIONS.find(f => f.value === form.program);
+  if (!formation) return null;
 
   const STEPS = [
     { n: 1, label: 'Identité',   icon: User },
@@ -362,7 +364,7 @@ export function AdmissionsPage() {
       if (files.diploma) fd.append('diploma', files.diploma, files.diploma.name);
       if (files.id)      fd.append('id',      files.id,      files.id.name);
 
-      const res = await fetch('/api/send-application', {
+      const res = await fetch(apiUrl('/api/send-application'), {
         method: 'POST',
         body: fd,
       });
@@ -384,7 +386,7 @@ export function AdmissionsPage() {
       // car le serveur sauvegarde la candidature même sans email.
       if (error.includes('fetch')) {
         // Serveur inaccessible
-        setSubmitError('Impossible de joindre le serveur. Vérifiez que le serveur est démarré (port 4000).');
+        setSubmitError('Impossible de joindre le serveur. Veuillez réessayer plus tard.');
       } else {
         // Erreur métier
         setSubmitError('Erreur lors de l\'envoi: ' + error);

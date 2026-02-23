@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, Users, Coffee, MapPin, ChevronRight, X, Trophy, UserCheck, Activity } from 'lucide-react';
+import { Calendar, Users, Coffee, Music, MapPin, ChevronRight, X, Trophy, UserCheck, Activity } from 'lucide-react';
 
 export function StudentLifePage() {
   const [selectedClub, setSelectedClub] = useState<string | null>(null);
@@ -32,15 +32,17 @@ export function StudentLifePage() {
       icon: Users,
       desc: "Organisation des événements étudiants, intégration et vie de campus.",
       color: 'bg-primary',
-      bureauSortant: [] as { nom: string; poste: string }[],
+      bureauSortant: [
+        { nom: 'Aminata Koné', poste: 'Présidente' },
+        { nom: 'Kevin Mensah', poste: 'Vice-Président' },
+        { nom: 'Fatou Diallo', poste: 'Trésorière' },
+        { nom: 'Ibrahim Sy', poste: 'Secrétaire Général' },
+      ],
       bureauEntrant: [
-        { nom: 'Nguefack Saurelle', poste: 'Présidente' },
-        { nom: 'Georgie Sandra', poste: 'Vice-Présidente' },
-        { nom: 'Maxime', poste: 'Responsable de Projet' },
-        { nom: 'Leslie Fayelle', poste: 'Responsable Communication' },
-        { nom: 'Yvan Stimi', poste: 'Responsable des Clubs' },
-        { nom: 'Kuete Joyce', poste: 'Trésorière' },
-        { nom: 'Meffo Gesmira', poste: 'Gestion Événementiel' },
+        { nom: 'Clara Owono', poste: 'Présidente' },
+        { nom: 'Nathan Ekwueme', poste: 'Vice-Président' },
+        { nom: 'Lucie Bambara', poste: 'Trésorière' },
+        { nom: 'Moussa Traoré', poste: 'Secrétaire Général' },
       ],
       activites: [
         {
@@ -51,36 +53,37 @@ export function StudentLifePage() {
       ]
     },
     {
-      id: 'sports',
-      name: 'Club Sports',
-      icon: Trophy,
-      desc: 'Running, escalade, yoga et activités sportives pour tous les étudiants.',
-      color: 'bg-orange-500',
-      bureauSortant: [] as { nom: string; poste: string }[],
+      id: 'tech',
+      name: 'Club Tech & Éthique',
+      icon: Coffee,
+      desc: 'Débats et ateliers sur le numérique responsable.',
+      color: 'bg-blue-500',
+      bureauSortant: [
+        { nom: 'Raphaël Ndjock', poste: 'Président' },
+        { nom: 'Yasmine Hassane', poste: 'Vice-Présidente' },
+      ],
       bureauEntrant: [
-        { nom: 'Valere', poste: 'Président' },
-        { nom: 'Donfack Synthia', poste: 'Membre' },
-        { nom: 'Blessing Joyce', poste: 'Membre' },
-        { nom: 'Nguefack Saurelle', poste: 'Membre' },
-        { nom: 'Joel Kalamo', poste: 'Membre' },
+        { nom: 'Pierre Akono', poste: 'Président' },
+        { nom: 'Aïssatou Barry', poste: 'Vice-Présidente' },
       ],
       activites: []
     },
     {
-      id: 'tech',
-      name: 'Club IT',
-      icon: Coffee,
-      desc: 'Dev, design et numérique responsable — créer et innover ensemble.',
-      color: 'bg-blue-500',
-      bureauSortant: [] as { nom: string; poste: string }[],
+      id: 'sports',
+      name: 'Green Sports',
+      icon: Music,
+      desc: 'Running, escalade et yoga pour les étudiants.',
+      color: 'bg-orange-500',
+      bureauSortant: [
+        { nom: 'Samuel Bilong', poste: 'Président' },
+        { nom: 'Mariame Coulibaly', poste: 'Vice-Présidente' },
+      ],
       bureauEntrant: [
-        { nom: 'Donfack Synthia', poste: 'Présidente — Dev & Designer' },
-        { nom: 'Leslie Fayelle', poste: 'Développeuse' },
-        { nom: 'Brunelle', poste: 'Développeur' },
-        { nom: 'Raoult Tankou', poste: 'Designer' },
+        { nom: 'Thierry Nguema', poste: 'Président' },
+        { nom: 'Nadia Ouédraogo', poste: 'Vice-Présidente' },
       ],
       activites: []
-    },
+    }
   ];
 
   const activeClub = clubs.find(c => c.id === selectedClub);
@@ -90,10 +93,9 @@ export function StudentLifePage() {
       {/* Hero */}
       <div className="relative h-96">
         <img
-          src="/images/enseignant/vie_etudiante.jpeg"
-          alt="Vie étudiante Green Up Academy"
+          src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1600&q=80"
+          alt="Campus life"
           className="w-full h-full object-cover"
-          onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1600&q=80'; }}
         />
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
           <h1 className="text-5xl font-bold text-white">Vie Étudiante</h1>
@@ -200,11 +202,11 @@ export function StudentLifePage() {
       {/* ===== MODAL CLUB ===== */}
       {activeClub && (
         <div
-          className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+          className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm"
           onClick={() => setSelectedClub(null)}
         >
           <div
-            className="bg-white dark:bg-dark-surface rounded-3xl w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-dark-surface w-full sm:max-w-xl sm:mx-4 rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -257,36 +259,34 @@ export function StudentLifePage() {
                 )}
               </div>
 
-              {/* Bureaux */}
-              <div className={`grid ${activeClub.bureauSortant.length > 0 ? 'grid-cols-2' : 'grid-cols-1'} gap-4`}>
-                {/* Bureau Sortant — affiché seulement s'il existe */}
-                {activeClub.bureauSortant.length > 0 && (
-                  <div className="bg-gray-50 dark:bg-dark-bg rounded-2xl p-4">
-                    <h3 className="flex items-center gap-2 font-bold text-gray-700 dark:text-gray-300 text-sm mb-3">
-                      <UserCheck className="h-4 w-4 text-gray-400" />
-                      Bureau Sortant
-                    </h3>
-                    <div className="space-y-2">
-                      {activeClub.bureauSortant.map((m, i) => (
-                        <div key={i} className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs font-bold text-gray-500">
-                            {m.nom.charAt(0)}
-                          </div>
-                          <div>
-                            <p className="text-xs font-semibold text-gray-700 dark:text-gray-200">{m.nom}</p>
-                            <p className="text-xs text-gray-400">{m.poste}</p>
-                          </div>
+              {/* Bureaux côte à côte */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Bureau Sortant */}
+                <div className="bg-gray-50 dark:bg-dark-bg rounded-2xl p-4">
+                  <h3 className="flex items-center gap-2 font-bold text-gray-700 dark:text-gray-300 text-sm mb-3">
+                    <UserCheck className="h-4 w-4 text-gray-400" />
+                    Bureau Sortant
+                  </h3>
+                  <div className="space-y-2">
+                    {activeClub.bureauSortant.map((m, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs font-bold text-gray-500">
+                          {m.nom.charAt(0)}
                         </div>
-                      ))}
-                    </div>
+                        <div>
+                          <p className="text-xs font-semibold text-gray-700 dark:text-gray-200">{m.nom}</p>
+                          <p className="text-xs text-gray-400">{m.poste}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                )}
+                </div>
 
                 {/* Bureau Entrant */}
                 <div className="bg-primary/5 dark:bg-primary/10 rounded-2xl p-4 border border-primary/20">
                   <h3 className="flex items-center gap-2 font-bold text-primary text-sm mb-3">
                     <Trophy className="h-4 w-4" />
-                    {activeClub.bureauSortant.length > 0 ? 'Bureau Entrant' : 'Bureau en place'}
+                    Bureau Entrant
                   </h3>
                   <div className="space-y-2">
                     {activeClub.bureauEntrant.map((m, i) => (

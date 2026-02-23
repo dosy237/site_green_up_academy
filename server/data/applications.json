@@ -1,5 +1,60 @@
 [
   {
+    "id": 1771843602305,
+    "date": "2026-02-23T10:46:42.305Z",
+    "firstName": "fjkf",
+    "lastName": "ddo",
+    "fullName": "fjkf ddo",
+    "email": "eranistechnology@gmail.com",
+    "phone": "650245062",
+    "birthDate": "1969-01-13",
+    "birthPlace": "fofn",
+    "nationality": "camerounaise",
+    "address": "yaoundé cameroun",
+    "diploma": "Baccalauréat",
+    "school": "lycee classique de bandjoun",
+    "specialite": "baccaleaureat ",
+    "year": "2025",
+    "gpa": "12",
+    "program": "Bachelor Administration des Entreprises",
+    "programNiveau": "Bac+3",
+    "startDate": "Septembre 2026",
+    "motivation": "rgkjjbkhkjgiughiiuiuukjfjfjgkfuureurtutttttttttttttttttttttttttter",
+    "experience": "jgjkdjtuihutoij. \r\n\r\nfhrfoiejitoujr",
+    "files": {
+      "cv": [
+        {
+          "name": "proton-recovery-kit-1.pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1771843602118_proton-recovery-kit-1.pdf",
+          "url": "/uploads/1771843602118_proton-recovery-kit-1.pdf"
+        }
+      ],
+      "letter": [
+        {
+          "name": "rib-statement_622748-1.pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1771843602170_rib-statement_622748-1.pdf",
+          "url": "/uploads/1771843602170_rib-statement_622748-1.pdf"
+        }
+      ],
+      "diploma": [
+        {
+          "name": "Windows 11 wallpaper crimson.jpeg",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1771843602184_Windows_11_wallpaper_crimson.jpeg",
+          "url": "/uploads/1771843602184_Windows_11_wallpaper_crimson.jpeg"
+        }
+      ],
+      "id": [
+        {
+          "name": "cahier_charge.pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1771843602246_cahier_charge.pdf",
+          "url": "/uploads/1771843602246_cahier_charge.pdf"
+        }
+      ]
+    },
+    "status": "nouveau",
+    "read": false
+  },
+  {
     "id": 1771769686893,
     "date": "2026-02-22T14:14:46.893Z",
     "firstName": "synthia ",

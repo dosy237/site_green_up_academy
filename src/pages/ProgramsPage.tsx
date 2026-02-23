@@ -190,7 +190,7 @@ function ProgramModal({ program, onClose, onApply }: { program: Program; onClose
 
   return (
     <div className="fixed inset-0 bg-black/70 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm" onClick={onClose}>
-      <div className="bg-white dark:bg-[#1A1A1A] w-full sm:max-w-3xl rounded-t-3xl sm:rounded-3xl max-h-[95vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+      <div className="bg-white dark:bg-[#1A1A1A] w-full sm:max-w-2xl sm:mx-4 rounded-t-3xl sm:rounded-3xl max-h-[92vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
 
         {/* Hero */}
         <div className="relative h-52 sm:h-64 overflow-hidden rounded-t-3xl">

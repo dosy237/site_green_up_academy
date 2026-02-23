@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, Clock, Award, Users, ChevronRight } from 'lucide-react';
+import { ArrowRight, Clock, Award, Users, ChevronRight, X, ZoomIn } from 'lucide-react';
 import { Button } from '../ui/Button';
 const programs = [
 {
@@ -9,14 +9,15 @@ const programs = [
   duration: '3 ans',
   level: 'Bac+3',
   students: '10 ',
-  image: '/images/enseignant/code.jpeg',
+  image:
+  'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
   color: 'from-emerald-500 to-teal-600',
   description:
-  "Maîtrisez le développement fullstack et les bonnes pratiques du génie logiciel. Une formation complète alliant code, architecture et projets concrets.",
+  "Maîtrisez l'efficacité énergétique des bâtiments et des procédés industriels. Une formation complète alliant théorie et pratique terrain.",
   highlights: [
-  'Dev Fullstack',
-  'Architecture logicielle',
-  'Projets en alternance']
+  'Audit énergétique',
+  'Réglementation thermique',
+  'BIM & Modélisation']
 
 },
 {
@@ -50,10 +51,39 @@ const programs = [
   },
 ];
 
-export function ProgramsSection() {
-  const [activeProgram, setActiveProgram] = useState(0);
+// ── Lightbox ──────────────────────────────────────────────────────────────────
+function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
   return (
-    <section className="py-32 bg-light-surface dark:bg-dark-surface relative overflow-hidden">
+    <div
+      className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 bg-white/10 hover:bg-white/25 text-white p-2.5 rounded-xl border border-white/20 transition-all"
+      >
+        <X className="h-6 w-6" />
+      </button>
+      <img
+        src={src}
+        alt={alt}
+        className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl"
+        onClick={e => e.stopPropagation()}
+      />
+      <p className="absolute bottom-5 left-1/2 -translate-x-1/2 text-white/60 text-sm">{alt}</p>
+    </div>
+  );
+}
+
+export function ProgramsSection({ onNavigate }: { onNavigate?: (page: string) => void }) {
+  const [activeProgram, setActiveProgram] = useState(0);
+  const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
+  return (
+    <>
+      {lightbox && (
+        <Lightbox src={lightbox.src} alt={lightbox.alt} onClose={() => setLightbox(null)} />
+      )}
+      <section className="py-32 bg-light-surface dark:bg-dark-surface relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent"></div>
 
@@ -129,14 +159,21 @@ export function ProgramsSection() {
           <div className="col-span-7 relative">
             <div className="sticky top-32">
               <div className="relative rounded-3xl overflow-hidden shadow-dramatic group">
-                {/* Image with overlay */}
-                <div className="aspect-[4/3] relative">
+                {/* Image with overlay — cliquable pour lightbox */}
+                <div
+                  className="aspect-[4/3] relative cursor-zoom-in"
+                  onClick={() => setLightbox({ src: programs[activeProgram].image, alt: programs[activeProgram].title })}
+                >
                   <img
                     src={programs[activeProgram].image}
                     alt={programs[activeProgram].title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                  {/* Icône zoom */}
+                  <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm p-2 rounded-xl border border-white/20 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ZoomIn className="h-5 w-5 text-white" />
+                  </div>
                 </div>
 
                 {/* Content overlay */}
@@ -166,7 +203,10 @@ export function ProgramsSection() {
                     )}
                   </div>
 
-                  <Button className="bg-white text-light-text hover:bg-white/90 border-none shadow-lg">
+                  <Button
+                    className="bg-white text-light-text hover:bg-white/90 border-none shadow-lg"
+                    onClick={() => onNavigate?.('programs')}
+                  >
                     Découvrir le programme
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -183,7 +223,7 @@ export function ProgramsSection() {
             key={program.id}
             className="group bg-white dark:bg-dark-card rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300">
 
-              <div className="aspect-video relative">
+              <div className="aspect-video relative cursor-zoom-in" onClick={() => setLightbox({ src: program.image, alt: program.title })}>
                 <img
                 src={program.image}
                 alt={program.title}
@@ -194,6 +234,9 @@ export function ProgramsSection() {
                 className={`absolute top-4 left-4 px-3 py-1 rounded-full bg-gradient-to-r ${program.color} text-white text-xs font-semibold`}>
 
                   {program.level}
+                </div>
+                <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm p-1.5 rounded-lg">
+                  <ZoomIn className="h-4 w-4 text-white" />
                 </div>
               </div>
               <div className="p-6">
@@ -213,7 +256,7 @@ export function ProgramsSection() {
                       places
                     </span>
                   </div>
-                  <Button size="sm" variant="ghost" className="text-primary">
+                  <Button size="sm" variant="ghost" className="text-primary" onClick={() => onNavigate?.('programs')}>
                     Détails <ChevronRight className="ml-1 h-4 w-4" />
                   </Button>
                 </div>
@@ -222,6 +265,7 @@ export function ProgramsSection() {
           )}
         </div>
       </div>
-    </section>);
-
+    </section>
+    </>
+  );
 }

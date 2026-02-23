@@ -14,13 +14,11 @@ import { CMSDashboard } from './pages/CMSDashboard';
 import { LoginPage } from './pages/LoginPage';
 import { useDarkMode } from './hooks/useDarkMode';
 
-// Composant interne qui utilise le contexte auth
 function AppContent() {
   const { theme, toggleTheme } = useDarkMode();
   const { user, isLoading } = useAuth();
   const [currentPage, setCurrentPage] = useState('home');
 
-  // Scroll to top on page change
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentPage]);
@@ -36,7 +34,7 @@ function AppContent() {
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <HomePage />;
+        return <HomePage onNavigate={setCurrentPage} />;
       case 'programs':
         return <ProgramsPage onNavigate={setCurrentPage} />;
       case 'research':
@@ -52,11 +50,9 @@ function AppContent() {
       case 'contact':
         return <ContactPage />;
       case 'dashboard':
-        // Si pas connecté, afficher la page de connexion
         if (!user) {
           return <LoginPage onLoginSuccess={() => setCurrentPage('dashboard')} />;
         }
-        // Si connecté mais pas admin
         if (user?.role !== 'admin') {
           return (
             <div className="min-h-screen flex items-center justify-center">
@@ -75,7 +71,7 @@ function AppContent() {
         }
         return <CMSDashboard onNavigate={setCurrentPage} />;
       default:
-        return <HomePage />;
+        return <HomePage onNavigate={setCurrentPage} />;
     }
   };
 
@@ -93,7 +89,6 @@ function AppContent() {
   );
 }
 
-// Composant principal qui enveloppe avec AuthProvider
 export function App() {
   return (
     <AuthProvider>

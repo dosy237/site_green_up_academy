@@ -73,9 +73,13 @@ export function CTASection() {
                 Postuler maintenant
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button variant="outline" size="lg">
+              <a
+                href="/images/documents/brochure.pdf"
+                download="Brochure_GreenUpAcademy.pdf"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-light-text dark:text-dark-text font-semibold text-base hover:border-primary hover:text-primary transition-all"
+              >
                 Télécharger la brochure
-              </Button>
+              </a>
             </div>
           </div>
 
