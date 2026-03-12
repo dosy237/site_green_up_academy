@@ -154,12 +154,12 @@ const initialContent = {
     ],
   },
   programs: [
-    { id: 1, title: 'Bachelor Administration des Entreprises', level: 'Bac+3', duration: '3 ans', description: 'Gestion, management et entrepreneuriat en alternance.', icon: '🏢', color: '#1FAB89', details: 'Formation complète en gestion d\'entreprise avec focus sur le développement durable.', outcomes: ['Manager de projet', 'Chef de service', 'Entrepreneur'] },
-    { id: 2, title: 'Bachelor Design',                          level: 'Bac+3', duration: '3 ans', description: 'UX/UI, design graphique et création visuelle en alternance.', icon: '🎨', color: '#4ECDC4', details: 'Maîtrisez les outils du design moderne avec une approche éco-responsable.', outcomes: ['UX Designer', 'Designer Graphique', 'Directeur Artistique'] },
-    { id: 3, title: 'Bachelor Développement Logiciel',           level: 'Bac+3', duration: '3 ans', description: 'Web, mobile et applications full-stack en alternance.', icon: '💻', color: '#45B7D1', details: 'Développez des solutions numériques innovantes et sobres en énergie.', outcomes: ['Développeur Full-Stack', 'Ingénieur Logiciel', 'CTO'] },
-    { id: 4, title: 'Bachelor Administration Réseau',            level: 'Bac+3', duration: '3 ans', description: 'Infrastructure, sécurité et systèmes en alternance.', icon: '🔗', color: '#96CEB4', details: 'Maîtrisez l\'infrastructure informatique moderne et éco-efficace.', outcomes: ['Administrateur Réseau', 'Ingénieur Cloud', 'DSI'] },
-    { id: 5, title: 'Master Cybersécurité & Green IT',           level: 'Bac+5', duration: '2 ans', description: 'Sécurité numérique et sobriété énergétique.', icon: '🔒', color: '#FFEAA7', details: 'Devenez expert en cybersécurité avec une vision Green IT.', outcomes: ['RSSI', 'Consultant Cybersécurité', 'Ethical Hacker'] },
-    { id: 6, title: 'Master Performance Énergétique',            level: 'Bac+5', duration: '2 ans', description: 'Audit, rénovation et efficacité des bâtiments.', icon: '⚡', color: '#DDA0DD', details: 'Spécialisez-vous dans l\'efficacité énergétique des bâtiments.', outcomes: ['Auditeur Énergétique', 'Consultant RSE', 'Directeur Développement Durable'] },
+    { id: 1, title: 'Bachelor Administration des Entreprises', level: 'Bac+3', duration: '3 ans', description: 'Gestion, management et entrepreneuriat en alternance.', icon: '#', color: '#1FAB89', details: 'Formation complète en gestion d\'entreprise avec focus sur le développement durable.', outcomes: ['Manager de projet', 'Chef de service', 'Entrepreneur'] },
+    { id: 2, title: 'Bachelor Design',                          level: 'Bac+3', duration: '3 ans', description: 'UX/UI, design graphique et création visuelle en alternance.', icon: '#', color: '#4ECDC4', details: 'Maîtrisez les outils du design moderne avec une approche éco-responsable.', outcomes: ['UX Designer', 'Designer Graphique', 'Directeur Artistique'] },
+    { id: 3, title: 'Bachelor Développement Logiciel',           level: 'Bac+3', duration: '3 ans', description: 'Web, mobile et applications full-stack en alternance.', icon: '#', color: '#45B7D1', details: 'Développez des solutions numériques innovantes et sobres en énergie.', outcomes: ['Développeur Full-Stack', 'Ingénieur Logiciel', 'CTO'] },
+    { id: 4, title: 'Bachelor Administration Réseau',            level: 'Bac+3', duration: '3 ans', description: 'Infrastructure, sécurité et systèmes en alternance.', icon: '#', color: '#96CEB4', details: 'Maîtrisez l\'infrastructure informatique moderne et éco-efficace.', outcomes: ['Administrateur Réseau', 'Ingénieur Cloud', 'DSI'] },
+    { id: 5, title: 'Master Cybersecurity & Green IT',           level: 'Bac+5', duration: '2 ans', description: 'Sécurité numérique et sobriété énergétique.', icon: '#', color: '#FFEAA7', details: 'Devenez expert en cybersecurity avec une vision Green IT.', outcomes: ['RSSI', 'Consultant Cybersecurity', 'Ethical Hacker'] },
+    { id: 6, title: 'Master Performance Énergétique',            level: 'Bac+5', duration: '2 ans', description: 'Audit, rénovation et efficacité des bâtiments.', icon: '#', color: '#DDA0DD', details: 'Spécialisez-vous dans l\'efficacité énergétique des bâtiments.', outcomes: ['Auditeur Énergétique', 'Consultant RSE', 'Directeur Développement Durable'] },
   ],
   whyChooseUs: [
     { id: 1, title: 'Innovation Pédagogique', description: "Méthodes actives, projets réels, hackathons et ateliers pratiques.", stat: '40+', statLabel: 'Projets/an', icon: 'Zap', color: '#1FAB89' },
@@ -640,17 +640,17 @@ app.post('/api/send-application',
             <tr><td style="padding:6px;color:#666"><b>Nationalité</b></td><td style="padding:6px">${nationality || '—'}</td></tr>
             <tr style="background:#f0f0f0"><td style="padding:6px;color:#666"><b>Adresse</b></td><td style="padding:6px">${address || '—'}</td></tr>
           </table>
-          <h3 style="color:#1FAB89;border-bottom:2px solid #1FAB89;padding-bottom:8px;margin-top:20px;">🎓 Parcours académique</h3>
+          <h3 style="color:#1FAB89;border-bottom:2px solid #1FAB89;padding-bottom:8px;margin-top:20px;">Parcours académique</h3>
           <table style="width:100%;border-collapse:collapse;">
             <tr><td style="padding:6px;color:#666;width:40%"><b>Diplôme</b></td><td style="padding:6px">${diploma} (${year})</td></tr>
             <tr style="background:#f0f0f0"><td style="padding:6px;color:#666"><b>Établissement</b></td><td style="padding:6px">${school}</td></tr>
             <tr><td style="padding:6px;color:#666"><b>Spécialité</b></td><td style="padding:6px">${specialite}</td></tr>
             ${gpa ? `<tr style="background:#f0f0f0"><td style="padding:6px;color:#666"><b>Moyenne</b></td><td style="padding:6px">${gpa}</td></tr>` : ''}
           </table>
-          <h3 style="color:#1FAB89;border-bottom:2px solid #1FAB89;padding-bottom:8px;margin-top:20px;">✍️ Motivation</h3>
+          <h3 style="color:#1FAB89;border-bottom:2px solid #1FAB89;padding-bottom:8px;margin-top:20px;">Motivation</h3>
           <div style="background:white;padding:16px;border-left:4px solid #1FAB89;border-radius:4px;line-height:1.7;">${(motivation || '').replace(/\n/g, '<br>')}</div>
-          ${experience ? `<h3 style="color:#1FAB89;border-bottom:2px solid #1FAB89;padding-bottom:8px;margin-top:20px;">💼 Expérience</h3><div style="background:white;padding:16px;border-left:4px solid #4ECDC4;border-radius:4px;line-height:1.7;">${experience.replace(/\n/g, '<br>')}</div>` : ''}
-          <h3 style="color:#1FAB89;border-bottom:2px solid #1FAB89;padding-bottom:8px;margin-top:20px;">📎 Documents joints</h3>
+          ${experience ? `<h3 style="color:#1FAB89;border-bottom:2px solid #1FAB89;padding-bottom:8px;margin-top:20px;">Expérience</h3><div style="background:white;padding:16px;border-left:4px solid #4ECDC4;border-radius:4px;line-height:1.7;">${experience.replace(/\n/g, '<br>')}</div>` : ''}
+          <h3 style="color:#1FAB89;border-bottom:2px solid #1FAB89;padding-bottom:8px;margin-top:20px;">Documents joints</h3>
           <table style="width:100%;border-collapse:collapse;">${filesList || '<tr><td colspan="2" style="padding:8px;color:#e74c3c;">Aucun document fourni</td></tr>'}</table>
           <div style="margin-top:20px;background:#1FAB8910;border:1px solid #1FAB89;padding:12px;border-radius:8px;">
             <b>Rentrée souhaitée :</b> ${startDate} | <b>Programme :</b> ${program} | <b>Niveau :</b> ${programNiveau}
@@ -836,11 +836,11 @@ app.get('/api/status', (req, res) => {
 
 // ─── DÉMARRAGE ─────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`\n🚀 Green Up Academy Server — Port ${PORT}`);
-  console.log(`📧 Admin : ${ADMIN_EMAIL}`);
-  console.log(`🔑 Email : ${process.env.GMAIL_CLIENT_ID ? 'OAuth2 Gmail' : process.env.EMAIL_USER ? 'App Password' : '⚠️  Non configuré'}`);
-  console.log(`📁 Données : ${DATA_DIR}`);
-  console.log(`\n📖 Config email dans .env :`);
+  console.log(`\nGreen Up Academy Server — Port ${PORT}`);
+  console.log(`Admin : ${ADMIN_EMAIL}`);
+  console.log(`Email : ${process.env.GMAIL_CLIENT_ID ? 'OAuth2 Gmail' : process.env.EMAIL_USER ? 'App Password' : 'Non configuré'}`);
+  console.log(`Données : ${DATA_DIR}`);
+  console.log(`\nConfig email dans .env :`);
   console.log(`   Option 1 (OAuth2 - recommandé) :`);
   console.log(`     GMAIL_CLIENT_ID=votre_client_id`);
   console.log(`     GMAIL_CLIENT_SECRET=votre_client_secret`);

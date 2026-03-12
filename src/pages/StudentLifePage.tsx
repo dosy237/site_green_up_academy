@@ -43,7 +43,7 @@ export function StudentLifePage() {
       ],
       activites: [
         {
-          titre: '🏆 Green Hackathon Dev',
+          titre: 'Green Hackathon Dev',
           statut: 'en-cours',
           detail: "Le BDE Green Spirit organise actuellement un hackathon de développement. Les équipes travaillent sur des solutions innovantes pour la transition numérique. Les résultats seront publiés en avril 2026."
         }

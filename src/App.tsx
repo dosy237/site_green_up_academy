@@ -84,7 +84,7 @@ function AppContent() {
         currentPage={currentPage}
       />
       <div className="flex-grow">{renderPage()}</div>
-      <Footer />
+      <Footer onNavigate={setCurrentPage} />
     </div>
   );
 }

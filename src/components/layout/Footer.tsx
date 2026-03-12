@@ -10,27 +10,27 @@ import {
   Youtube } from 'lucide-react';
 import { Button } from '../ui/Button';
 
-export function Footer() {
+export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) {
   const currentYear = new Date().getFullYear();
   const footerLinks = {
     programs: [
-      { name: 'Bachelor Performance Énergétique', href: '#' },
-      { name: 'Master Cybersécurité & Green IT', href: '#' },
-      { name: 'Master Management Durable', href: '#' },
-      { name: 'Formation Continue', href: '#' },
+      { name: 'Bachelor Administration des Entreprises', handler: () => onNavigate?.('programs') },
+      { name: 'Bachelor Design', handler: () => onNavigate?.('programs') },
+      { name: 'Bachelor Développement Logiciel', handler: () => onNavigate?.('programs') },
+      { name: 'Bachelor Réseaux et Sécurité', handler: () => onNavigate?.('programs') },
+      { name: 'Master Cybersécurité & Green IT', handler: () => onNavigate?.('programs') },
     ],
     school: [
-      { name: 'À propos', href: '#' },
-      { name: 'Gouvernance', href: '#' },
-      { name: 'Recherche & Innovation', href: '#' },
-      { name: 'Vie étudiante', href: '#' },
-      { name: 'Actualités', href: '#' },
+      { name: 'À propos', handler: () => onNavigate?.('governance') },
+      { name: 'Gouvernance', handler: () => onNavigate?.('governance') },
+      { name: 'Recherche & Innovation', handler: () => onNavigate?.('research') },
+      { name: 'Vie étudiante', handler: () => onNavigate?.('student-life') },
+      { name: 'Actualités', handler: () => onNavigate?.('blog') },
     ],
     resources: [
-      { name: 'Admissions', href: '#' },
-      { name: 'Financement', href: '#' },
-      { name: 'FAQ', href: '#' },
-      { name: 'Contact', href: '#' },
+      { name: 'Admissions', handler: () => onNavigate?.('admissions') },
+      { name: 'Contact', handler: () => onNavigate?.('contact') },
+      { name: 'Blog', handler: () => onNavigate?.('blog') },
     ],
   };
 
@@ -63,7 +63,9 @@ export function Footer() {
                 placeholder="Votre adresse email"
                 className="flex-1 px-6 py-4 rounded-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-primary transition-colors"
               />
-              <Button className="bg-gradient-to-r from-primary to-primary-light hover:from-primary-dark hover:to-primary text-white border-none whitespace-nowrap">
+              <Button 
+                className="bg-gradient-to-r from-primary to-primary-light hover:from-primary-dark hover:to-primary text-white border-none whitespace-nowrap"
+                onClick={() => onNavigate?.('contact')}>
                 S'abonner
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -110,7 +112,13 @@ export function Footer() {
             <ul className="space-y-3">
               {footerLinks.programs.map((link, index) => (
                 <li key={index}>
-                  <a href={link.href} className="text-gray-400 hover:text-white transition-colors text-sm underline-animate">
+                  <a 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      link.handler();
+                    }}
+                    href="#" 
+                    className="text-gray-400 hover:text-white transition-colors text-sm underline-animate">
                     {link.name}
                   </a>
                 </li>
@@ -124,7 +132,13 @@ export function Footer() {
             <ul className="space-y-3">
               {footerLinks.school.map((link, index) => (
                 <li key={index}>
-                  <a href={link.href} className="text-gray-400 hover:text-white transition-colors text-sm underline-animate">
+                  <a 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      link.handler();
+                    }}
+                    href="#" 
+                    className="text-gray-400 hover:text-white transition-colors text-sm underline-animate">
                     {link.name}
                   </a>
                 </li>
@@ -132,7 +146,13 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Resourc
+                    onClick={(e) => {
+                      e.preventDefault();
+                      link.handler();
+                    }}
+                    href="#" 
+                   
           <div>
             <h4 className="font-bold text-lg mb-6">Ressources</h4>
             <ul className="space-y-3">
@@ -177,9 +197,9 @@ export function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
             <p>© {currentYear} Green Up Academy. Tous droits réservés.</p>
             <div className="flex gap-6">
-              <a href="#" className="hover:text-white transition-colors">Mentions légales</a>
-              <a href="#" className="hover:text-white transition-colors">Politique de confidentialité</a>
-              <a href="#" className="hover:text-white transition-colors">CGU</a>
+              <a href="#" className="hover:text-white transition-colors text-sm">Mentions légales</a>
+              <a href="#" className="hover:text-white transition-colors text-sm">Politique de confidentialité</a>
+              <a href="#" className="hover:text-white transition-colors text-sm">CGU</a>
             </div>
           </div>
         </div>

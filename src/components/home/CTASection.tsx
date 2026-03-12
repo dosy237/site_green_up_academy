@@ -123,7 +123,9 @@ export function CTASection({ onNavigate }: { onNavigate?: (page: string) => void
                   )}
                 </div>
 
-                <Button className="w-full bg-white text-primary hover:bg-white/90 border-none">
+                <Button 
+                  className="w-full bg-white text-primary hover:bg-white/90 border-none"
+                  onClick={() => onNavigate?.('contact')}>
                   S'inscrire à une JPO
                 </Button>
               </div>

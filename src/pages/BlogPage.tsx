@@ -45,7 +45,7 @@ const initialPosts: Post[] = [
     tagColor: 'bg-primary text-white',
     date: '04 Mars 2026',
     dateRaw: '2026-03-04',
-    title: 'Green Up Talk Space 🎙️',
+    title: 'Green Up Talk Space',
     body: "Rendez-vous le 4 mars pour notre premier Green Up Talk Space ! Conférences, tables rondes et échanges autour du numérique responsable et de la transition écologique. Ouvert à tous les étudiants et au grand public.",
     images: [
       'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80',
@@ -71,7 +71,7 @@ const initialPosts: Post[] = [
     tagColor: 'bg-red-500 text-white animate-pulse',
     date: 'Février 2026',
     dateRaw: '2026-02-01',
-    title: '🏆 Green Hackathon Dev — EN COURS',
+    title: 'Green Hackathon Dev — EN COURS',
     body: "Le BDE Green Spirit organise actuellement un hackathon de développement ! Les équipes sont en pleine action, travaillant sur des solutions innovantes pour la transition numérique. Restez connectés — les projets seront publiés en avril 2026.",
     images: [
       'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80',
@@ -99,7 +99,7 @@ const initialPosts: Post[] = [
     tagColor: 'bg-accent text-white',
     date: 'Avril 2026',
     dateRaw: '2026-04-01',
-    title: '📦 Publication des projets du Green Hackathon',
+    title: 'Publication des projets du Green Hackathon',
     body: "En avril, découvrez tous les projets réalisés lors du Green Hackathon Dev ! Les meilleures solutions seront exposées et les équipes gagnantes récompensées. Une célébration de l'innovation étudiante.",
     images: ['https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=800&q=80'],
     reactions: [
@@ -118,7 +118,7 @@ const initialPosts: Post[] = [
     tagColor: 'bg-secondary text-white',
     date: '18 Mai 2026',
     dateRaw: '2026-05-18',
-    title: '💻 Conférence du Numérique',
+    title: 'Conférence du Numérique',
     body: "Green Up Academy organise sa grande Conférence du Numérique le 18 mai 2026. Experts, intervenants du secteur et étudiants se retrouvent pour débattre des enjeux du numérique de demain : IA, cybersécurité, sobriété numérique et impact environnemental.",
     images: [
       'https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=800&q=80',
@@ -565,7 +565,7 @@ export function BlogPage() {
           <div className="flex justify-center gap-2 mt-3">
             <a href="https://www.instagram.com/green.up.academy/" target="_blank" rel="noopener noreferrer" className="text-xs text-primary border border-primary/30 rounded-full px-3 py-1 hover:bg-primary hover:text-white transition-all">Instagram</a>
             <a href="https://www.linkedin.com/company/green-up-academy/" target="_blank" rel="noopener noreferrer" className="text-xs text-primary border border-primary/30 rounded-full px-3 py-1 hover:bg-primary hover:text-white transition-all">LinkedIn</a>
-            <a href="#" target="_blank" rel="noopener noreferrer" className="text-xs text-primary border border-primary/30 rounded-full px-3 py-1 hover:bg-primary hover:text-white transition-all">TikTok</a>
+            <a href="https://www.tiktok.com/@greenupacademy" target="_blank" rel="noopener noreferrer" className="text-xs text-primary border border-primary/30 rounded-full px-3 py-1 hover:bg-primary hover:text-white transition-all">TikTok</a>
           </div>
         </div>
       </div>

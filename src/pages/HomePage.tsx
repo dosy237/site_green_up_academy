@@ -13,7 +13,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string) => void }
       <PartnersSection />
       <ProgramsSection onNavigate={onNavigate} />
       <WhyChooseUs />
-      <CarbonSimulator />
+      <CarbonSimulator onNavigate={onNavigate} />
       <Testimonials />
       <CTASection onNavigate={onNavigate} />
     </main>);

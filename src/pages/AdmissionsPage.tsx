@@ -54,7 +54,7 @@ const UPLOAD_DOCS = [
     accept: '.pdf,.doc,.docx',
     maxMb: 5,
     required: true,
-    icon: '📄',
+    icon: '#',
   },
   {
     key: 'diploma' as keyof FileState,
@@ -63,7 +63,7 @@ const UPLOAD_DOCS = [
     accept: '.pdf,.jpg,.jpeg,.png',
     maxMb: 10,
     required: true,
-    icon: '🎓',
+    icon: '#',
   },
   {
     key: 'id' as keyof FileState,
@@ -72,7 +72,7 @@ const UPLOAD_DOCS = [
     accept: '.pdf,.jpg,.jpeg,.png',
     maxMb: 5,
     required: true,
-    icon: '🪪',
+    icon: '#',
   },
   {
     key: 'letter' as keyof FileState,
@@ -81,7 +81,7 @@ const UPLOAD_DOCS = [
     accept: '.pdf,.doc,.docx',
     maxMb: 5,
     required: false,
-    icon: '✍️',
+    icon: '#',
   },
 ];
 
@@ -458,9 +458,9 @@ export function AdmissionsPage() {
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-3">Déposer ma candidature</h1>
           <p className="text-white/80">Admissions 2026 · Formations en alternance · 0 € de frais</p>
           <div className="flex flex-wrap justify-center gap-4 mt-5">
-            {[{ e: '🎓', t: '6 formations' }, { e: '⏱️', t: 'Réponse 48h' }, { e: '💶', t: 'Gratuit' }].map((b, i) => (
+            {[{ e: '', t: '6 formations' }, { e: '', t: 'Réponse 48h' }, { e: '', t: 'Gratuit' }].map((b, i) => (
               <div key={i} className="flex items-center gap-2 bg-white/15 backdrop-blur-sm px-4 py-1.5 rounded-full text-white text-sm border border-white/20">
-                {b.e} {b.t}
+                {b.t}
               </div>
             ))}
           </div>
@@ -551,7 +551,7 @@ export function AdmissionsPage() {
                 {(['bachelor', 'master'] as const).map(type => (
                   <div key={type} className="mb-3">
                     <p className="text-xs text-[#696969] font-bold uppercase mb-2">
-                      {type === 'bachelor' ? '🎓 Bachelors — Bac+3' : '🏆 Masters — Bac+5'}
+                      {type === 'bachelor' ? 'Bachelors — Bac+3' : 'Masters — Bac+5'}
                     </p>
                     {FORMATIONS.filter(f => f.value.startsWith(type)).map(f => (
                       <label key={f.value} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all mb-1.5
