@@ -75,7 +75,7 @@ const programs: Program[] = [
   },
   {
     id: 4, type: 'bachelor', isMaster: false,
-    title: 'Bachelor Administration Réseau',
+    title: 'Bachelor Réseaux et Sécurité',
     subtitle: 'Infrastructure, sécurité & systèmes',
     duration: '3 ans', level: 'Bac+3', rhythm: '3 sem. entreprise / 1 sem. école', places: 25,
     image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80',
