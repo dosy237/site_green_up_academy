@@ -3,7 +3,7 @@ import { ArrowRight, Play, ChevronDown, Sparkles } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { ParticleBackground } from './ParticleBackground';
 import { apiUrl } from '../../lib/api';
-export function Hero() {
+export function Hero({ onNavigate }: { onNavigate?: (page: string) => void }) {
   const [isVisible, setIsVisible] = useState(false);
   const [content, setContent] = useState({
     title: "Devenez l'Expert de la Transition Écologique",
@@ -122,18 +122,18 @@ export function Hero() {
             {/* CTAs */}
             <div
               className={`flex flex-col sm:flex-row gap-4 pt-4 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-
               <Button
                 size="lg"
-                className="group bg-[#1FAB89] hover:bg-[#15896B] text-white border-none shadow-lg hover:shadow-xl transition-all duration-300">
-
+                className="group bg-[#1FAB89] hover:bg-[#15896B] text-white border-none shadow-lg hover:shadow-xl transition-all duration-300"
+                onClick={() => onNavigate?.('admissions')}>
                 <span>Postuler maintenant</span>
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button
                 variant="outline"
                 size="lg"
-                className="group border-2 border-[#E8EBE3] hover:border-[#2D5016] hover:bg-[#F5F7F3] text-[#1F1F1F]">
+                className="group border-2 border-[#E8EBE3] hover:border-[#2D5016] hover:bg-[#F5F7F3] text-[#1F1F1F]"
+                onClick={() => onNavigate?.('student-life')}>
 
                 <Play className="mr-2 h-5 w-5 text-[#2D5016]" />
                 <span>Découvrir l'école</span>

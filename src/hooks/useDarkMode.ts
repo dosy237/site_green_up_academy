@@ -7,9 +7,7 @@ export function useDarkMode() {
       if (savedTheme) {
         return savedTheme as 'light' | 'dark';
       }
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ?
-      'dark' :
-      'light';
+      return 'light';
     }
     return 'light';
   });

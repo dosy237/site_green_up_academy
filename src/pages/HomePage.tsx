@@ -9,13 +9,13 @@ import { CTASection } from '../components/home/CTASection';
 export function HomePage({ onNavigate }: { onNavigate?: (page: string) => void }) {
   return (
     <main className="overflow-hidden">
-      <Hero/>
+      <Hero onNavigate={onNavigate} />
       <PartnersSection />
       <ProgramsSection onNavigate={onNavigate} />
       <WhyChooseUs />
       <CarbonSimulator />
       <Testimonials />
-      <CTASection />
+      <CTASection onNavigate={onNavigate} />
     </main>);
 
 }

@@ -33,16 +33,13 @@ export function StudentLifePage() {
       desc: "Organisation des événements étudiants, intégration et vie de campus.",
       color: 'bg-primary',
       bureauSortant: [
-        { nom: 'Aminata Koné', poste: 'Présidente' },
-        { nom: 'Kevin Mensah', poste: 'Vice-Président' },
-        { nom: 'Fatou Diallo', poste: 'Trésorière' },
-        { nom: 'Ibrahim Sy', poste: 'Secrétaire Général' },
+        { nom: 'À venir', poste: 'Bureau sortant' },
       ],
       bureauEntrant: [
-        { nom: 'Clara Owono', poste: 'Présidente' },
-        { nom: 'Nathan Ekwueme', poste: 'Vice-Président' },
-        { nom: 'Lucie Bambara', poste: 'Trésorière' },
-        { nom: 'Moussa Traoré', poste: 'Secrétaire Général' },
+        { nom: 'Nguefack Saurelle', poste: 'Directrice en Chef' },
+        { nom: 'Leslie', poste: 'Chargé de communication' },
+        { nom: 'Maxime', poste: 'Chargé des affaires académiques' },
+        { nom: 'Sandra', poste: 'Vice-présidente' },
       ],
       activites: [
         {
@@ -59,12 +56,11 @@ export function StudentLifePage() {
       desc: 'Débats et ateliers sur le numérique responsable.',
       color: 'bg-blue-500',
       bureauSortant: [
-        { nom: 'Raphaël Ndjock', poste: 'Président' },
-        { nom: 'Yasmine Hassane', poste: 'Vice-Présidente' },
+        { nom: 'À venir', poste: 'Bureau sortant' },
       ],
       bureauEntrant: [
-        { nom: 'Pierre Akono', poste: 'Président' },
-        { nom: 'Aïssatou Barry', poste: 'Vice-Présidente' },
+        { nom: 'DONFACK SYNTHIA', poste: 'Présidente' },
+        { nom: 'Leslie Fayelle', poste: 'Responsable Communication & Projets' },
       ],
       activites: []
     },
@@ -75,12 +71,13 @@ export function StudentLifePage() {
       desc: 'Running, escalade et yoga pour les étudiants.',
       color: 'bg-orange-500',
       bureauSortant: [
-        { nom: 'Samuel Bilong', poste: 'Président' },
-        { nom: 'Mariame Coulibaly', poste: 'Vice-Présidente' },
+        { nom: 'À venir', poste: 'Bureau sortant' },
       ],
       bureauEntrant: [
-        { nom: 'Thierry Nguema', poste: 'Président' },
-        { nom: 'Nadia Ouédraogo', poste: 'Vice-Présidente' },
+        { nom: 'Kamga Loïc', poste: 'Chef d\'équipe' },
+        { nom: 'DONFACK SYNTHIA', poste: 'Adhérente' },
+        { nom: 'Nguefack Saurelle', poste: 'Adhérente' },
+        { nom: 'Sandra', poste: 'Adhérente' },
       ],
       activites: []
     }

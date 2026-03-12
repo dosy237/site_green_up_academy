@@ -1,6 +1,6 @@
 import { ArrowRight, Calendar, Users, Clock } from 'lucide-react';
 import { Button } from '../ui/Button';
-export function CTASection() {
+export function CTASection({ onNavigate }: { onNavigate?: (page: string) => void }) {
   return (
     <section className="py-32 bg-light-bg dark:bg-dark-bg relative overflow-hidden">
       {/* Background decoration */}
@@ -68,7 +68,8 @@ export function CTASection() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 size="lg"
-                className="group bg-gradient-to-r from-accent to-accent-light hover:from-accent-dark hover:to-accent text-white border-none shadow-lg shine">
+                className="group bg-gradient-to-r from-accent to-accent-light hover:from-accent-dark hover:to-accent text-white border-none shadow-lg shine"
+                onClick={() => onNavigate?.('admissions')}>
 
                 Postuler maintenant
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />

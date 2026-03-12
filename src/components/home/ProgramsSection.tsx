@@ -78,10 +78,103 @@ function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: ()
 export function ProgramsSection({ onNavigate }: { onNavigate?: (page: string) => void }) {
   const [activeProgram, setActiveProgram] = useState(0);
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
+  const [selectedProgramModal, setSelectedProgramModal] = useState<number | null>(null);
   return (
     <>
       {lightbox && (
         <Lightbox src={lightbox.src} alt={lightbox.alt} onClose={() => setLightbox(null)} />
+      )}
+
+      {/* Program Modal */}
+      {selectedProgramModal !== null && (
+        <div
+          className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm"
+          onClick={() => setSelectedProgramModal(null)}
+        >
+          <div
+            className="bg-white dark:bg-dark-surface w-full sm:max-w-2xl sm:mx-4 rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Modal Header with Image */}
+            <div className={`bg-gradient-to-r ${programs[selectedProgramModal].color} rounded-t-3xl aspect-video relative overflow-hidden`}>
+              <img
+                src={programs[selectedProgramModal].image}
+                alt={programs[selectedProgramModal].title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+              <button
+                onClick={() => setSelectedProgramModal(null)}
+                className="absolute top-4 right-4 bg-white/10 hover:bg-white/25 text-white p-2.5 rounded-xl border border-white/20 transition-all"
+              >
+                <X className="h-6 w-6" />
+              </button>
+              <div className="absolute bottom-6 left-6 right-6">
+                <h2 className="text-3xl font-bold text-white mb-2">
+                  {programs[selectedProgramModal].title}
+                </h2>
+                <p className="text-white/80">
+                  {programs[selectedProgramModal].subtitle}
+                </p>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-6">
+              {/* Details */}
+              <div className="flex items-center gap-6 text-sm">
+                <div className="flex items-center gap-2 text-light-muted dark:text-dark-muted">
+                  <Clock className="h-5 w-5 text-primary" />
+                  <span>{programs[selectedProgramModal].duration}</span>
+                </div>
+                <div className="flex items-center gap-2 text-light-muted dark:text-dark-muted">
+                  <Award className="h-5 w-5 text-primary" />
+                  <span>{programs[selectedProgramModal].level}</span>
+                </div>
+                <div className="flex items-center gap-2 text-light-muted dark:text-dark-muted">
+                  <Users className="h-5 w-5 text-primary" />
+                  <span>{programs[selectedProgramModal].students} places</span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <h3 className="font-bold text-lg text-light-text dark:text-dark-text mb-2">
+                  À propos
+                </h3>
+                <p className="text-light-muted dark:text-dark-muted">
+                  {programs[selectedProgramModal].description}
+                </p>
+              </div>
+
+              {/* Highlights */}
+              <div>
+                <h3 className="font-bold text-lg text-light-text dark:text-dark-text mb-3">
+                  Points forts
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {programs[selectedProgramModal].highlights.map((highlight, i) => (
+                    <span key={i} className="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                      {highlight}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* CTA Button */}
+              <Button
+                className="w-full bg-primary hover:bg-primary-dark text-white border-none"
+                onClick={() => {
+                  setSelectedProgramModal(null);
+                  onNavigate?.('admissions');
+                }}
+              >
+                Se postuler maintenant
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
       <section className="py-32 bg-light-surface dark:bg-dark-surface relative overflow-hidden">
       {/* Background decoration */}
@@ -102,7 +195,7 @@ export function ProgramsSection({ onNavigate }: { onNavigate?: (page: string) =>
               leaders de l'industrie pour répondre aux défis de demain.
             </p>
           </div>
-          <Button variant="outline" className="self-start lg:self-auto group">
+          <Button variant="outline" className="self-start lg:self-auto group" onClick={() => onNavigate?.('programs')}>
             Tous les programmes
             <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Button>
@@ -117,8 +210,9 @@ export function ProgramsSection({ onNavigate }: { onNavigate?: (page: string) =>
               key={program.id}
               className={`group cursor-pointer p-6 rounded-2xl transition-all duration-500 ${activeProgram === index ? 'bg-white dark:bg-dark-card shadow-card-hover scale-[1.02]' : 'bg-transparent hover:bg-white/50 dark:hover:bg-dark-card/50'}`}
               onMouseEnter={() => setActiveProgram(index)}
-              onMouseLeave={() => {}}>
-
+              onMouseLeave={() => {}}
+              onClick={() => setSelectedProgramModal(index)}
+            >
                 <div className="flex items-start gap-4">
                   <div
                   className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${program.color} flex items-center justify-center text-white font-bold text-xl shrink-0 transition-transform duration-300 ${activeProgram === index ? 'scale-110' : ''}`}>
@@ -205,7 +299,10 @@ export function ProgramsSection({ onNavigate }: { onNavigate?: (page: string) =>
 
                   <Button
                     className="bg-white text-light-text hover:bg-white/90 border-none shadow-lg"
-                    onClick={() => onNavigate?.('programs')}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedProgramModal(activeProgram);
+                    }}
                   >
                     Découvrir le programme
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -221,7 +318,9 @@ export function ProgramsSection({ onNavigate }: { onNavigate?: (page: string) =>
           {programs.map((program) =>
           <div
             key={program.id}
-            className="group bg-white dark:bg-dark-card rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300">
+            className="group bg-white dark:bg-dark-card rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 cursor-pointer"
+            onClick={() => setSelectedProgramModal(programs.indexOf(program))}
+          >
 
               <div className="aspect-video relative cursor-zoom-in" onClick={() => setLightbox({ src: program.image, alt: program.title })}>
                 <img

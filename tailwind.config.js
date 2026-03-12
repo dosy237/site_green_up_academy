@@ -73,7 +73,7 @@ export default {
         'scale-in': 'scaleIn 0.6s ease-out forwards',
         'float': 'float 6s ease-in-out infinite',
         'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
-        'marquee': 'marquee 30s linear infinite',
+        'marquee': 'marquee 50s linear infinite',
         'spin-slow': 'spin 20s linear infinite',
       },
       backgroundImage: {
