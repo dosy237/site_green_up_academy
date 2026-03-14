@@ -5,8 +5,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "4000:4000"
-    environment:
-      - PORT=4000
+    env_file:
+      - ./server/.env
     volumes:
       - ./server/uploads:/app/uploads
       - ./server/content.json:/app/content.json
