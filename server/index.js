@@ -15,6 +15,16 @@ app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
+// ─── LOGGER MIDDLEWARE ──────────────────────────────────────────────────────
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`);
+  });
+  next();
+});
+
 // ─── FICHIERS DE DONNÉES ────────────────────────────────────────────────────
 const DATA_DIR          = path.join(__dirname, 'data');
 const CONTENT_FILE      = path.join(DATA_DIR, 'content.json');
@@ -74,8 +84,11 @@ function saveUsers(users) {
 // 7. Autoriser → Exchange tokens → copier le refresh_token
 
 function createTransporter() {
+  console.log('🔍 [EMAIL] Tentative de création du transporteur...');
+  
   // Mode OAuth2 (recommandé - plus sécurisé)
   if (process.env.GMAIL_CLIENT_ID && process.env.GMAIL_REFRESH_TOKEN) {
+    console.log('✅ [EMAIL] Configuration OAuth2 détectée');
     const oAuth2Client = new google.auth.OAuth2(
       process.env.GMAIL_CLIENT_ID,
       process.env.GMAIL_CLIENT_SECRET,
@@ -97,12 +110,14 @@ function createTransporter() {
 
   // Mode App Password (fallback)
   if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    console.log('✅ [EMAIL] Configuration App Password détectée pour:', process.env.EMAIL_USER);
     return nodemailer.createTransport({
       service: 'gmail',
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
     });
   }
 
+  console.warn('⚠️ [EMAIL] Aucune configuration email valide trouvée dans le .env !');
   return null;
 }
 
@@ -473,52 +488,65 @@ app.delete('/api/messages/:id', (req, res) => {
 
 // ─── ENVOI DE CONTACT ──────────────────────────────────────────────────────
 app.post('/api/send', async (req, res) => {
-  console.log('📨 [CONTACT] Requête reçue:', req.body);
+  console.log('\n📨 [CONTACT] Nouvelle requête reçue');
+  console.log(`   De: ${req.body.name} <${req.body.email}>`);
+  console.log(`   Sujet: ${req.body.subject}`);
+  
   const { name, email, subject, message, phone } = req.body;
 
-  // Sauvegarder dans messages.json
-  const msgs = readJSON(MESSAGES_FILE, []);
-  const newMsg = {
-    id: Date.now(), type: 'contact',
-    name, email, phone, subject, message,
-    date: new Date().toISOString(), read: false, archived: false,
-  };
-  msgs.unshift(newMsg);
-  writeJSON(MESSAGES_FILE, msgs);
-
-  // Envoyer par email
-  const html = `
-  <div style="font-family:Arial,sans-serif;max-width:600px;">
-    <div style="background:linear-gradient(135deg,#1FAB89,#15896B);padding:28px;border-radius:12px 12px 0 0;">
-      <h2 style="color:white;margin:0;">📩 Nouveau message de contact</h2>
-    </div>
-    <div style="background:#f9f9f9;padding:24px;border-radius:0 0 12px 12px;">
-      <table style="width:100%;border-collapse:collapse;">
-        <tr><td style="padding:8px;color:#666;width:130px"><b>Nom</b></td><td style="padding:8px;">${name}</td></tr>
-        <tr style="background:#f0f0f0"><td style="padding:8px;color:#666"><b>Email</b></td><td style="padding:8px;"><a href="mailto:${email}">${email}</a></td></tr>
-        ${phone ? `<tr><td style="padding:8px;color:#666"><b>Téléphone</b></td><td style="padding:8px;">${phone}</td></tr>` : ''}
-        <tr style="background:#f0f0f0"><td style="padding:8px;color:#666"><b>Sujet</b></td><td style="padding:8px;">${subject || '—'}</td></tr>
-      </table>
-      <div style="margin-top:16px;background:white;padding:16px;border-left:4px solid #1FAB89;border-radius:4px;">
-        <p style="margin:0;line-height:1.7;">${(message || '').replace(/\n/g, '<br>')}</p>
-      </div>
-      <p style="margin-top:16px;font-size:12px;color:#999;">Message reçu le ${new Date().toLocaleString('fr-FR')}</p>
-    </div>
-  </div>`;
-
   try {
-    // Envoyer l'email en arrière-plan (non-bloquant)
-    sendEmail({ to: ADMIN_EMAIL, replyTo: email, subject: `📩 Contact: ${subject || `Message de ${name}`}`, html }).then(() => {
-      console.log(`[EMAIL] Contact reçu de ${email}`);
+    // 1. Sauvegarde locale
+    console.log('   💾 Sauvegarde dans messages.json...');
+    const msgs = readJSON(MESSAGES_FILE, []);
+    const newMsg = {
+      id: Date.now(), type: 'contact',
+      name, email, phone, subject, message,
+      date: new Date().toISOString(), read: false, archived: false,
+    };
+    msgs.unshift(newMsg);
+    writeJSON(MESSAGES_FILE, msgs);
+    console.log('   ✅ Sauvegarde réussie');
+
+    // 2. Préparation du HTML
+    const html = `
+    <div style="font-family:Arial,sans-serif;max-width:600px;">
+      <div style="background:linear-gradient(135deg,#1FAB89,#15896B);padding:28px;border-radius:12px 12px 0 0;">
+        <h2 style="color:white;margin:0;">📩 Nouveau message de contact</h2>
+      </div>
+      <div style="background:#f9f9f9;padding:24px;border-radius:0 0 12px 12px;">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr><td style="padding:8px;color:#666;width:130px"><b>Nom</b></td><td style="padding:8px;">${name}</td></tr>
+          <tr style="background:#f0f0f0"><td style="padding:8px;color:#666"><b>Email</b></td><td style="padding:8px;"><a href="mailto:${email}">${email}</a></td></tr>
+          ${phone ? `<tr><td style="padding:8px;color:#666"><b>Téléphone</b></td><td style="padding:8px;">${phone}</td></tr>` : ''}
+          <tr style="background:#f0f0f0"><td style="padding:8px;color:#666"><b>Sujet</b></td><td style="padding:8px;">${subject || '—'}</td></tr>
+        </table>
+        <div style="margin-top:16px;background:white;padding:16px;border-left:4px solid #1FAB89;border-radius:4px;">
+          <p style="margin:0;line-height:1.7;">${(message || '').replace(/\n/g, '<br>')}</p>
+        </div>
+        <p style="margin-top:16px;font-size:12px;color:#999;">Message reçu le ${new Date().toLocaleString('fr-FR')}</p>
+      </div>
+    </div>`;
+
+    // 3. Envoi Email
+    console.log(`   📧 Tentative d'envoi d'email à l'admin (${ADMIN_EMAIL})...`);
+    sendEmail({ 
+      to: ADMIN_EMAIL, 
+      replyTo: email, 
+      subject: `📩 Contact: ${subject || `Message de ${name}`}`, 
+      html 
+    }).then(() => {
+      console.log(`   🚀 [SUCCESS] Email envoyé pour ${email}`);
     }).catch(err => {
-      console.error('[EMAIL ERROR]', err.message);
+      console.error(`   ❌ [ERROR EMAIL] ${err.message}`);
     });
 
-    // Répondre immédiatement sans attendre l'email
+    // On répond OK au client même si l'email mouline en arrière-plan
     res.json({ success: true });
+    console.log('   📝 Réponse 200 envoyée au client');
+
   } catch (err) {
-    console.error('Erreur contact:', err.message);
-    res.json({ success: true, warning: 'Sauvegardé mais email non envoyé' });
+    console.error('   ❌ [ERROR CRITIQUE]', err.message);
+    res.status(500).json({ error: 'Erreur interne lors du traitement du message' });
   }
 });
 
