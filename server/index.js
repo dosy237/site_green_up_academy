@@ -25,7 +25,7 @@ const NEWS_FILE         = path.join(DATA_DIR, 'news.json');
 const USERS_FILE        = path.join(DATA_DIR, 'users.json');
 const UPLOADS_DIR       = path.join(__dirname, 'uploads');
 const PORT              = process.env.PORT || 4000;
-const ADMIN_EMAIL       = process.env.ADMIN_EMAIL || 'dosyca35@gmail.com';
+const ADMIN_EMAIL       = process.env.ADMIN_EMAIL || 'admission@green-up-academy.com';
 const JWT_SECRET        = process.env.JWT_SECRET || 'gua_secret_key_2026_change_in_production' ;
 
 // Créer les dossiers
@@ -473,6 +473,7 @@ app.delete('/api/messages/:id', (req, res) => {
 
 // ─── ENVOI DE CONTACT ──────────────────────────────────────────────────────
 app.post('/api/send', async (req, res) => {
+  console.log('📨 [CONTACT] Requête reçue:', req.body);
   const { name, email, subject, message, phone } = req.body;
 
   // Sauvegarder dans messages.json
@@ -506,10 +507,17 @@ app.post('/api/send', async (req, res) => {
   </div>`;
 
   try {
-    await sendEmail({ to: ADMIN_EMAIL, replyTo: email, subject: `📩 Contact: ${subject || `Message de ${name}`}`, html });
+    // Envoyer l'email en arrière-plan (non-bloquant)
+    sendEmail({ to: ADMIN_EMAIL, replyTo: email, subject: `📩 Contact: ${subject || `Message de ${name}`}`, html }).then(() => {
+      console.log(`[EMAIL] Contact reçu de ${email}`);
+    }).catch(err => {
+      console.error('[EMAIL ERROR]', err.message);
+    });
+
+    // Répondre immédiatement sans attendre l'email
     res.json({ success: true });
   } catch (err) {
-    console.error('Erreur email contact:', err.message);
+    console.error('Erreur contact:', err.message);
     res.json({ success: true, warning: 'Sauvegardé mais email non envoyé' });
   }
 });
@@ -587,6 +595,7 @@ app.post('/api/send-application',
     { name: 'photo',   maxCount: 1 },
   ]),
   async (req, res) => {
+    console.log('📝 [CANDIDATURE] Requête reçue - Candidat:', req.body.firstName, req.body.lastName, 'Email:', req.body.email);
     try {
       const {
         firstName, lastName, email, phone,
@@ -690,16 +699,28 @@ app.post('/api/send-application',
         </div>
       </div>`;
 
-      try {
-        await Promise.all([
-          sendEmail({ to: ADMIN_EMAIL, replyTo: email, subject: `[CANDIDATURE] ${program} — ${fullName}`, html: htmlAdmin }),
-          sendEmail({ to: email, subject: `✅ Candidature reçue — ${program} | Green Up Academy`, html: htmlCandidat }),
-        ]);
-        console.log(`[EMAIL] Admin ✓ | Candidat: ${email} ✓`);
-      } catch (emailErr) {
-        console.error('[EMAIL ERROR]', emailErr.message);
-      }
+      // Créer les attachments pour les fichiers uploadés
+      const attachments = [];
+      Object.entries(files).forEach(([key, arr]) => {
+        arr.forEach(f => {
+          attachments.push({
+            filename: f.originalname,
+            path: f.path
+          });
+        });
+      });
 
+      // Envoyer les emails en arrière-plan (non-bloquant)
+      Promise.all([
+        sendEmail({ to: ADMIN_EMAIL, replyTo: email, subject: `[CANDIDATURE] ${program} — ${fullName}`, html: htmlAdmin, attachments: attachments }),
+        sendEmail({ to: email, subject: `✅ Candidature reçue — ${program} | Green Up Academy`, html: htmlCandidat }),
+      ]).then(() => {
+        console.log(`[EMAIL] Admin ✓ | Candidat: ${email} ✓ | Fichiers: ${attachments.length}`);
+      }).catch(emailErr => {
+        console.error('[EMAIL ERROR]', emailErr.message);
+      });
+
+      // Répondre immédiatement sans attendre les emails
       res.json({ success: true, message: 'Candidature enregistrée avec succès' });
 
     } catch (err) {

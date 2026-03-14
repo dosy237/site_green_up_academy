@@ -1,5 +1,50 @@
 [
   {
+    "id": 1773423135550,
+    "type": "contact",
+    "name": "donfack  synthia",
+    "email": "dosyca35@gmail.com",
+    "subject": "renseignement ",
+    "message": "hiiii",
+    "date": "2026-03-13T17:32:15.550Z",
+    "read": false,
+    "archived": false
+  },
+  {
+    "id": 1773420877658,
+    "type": "contact",
+    "name": "Test Synthia",
+    "email": "test@example.com",
+    "subject": "Test pour admission@green-up-academy.com",
+    "message": "Ceci est un test rapide pour vérifier que les emails partent maintenant à admission@green-up-academy.com",
+    "date": "2026-03-13T16:54:37.658Z",
+    "read": false,
+    "archived": false
+  },
+  {
+    "id": 1773420332659,
+    "type": "contact",
+    "name": "Test",
+    "email": "test@example.com",
+    "subject": "Test Rapide",
+    "message": "Test dirigé vers admission@green-up-academy.com",
+    "date": "2026-03-13T16:45:32.659Z",
+    "read": false,
+    "archived": false
+  },
+  {
+    "id": 1773420319957,
+    "type": "contact",
+    "name": "Test Rapide",
+    "email": "test@example.com",
+    "phone": "+33-7-XX-XX-XX",
+    "subject": "Test d'envoi rapide",
+    "message": "Ceci est un test rapide pour vérifier l'envoi à admission@green-up-academy.com",
+    "date": "2026-03-13T16:45:19.957Z",
+    "read": false,
+    "archived": false
+  },
+  {
     "id": 1771843189040,
     "type": "contact",
     "name": "sandra ",

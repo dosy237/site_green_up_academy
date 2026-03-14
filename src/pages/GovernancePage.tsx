@@ -14,7 +14,7 @@ export function GovernancePage({ onNavigate }: { onNavigate?: (page: string) => 
     },
     {
       name: 'M. BELHOCINE Nadir',
-      role: 'Directeur  Générale',
+      role: 'Directeur  Général',
       bio: "Responsable de la gestion opérationnelle et du développement de l'école. Elle accompagne les étudiants et pilote les partenariats stratégiques.",
       image: '/images/enseignant/etudiant.jpeg'
     }
@@ -23,7 +23,7 @@ export function GovernancePage({ onNavigate }: { onNavigate?: (page: string) => 
   const equipe = [
     { name: 'Meryl Bitee', role: 'Enseignante Dev Fullstack', image: '/images/enseignant/meryl.jpeg' },
     { name: 'Cherif', role: 'Administration Réseau & Sécurité', image: '/images/enseignant/salif.jpeg' },
-    { name: 'Salamé', role: 'Programmation Java', image: '/images/enseignant/salame.jpeg' },
+    { name: 'Salamé', role: 'preparation au titre professionnel', image: '/images/enseignant/salame.jpeg' },
     { name: 'Basile Starynkevich', role: 'Programmation Système', image: '/images/enseignant/basil.jpg' },
     { name: 'Serge', role: 'Gestion d\'Entreprise', image: '/images/enseignant/code.jpeg' },
     { name: 'Paoline Saurelle', role: 'Gestion de Projet IT', image: '/images/enseignant/manager.jpeg' },

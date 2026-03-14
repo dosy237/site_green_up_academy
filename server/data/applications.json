@@ -1,5 +1,275 @@
 [
   {
+    "id": 1773423045010,
+    "date": "2026-03-13T17:30:45.010Z",
+    "firstName": "synthia ",
+    "lastName": "donfack ",
+    "fullName": "synthia  donfack ",
+    "email": "eranistechnology@gmail.com",
+    "phone": "650245062",
+    "birthDate": "2005-03-06",
+    "birthPlace": "cameroun",
+    "nationality": "camreounaise ",
+    "address": "6 rue claude bernard ",
+    "diploma": "Baccalauréat",
+    "school": "lycee classique de bandjoun",
+    "specialite": "c",
+    "year": "2024",
+    "gpa": "13",
+    "program": "Bachelor Administration des Entreprises",
+    "programNiveau": "Bac+3",
+    "startDate": "Septembre 2026",
+    "motivation": "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "experience": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "files": {
+      "cv": [
+        {
+          "name": "Green_Up_Academy_CdC_v1.0 (1).pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1773423044919_Green_Up_Academy_CdC_v1_0__1_.pdf",
+          "url": "/uploads/1773423044919_Green_Up_Academy_CdC_v1_0__1_.pdf"
+        }
+      ],
+      "letter": [
+        {
+          "name": "Lettre_Recommandation_DONFACK_Bitee-1.pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1773423044935_Lettre_Recommandation_DONFACK_Bitee-1.pdf",
+          "url": "/uploads/1773423044935_Lettre_Recommandation_DONFACK_Bitee-1.pdf"
+        }
+      ],
+      "diploma": [
+        {
+          "name": "CV_DONFACK_Synthia_English-3.pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1773423044998_CV_DONFACK_Synthia_English-3.pdf",
+          "url": "/uploads/1773423044998_CV_DONFACK_Synthia_English-3.pdf"
+        }
+      ],
+      "id": [
+        {
+          "name": "CV_DONFACK_Synthia_English-3.pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1773423045000_CV_DONFACK_Synthia_English-3.pdf",
+          "url": "/uploads/1773423045000_CV_DONFACK_Synthia_English-3.pdf"
+        }
+      ]
+    },
+    "status": "nouveau",
+    "read": false
+  },
+  {
+    "id": 1773422806001,
+    "date": "2026-03-13T17:26:46.001Z",
+    "firstName": "Test",
+    "lastName": "Attach",
+    "fullName": "Test Attach",
+    "email": "t@t.com",
+    "phone": "123",
+    "birthDate": "1998-01-15",
+    "birthPlace": "Paris",
+    "nationality": "FR",
+    "address": "Paris",
+    "diploma": "Bac",
+    "school": "L",
+    "specialite": "Gen",
+    "year": "2023",
+    "program": "bachelor-dev",
+    "programNiveau": "Bac+3",
+    "startDate": "Sep",
+    "motivation": "Test",
+    "files": {
+      "cv": [
+        {
+          "name": "test_cv.txt",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1773422805991_test_cv.txt",
+          "url": "/uploads/1773422805991_test_cv.txt"
+        }
+      ]
+    },
+    "status": "nouveau",
+    "read": false
+  },
+  {
+    "id": 1773422799033,
+    "date": "2026-03-13T17:26:39.033Z",
+    "firstName": "TestFichier",
+    "lastName": "Attachments",
+    "fullName": "TestFichier Attachments",
+    "email": "test.files@example.com",
+    "phone": "+33612345678",
+    "birthDate": "1998-01-15",
+    "birthPlace": "Paris",
+    "nationality": "Français",
+    "address": "Paris",
+    "diploma": "Baccalauréat",
+    "school": "Lycée",
+    "specialite": "Générale",
+    "year": "2023",
+    "program": "bachelor-dev",
+    "programNiveau": "Bac+3",
+    "startDate": "Septembre 2026",
+    "motivation": "Test avec fichiers",
+    "files": {
+      "cv": [
+        {
+          "name": "test_cv.txt",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1773422799022_test_cv.txt",
+          "url": "/uploads/1773422799022_test_cv.txt"
+        }
+      ]
+    },
+    "status": "nouveau",
+    "read": false
+  },
+  {
+    "id": 1773422622963,
+    "date": "2026-03-13T17:23:42.963Z",
+    "firstName": "synthia ",
+    "lastName": "donfack ",
+    "fullName": "synthia  donfack ",
+    "email": "eranistechnology@gmail.com",
+    "phone": "650245062",
+    "birthDate": "2005-02-06",
+    "birthPlace": "",
+    "nationality": "camerounaise",
+    "address": "6 rue claude bernard ",
+    "diploma": "Baccalauréat",
+    "school": "lycee classique de bandjoun",
+    "specialite": "C",
+    "year": "2024",
+    "gpa": "13",
+    "program": "Bachelor Administration des Entreprises",
+    "programNiveau": "Bac+3",
+    "startDate": "Septembre 2026",
+    "motivation": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "experience": "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "files": {
+      "cv": [
+        {
+          "name": "Lettre_Recommandation_DONFACK_Starynkevitch-2.pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1773422622883_Lettre_Recommandation_DONFACK_Starynkevitch-2.pdf",
+          "url": "/uploads/1773422622883_Lettre_Recommandation_DONFACK_Starynkevitch-2.pdf"
+        }
+      ],
+      "letter": [
+        {
+          "name": "ATTESTATION DE TRAVAIL (1).pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1773422622922_ATTESTATION_DE_TRAVAIL__1_.pdf",
+          "url": "/uploads/1773422622922_ATTESTATION_DE_TRAVAIL__1_.pdf"
+        }
+      ],
+      "diploma": [
+        {
+          "name": "ATTESTATION DE TRAVAIL (1).pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1773422622935_ATTESTATION_DE_TRAVAIL__1_.pdf",
+          "url": "/uploads/1773422622935_ATTESTATION_DE_TRAVAIL__1_.pdf"
+        }
+      ],
+      "id": [
+        {
+          "name": "Green_Up_Academy_CdC_v1.0 (1).pdf",
+          "path": "/home/synthia/Téléchargements/site_green_up/site/server/uploads/1773422622956_Green_Up_Academy_CdC_v1_0__1_.pdf",
+          "url": "/uploads/1773422622956_Green_Up_Academy_CdC_v1_0__1_.pdf"
+        }
+      ]
+    },
+    "status": "nouveau",
+    "read": false
+  },
+  {
+    "id": 1773422301825,
+    "date": "2026-03-13T17:18:21.825Z",
+    "firstName": "TestRapide",
+    "lastName": "Nouveau",
+    "fullName": "TestRapide Nouveau",
+    "email": "test@rapide.com",
+    "phone": "+33612345678",
+    "birthDate": "1998-01-15",
+    "birthPlace": "Paris",
+    "nationality": "Français",
+    "address": "Paris",
+    "diploma": "Baccalauréat",
+    "school": "Lycée",
+    "specialite": "Générale",
+    "year": "2023",
+    "program": "bachelor-dev",
+    "programNiveau": "Bac+3",
+    "startDate": "Septembre 2026",
+    "motivation": "Test rapidité",
+    "files": {},
+    "status": "nouveau",
+    "read": false
+  },
+  {
+    "id": 1773421740302,
+    "date": "2026-03-13T17:09:00.302Z",
+    "firstName": "TestSpeed",
+    "lastName": "Rapide",
+    "fullName": "TestSpeed Rapide",
+    "email": "test@speed.com",
+    "phone": "+33612345678",
+    "birthDate": "1998-01-15",
+    "birthPlace": "Paris",
+    "nationality": "Français",
+    "address": "Paris",
+    "diploma": "Baccalauréat",
+    "school": "Lycée",
+    "specialite": "Générale",
+    "year": "2023",
+    "program": "bachelor-dev",
+    "programNiveau": "Bac+3",
+    "startDate": "Septembre 2026",
+    "motivation": "Test de vitesse",
+    "files": {},
+    "status": "nouveau",
+    "read": false
+  },
+  {
+    "id": 1773420884401,
+    "date": "2026-03-13T16:54:44.401Z",
+    "firstName": "Test",
+    "lastName": "Candidat",
+    "fullName": "Test Candidat",
+    "email": "candidat@example.com",
+    "phone": "+33612345678",
+    "birthDate": "1998-01-15",
+    "birthPlace": "Paris",
+    "nationality": "Français",
+    "address": "Paris",
+    "diploma": "Baccalauréat",
+    "school": "Lycée Test",
+    "specialite": "Test",
+    "year": "2023",
+    "program": "bachelor-dev",
+    "programNiveau": "Bac+3",
+    "startDate": "Septembre 2026",
+    "motivation": "Je veux tester si les emails de candidature vont bien à admission@green-up-academy.com",
+    "files": {},
+    "status": "nouveau",
+    "read": false
+  },
+  {
+    "id": 1773420349106,
+    "date": "2026-03-13T16:45:49.106Z",
+    "firstName": "Jean",
+    "lastName": "Dupont",
+    "fullName": "Jean Dupont",
+    "email": "jean.dupont@example.com",
+    "phone": "+33612345678",
+    "birthDate": "1998-05-15",
+    "birthPlace": "Paris",
+    "nationality": "Français",
+    "address": "123 Rue de la Paix",
+    "diploma": "Baccalauréat",
+    "school": "Lycée Victor Hugo",
+    "specialite": "Scientifique",
+    "year": "2022",
+    "program": "bachelor-dev",
+    "programNiveau": "Bac+3",
+    "startDate": "Septembre 2026",
+    "motivation": "Je veux rejoindre Green Up Academy pour devenir développeur responsable",
+    "files": {},
+    "status": "nouveau",
+    "read": false
+  },
+  {
     "id": 1771843602305,
     "date": "2026-02-23T10:46:42.305Z",
     "firstName": "fjkf",

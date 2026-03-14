@@ -6,7 +6,7 @@
 //    et passe IS_PROD à true
 // ─────────────────────────────────────────────────────────────────────
 
-const IS_PROD = true; // ← mettre true avant de push en production
+const IS_PROD = false; // ← mettre true avant de push en production
 
 const DEV_BACKEND  = 'http://localhost:4000';
 const PROD_BACKEND = 'https://site-green-up-academy-backend.onrender.com';
