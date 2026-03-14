@@ -39,10 +39,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(true);
     try {
       // Authentification locale sans backend
-      if (username === 'admin' && password === 'gua2026') {
+      // Les identifiants sont configurés dans le fichier .env
+      const ADMIN_USER = import.meta.env.VITE_ADMIN_USER || 'admin';
+      const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASS || 'gua2026';
+
+      if (username === ADMIN_USER && password === ADMIN_PASS) {
         const userData: AuthUser = {
           id: '1',
-          username: 'admin',
+          username: ADMIN_USER,
           role: 'admin'
         };
         const token = 'local_auth_token_' + Date.now();
