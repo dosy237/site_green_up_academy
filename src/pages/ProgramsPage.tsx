@@ -21,7 +21,7 @@ const programs: Program[] = [
     title: 'Bachelor Administration des Entreprises',
     subtitle: 'Gestion, management & entrepreneuriat',
     duration: '3 ans', level: 'Bac+3', rhythm: '3 sem. entreprise / 1 sem. école', places: 20,
-    image: 'https://images.unsplash.com/photo-1664575602554-2087b04935a5?auto=format&fit=crop&w=800&q=80',
+    image: '/images/etudiant/etudiant.jpeg',
     heroImage: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80',
     icon: Building2,
     description: "Formez-vous à la gestion globale d'une entreprise : administration, finance, ressources humaines et stratégie. Une formation généraliste et opérationnelle qui prépare aux rôles de manager et d'entrepreneur.",
