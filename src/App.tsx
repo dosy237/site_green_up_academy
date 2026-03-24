@@ -12,6 +12,7 @@ import { BlogPage } from './pages/BlogPage';
 import { ContactPage } from './pages/ContactPage';
 import { CMSDashboard } from './pages/CMSDashboard';
 import { LoginPage } from './pages/LoginPage';
+import { MobilityPage } from './pages/MobilityPage';
 import { useDarkMode } from './hooks/useDarkMode';
 
 function AppContent() {
@@ -49,6 +50,8 @@ function AppContent() {
         return <BlogPage />;
       case 'contact':
         return <ContactPage />;
+      case 'mobility':
+        return <MobilityPage />;
       case 'dashboard':
         if (!user) {
           return <LoginPage onLoginSuccess={() => setCurrentPage('dashboard')} />;

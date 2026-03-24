@@ -98,7 +98,7 @@
     },
     {
       "id": 5,
-      "title": "Master Cybersécurité & Green IT",
+      "title": "Mastère Cybersécurité & Green IT",
       "level": "Bac+5",
       "duration": "2 ans",
       "description": "Sécurité numérique et sobriété énergétique.",
@@ -113,7 +113,7 @@
     },
     {
       "id": 6,
-      "title": "Master Performance Énergétique",
+      "title": "Mastère Performance Énergétique",
       "level": "Bac+5",
       "duration": "2 ans",
       "description": "Audit, rénovation et efficacité des bâtiments.",
@@ -141,8 +141,8 @@
       "id": 2,
       "title": "100% Alternance",
       "description": "Rémunéré pendant toute la durée de vos études.",
-      "stat": "0€",
-      "statLabel": "Frais de scolarité",
+      "stat": "100%",
+      "statLabel": "Financé par l'entreprise",
       "icon": "Briefcase",
       "color": "#4ECDC4"
     },
@@ -179,7 +179,7 @@
     {
       "id": 2,
       "name": "Karim Mansour",
-      "program": "Master Cybersécurité",
+      "program": "Mastère Cybersécurité",
       "year": "2024",
       "text": "Le réseau entreprises de Green Up Academy est incroyable. J'ai trouvé mon alternance en 2 semaines.",
       "avatar": "",

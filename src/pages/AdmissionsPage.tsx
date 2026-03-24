@@ -9,10 +9,10 @@ import {
 const FORMATIONS = [
   { value: 'bachelor-admin',  label: 'Bachelor Administration des Entreprises', niveau: 'Bac+3' },
   { value: 'bachelor-design', label: 'Bachelor Design',                          niveau: 'Bac+3' },
-  { value: 'bachelor-dev',    label: 'Bachelor Développement Logiciel',           niveau: 'Bac+3' },
-  { value: 'bachelor-reseau', label: 'Bachelor Administration Réseau',            niveau: 'Bac+3' },
-  { value: 'master-cyber',    label: 'Master Cybersécurité & Green IT',           niveau: 'Bac+5' },
-  { value: 'master-energie',  label: 'Master Performance Énergétique',            niveau: 'Bac+5' },
+  { value: 'bachelor-dev',    label: 'Bachelor Développement Fullstack',          niveau: 'Bac+3' },
+  { value: 'bachelor-reseau', label: 'Bachelor Infrastructures Réseau Sécurisé',  niveau: 'Bac+3' },
+  { value: 'master-cyber',    label: 'Mastère Cybersécurité & Green IT',          niveau: 'Bac+5' },
+  { value: 'master-energie',  label: 'Mastère Performance Énergétique',            niveau: 'Bac+5' },
 ];
 
 const DIPLOMES = [
@@ -170,8 +170,6 @@ function UploadZone({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0] ?? null;
     if (f) {
-      const err = validate(f);
-      if (err) { alert(err); return; }
       onFile(f);
     }
   };
@@ -180,8 +178,6 @@ function UploadZone({
     e.preventDefault(); setDragging(false);
     const f = e.dataTransfer.files?.[0] ?? null;
     if (f) {
-      const err = validate(f);
-      if (err) { alert(err); return; }
       onFile(f);
     }
   };
@@ -289,6 +285,20 @@ export function AdmissionsPage() {
   };
 
   const setFile = (key: keyof FileState) => (f: File | null) => {
+    if (f) {
+      // Get the doc config to check max size
+      const doc = UPLOAD_DOCS.find(d => d.key === key);
+      const maxSizeBytes = doc ? doc.maxMb * 1024 * 1024 : 0;
+      
+      if (maxSizeBytes > 0 && f.size > maxSizeBytes) {
+        setErrors(err => ({
+          ...err,
+          [key]: `Ce fichier dépasse la taille maximale autorisée (${doc?.maxMb} Mo). Veuillez choisir un fichier plus léger.`
+        }));
+        return;
+      }
+    }
+    
     setFiles(prev => ({ ...prev, [key]: f }));
     if (f) setErrors(err => { const n: Record<string, string> = { ...err }; delete n[key]; return n; });
   };
@@ -456,7 +466,10 @@ export function AdmissionsPage() {
         <div className="absolute -bottom-16 -right-16 w-64 h-64 bg-[#15896B] rounded-full blur-3xl opacity-40" />
         <div className="relative max-w-3xl mx-auto px-4 text-center">
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-3">Déposer ma candidature</h1>
-          <p className="text-white/80">Admissions 2026 · Formations en alternance · 0 € de frais</p>
+          <p className="text-white/80">Admissions 2026 · Formations en alternance · 100% gratuit</p>
+          <div className="my-4 inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm border border-white/30">
+            📅 Clôture des candidatures: <strong>30 juillet</strong>
+          </div>
           <div className="flex flex-wrap justify-center gap-4 mt-5">
             {[{ e: '', t: '6 formations' }, { e: '', t: 'Réponse 48h' }, { e: '', t: 'Gratuit' }].map((b, i) => (
               <div key={i} className="flex items-center gap-2 bg-white/15 backdrop-blur-sm px-4 py-1.5 rounded-full text-white text-sm border border-white/20">

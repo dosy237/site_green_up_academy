@@ -169,7 +169,7 @@ export function ContactPage() {
                   <User className="h-6 w-6 text-[#1FAB89] shrink-0" />
                   <div>
                     <h3 className="font-bold text-[#2D2D2D] mb-1">
-                      Directeur
+                      Président
                     </h3>
                     <p className="text-sm text-[#696969]">
                       {contactInfo.director}

@@ -20,7 +20,7 @@ const programs: Program[] = [
     id: 1, type: 'bachelor', isMaster: false,
     title: 'Bachelor Administration des Entreprises',
     subtitle: 'Gestion, management & entrepreneuriat',
-    duration: '3 ans', level: 'Bac+3', rhythm: '3 sem. entreprise / 1 sem. école', places: 30,
+    duration: '3 ans', level: 'Bac+3', rhythm: '3 sem. entreprise / 1 sem. école', places: 20,
     image: 'https://images.unsplash.com/photo-1664575602554-2087b04935a5?auto=format&fit=crop&w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80',
     icon: Building2,
@@ -39,9 +39,9 @@ const programs: Program[] = [
     id: 2, type: 'bachelor', isMaster: false,
     title: 'Bachelor Design',
     subtitle: 'UX/UI, design graphique & création visuelle',
-    duration: '3 ans', level: 'Bac+3', rhythm: '3 sem. entreprise / 1 sem. école', places: 25,
+    duration: '3 ans', level: 'Bac+3', rhythm: '3 sem. entreprise / 1 sem. école', places: 20,
     image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80',
-    heroImage: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1200&q=80',
+    heroImage: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1200&q=80',
     icon: Palette,
     description: "Maîtrisez les outils et les méthodes du design contemporain : identité visuelle, interfaces numériques, UX research et motion design. Préparez-vous à concevoir des expériences utilisateur mémorables.",
     objectifs: ['Concevoir des interfaces intuitives et esthétiques', 'Maîtriser les outils professionnels (Figma, Adobe Suite)', 'Appliquer les principes UX Research et les tests utilisateurs', 'Construire une identité de marque cohérente'],
@@ -56,11 +56,11 @@ const programs: Program[] = [
   },
   {
     id: 3, type: 'bachelor', isMaster: false,
-    title: 'Bachelor Développement Logiciel',
+    title: 'Bachelor Développement Fullstack',
     subtitle: 'Web, mobile & applications full-stack',
-    duration: '3 ans', level: 'Bac+3', rhythm: '3 sem. entreprise / 1 sem. école', places: 35,
+    duration: '3 ans', level: 'Bac+3', rhythm: '3 sem. entreprise / 1 sem. école', places: 20,
     image: 'https://images.unsplash.com/photo-1629904853893-c2c8981a1dc5?auto=format&fit=crop&w=800&q=80',
-    heroImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80',
+    heroImage: 'https://images.unsplash.com/photo-1629904853893-c2c8981a1dc5?auto=format&fit=crop&w=1200&q=80',
     icon: Monitor,
     description: "Devenez développeur full-stack opérationnel en 3 ans. Du front-end au back-end, maîtrisez les frameworks modernes, les bases de données et les bonnes pratiques du génie logiciel pour créer des applications robustes.",
     objectifs: ['Développer des applications web et mobiles complètes', 'Maîtriser les architectures modernes (REST, MVC, microservices)', 'Gérer des bases de données relationnelles et NoSQL', 'Collaborer avec Git et les méthodes agiles'],
@@ -75,11 +75,11 @@ const programs: Program[] = [
   },
   {
     id: 4, type: 'bachelor', isMaster: false,
-    title: 'Bachelor Réseaux et Sécurité',
+    title: 'Bachelor Infrastructures Réseau Sécurisé',
     subtitle: 'Infrastructure, sécurité & systèmes',
-    duration: '3 ans', level: 'Bac+3', rhythm: '3 sem. entreprise / 1 sem. école', places: 25,
+    duration: '3 ans', level: 'Bac+3', rhythm: '3 sem. entreprise / 1 sem. école', places: 20,
     image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80',
-    heroImage: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80',
+    heroImage: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80',
     icon: Network,
     description: "Maîtrisez l'infrastructure informatique des entreprises : configuration réseau, administration système, virtualisation et supervision. Une formation terrain qui vous prépare directement aux métiers d'administrateur et technicien réseau.",
     objectifs: ['Concevoir et administrer des infrastructures réseau', 'Gérer des serveurs Linux et Windows Server', 'Mettre en place des solutions de virtualisation', 'Assurer la supervision et la sécurité des systèmes'],
@@ -94,13 +94,13 @@ const programs: Program[] = [
   },
   {
     id: 5, type: 'master', isMaster: true,
-    title: 'Master Cybersécurité & Green IT',
+    title: 'Mastère Cybersécurité & Green IT',
     subtitle: 'Sécurité numérique & sobriété énergétique',
     duration: '2 ans', level: 'Bac+5', rhythm: '4 sem. entreprise / 1 sem. école', places: 20,
     image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
-    heroImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80',
+    heroImage: '/images/etudiant/vie_etudiante.jpeg',
     icon: Shield,
-    description: "Formez-vous à la double expertise la plus recherchée du marché : sécuriser les systèmes d'information tout en réduisant leur empreinte écologique. Un master unique qui allie cybersécurité avancée et Green IT.",
+    description: "Formez-vous à la double expertise la plus recherchée du marché : sécuriser les systèmes d'information tout en réduire leur empreinte écologique. Un mastère unique qui allie cybersécurité avancée et Green IT.",
     objectifs: ["Auditer et sécuriser des systèmes d'information complexes", 'Concevoir des architectures résilientes et éco-responsables', 'Piloter la réponse à incident (SOC & CSIRT)', "Réduire l'empreinte carbone des infrastructures numériques"],
     competences: ['Pentest & CTF', 'SOC & SIEM', 'Cryptographie', 'Green IT & écoconception', 'ISO 27001', 'Cloud Security'],
     debouches: ['Ingénieur cybersécurité', 'Analyste SOC', 'Pentesteur', 'RSSI junior', 'Consultant Green IT', 'Architecte sécurité'],
@@ -113,11 +113,11 @@ const programs: Program[] = [
   },
   {
     id: 6, type: 'master', isMaster: true,
-    title: 'Master Performance Énergétique',
+    title: 'Mastère Performance Énergétique',
     subtitle: 'Audit, rénovation & efficacité des bâtiments',
     duration: '2 ans', level: 'Bac+5', rhythm: '4 sem. entreprise / 1 sem. école', places: 20,
     image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80',
-    heroImage: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=1200&q=80',
+    heroImage: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=1200&q=80',
     icon: Zap,
     description: "Devenez expert en efficacité énergétique des bâtiments et des systèmes industriels. Maîtrisez l'audit, la réglementation thermique, la modélisation BIM et les énergies renouvelables pour piloter la transition énergétique.",
     objectifs: ['Réaliser des audits énergétiques réglementaires', 'Maîtriser la RE2020 et les normes BBC', 'Concevoir des solutions de rénovation thermique', 'Intégrer les énergies renouvelables dans les projets'],
@@ -351,7 +351,7 @@ export function ProgramsPage({ onNavigate }: { onNavigate?: (page: string) => vo
             6 formations diplômantes 100% en alternance. Zéro frais de scolarité, 100% opérationnel dès la sortie.
           </p>
           <div className="flex flex-wrap justify-center gap-10">
-            {[{ val: '6', label: 'Formations' }, { val: '0 €', label: 'Frais de scolarité' }, { val: '95%', label: "Taux d'insertion" }, { val: 'Bac+3 & Bac+5', label: 'Niveaux' }].map((s, i) => (
+            {[{ val: '6', label: 'Formations' }, { val: '95%', label: "Taux d'insertion" }, { val: 'Bac+3 & Bac+5', label: 'Niveaux' }].map((s, i) => (
               <div key={i} className="text-center">
                 <p className="text-3xl font-bold text-white">{s.val}</p>
                 <p className="text-sm text-white/70 mt-0.5">{s.label}</p>

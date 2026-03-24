@@ -8,25 +8,25 @@ const programs = [
   subtitle: 'Le fondement de votre expertise',
   duration: '3 ans',
   level: 'Bac+3',
-  students: '10 ',
+  students: '20',
   image:
   'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
   color: 'from-emerald-500 to-teal-600',
   description:
-  "Maîtrisez l'efficacité énergétique des bâtiments et des procédés industriels. Une formation complète alliant théorie et pratique terrain.",
+  "Maîtrisez le développement d'applications modernes. Une formation complète alliant théorie et pratique en environnement réel.",
   highlights: [
-  'Audit énergétique',
-  'Réglementation thermique',
-  'BIM & Modélisation']
+  'Full Stack Development',
+  'Frameworks modernes',
+  'Projets en équipe']
 
 },
 {
   id: 2,
-  title: 'Master Cybersécurité & Green IT',
+  title: 'Mastère Cybersécurité & Green IT',
   subtitle: "L'alliance du numérique responsable",
   duration: '2 ans',
   level: 'Bac+5',
-  students: '4',
+  students: '20',
   image:
   'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
   color: 'from-blue-500 to-indigo-600',
@@ -40,12 +40,12 @@ const programs = [
     subtitle: "devenez expert en conception visuelle et experience utilisateur ",
     duration: '3 ans',
     level: 'Bac+3',
-    students: '10',
+    students: '20',
     image:
-    'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80',
     color: 'from-purple-500 to-pink-600',
     description:
-    'Devenez expert en efficacité énergétique des bâtiments et des procédés industriels.',
+    'Devenez expert en conception graphique, UX/UI et création visuelle innovante.',
       highlights: ['design ui ux ', 'Design graphique ', 'motion design ']
 
   },

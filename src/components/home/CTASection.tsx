@@ -77,6 +77,8 @@ export function CTASection({ onNavigate }: { onNavigate?: (page: string) => void
               <a
                 href="/images/documents/brochure.pdf"
                 download="Brochure_GreenUpAcademy.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-6 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-light-text dark:text-dark-text font-semibold text-base hover:border-primary hover:text-primary transition-all"
               >
                 Télécharger la brochure

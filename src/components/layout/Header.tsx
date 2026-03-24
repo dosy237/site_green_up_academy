@@ -62,6 +62,10 @@ export function Header({
         {
           name: 'Vie Étudiante',
           id: 'student-life'
+        },
+        {
+          name: 'Mobilité Internationale',
+          id: 'mobility'
         }]
     },
     {

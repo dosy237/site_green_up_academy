@@ -9,13 +9,11 @@ export function GovernancePage({ onNavigate }: { onNavigate?: (page: string) => 
     {
       name: 'Dr. Charles Giscard Fongang',
       role: 'Président & Directeur Pédagogique',
-      bio: "Fondateur de Green Up Academy, expert en stratégie numérique et transition écologique. Il pilote la vision pédagogique et académique de l'école.",
       image: '/images/enseignant/charles.png'
     },
     {
       name: 'M. BELHOCINE Nadir',
-      role: 'Directeur  Général',
-      bio: "Responsable de la gestion opérationnelle et du développement de l'école. Elle accompagne les étudiants et pilote les partenariats stratégiques.",
+      role: 'Directeur Général',
       image: '/images/enseignant/etudiant.jpeg'
     }
   ];
@@ -50,6 +48,14 @@ export function GovernancePage({ onNavigate }: { onNavigate?: (page: string) => 
     }
   ];
 
+  const conseilScientifique = [
+    {
+      name: 'Dr Charles Giscard Fongang',
+      role: 'Membre du Conseil Scientifique',
+      image: '/images/enseignant/charles.png'
+    }
+  ];
+
   return (
     <div className="pt-20 min-h-screen bg-gray-50 dark:bg-dark-bg">
       {/* Header */}
@@ -68,7 +74,8 @@ export function GovernancePage({ onNavigate }: { onNavigate?: (page: string) => 
           {[
             { id: 'direction', label: 'Direction' },
             { id: 'board', label: 'Équipe Pédagogique' },
-            { id: 'scientific', label: 'Direction Scientifique' }
+            { id: 'scientific', label: 'Direction Scientifique' },
+            { id: 'conseil', label: 'Conseil Scientifique' }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -96,8 +103,7 @@ export function GovernancePage({ onNavigate }: { onNavigate?: (page: string) => 
                     />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{member.name}</h3>
-                  <p className="text-primary font-medium mb-4">{member.role}</p>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{member.bio}</p>
+                  <p className="text-primary font-medium">{member.role}</p>
                 </Card>
               ))}
             </div>
@@ -158,6 +164,26 @@ export function GovernancePage({ onNavigate }: { onNavigate?: (page: string) => 
                       ))}
                     </ul>
                   </div>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {/* CONSEIL SCIENTIFIQUE */}
+          {activeTab === 'conseil' && (
+            <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+              {conseilScientifique.map((member, index) => (
+                <Card key={index} className="text-center p-8">
+                  <div className="w-36 h-36 mx-auto rounded-full overflow-hidden mb-6 border-4 border-primary/20">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=1FAB89&color=fff&size=200`; }}
+                    />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{member.name}</h3>
+                  <p className="text-primary font-medium">{member.role}</p>
                 </Card>
               ))}
             </div>

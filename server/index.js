@@ -171,10 +171,10 @@ const initialContent = {
   programs: [
     { id: 1, title: 'Bachelor Administration des Entreprises', level: 'Bac+3', duration: '3 ans', description: 'Gestion, management et entrepreneuriat en alternance.', icon: '#', color: '#1FAB89', details: 'Formation complète en gestion d\'entreprise avec focus sur le développement durable.', outcomes: ['Manager de projet', 'Chef de service', 'Entrepreneur'] },
     { id: 2, title: 'Bachelor Design',                          level: 'Bac+3', duration: '3 ans', description: 'UX/UI, design graphique et création visuelle en alternance.', icon: '#', color: '#4ECDC4', details: 'Maîtrisez les outils du design moderne avec une approche éco-responsable.', outcomes: ['UX Designer', 'Designer Graphique', 'Directeur Artistique'] },
-    { id: 3, title: 'Bachelor Développement Logiciel',           level: 'Bac+3', duration: '3 ans', description: 'Web, mobile et applications full-stack en alternance.', icon: '#', color: '#45B7D1', details: 'Développez des solutions numériques innovantes et sobres en énergie.', outcomes: ['Développeur Full-Stack', 'Ingénieur Logiciel', 'CTO'] },
-    { id: 4, title: 'Bachelor Administration Réseau',            level: 'Bac+3', duration: '3 ans', description: 'Infrastructure, sécurité et systèmes en alternance.', icon: '#', color: '#96CEB4', details: 'Maîtrisez l\'infrastructure informatique moderne et éco-efficace.', outcomes: ['Administrateur Réseau', 'Ingénieur Cloud', 'DSI'] },
-    { id: 5, title: 'Master Cybersecurity & Green IT',           level: 'Bac+5', duration: '2 ans', description: 'Sécurité numérique et sobriété énergétique.', icon: '#', color: '#FFEAA7', details: 'Devenez expert en cybersecurity avec une vision Green IT.', outcomes: ['RSSI', 'Consultant Cybersecurity', 'Ethical Hacker'] },
-    { id: 6, title: 'Master Performance Énergétique',            level: 'Bac+5', duration: '2 ans', description: 'Audit, rénovation et efficacité des bâtiments.', icon: '#', color: '#DDA0DD', details: 'Spécialisez-vous dans l\'efficacité énergétique des bâtiments.', outcomes: ['Auditeur Énergétique', 'Consultant RSE', 'Directeur Développement Durable'] },
+    { id: 3, title: 'Bachelor Développement Fullstack',           level: 'Bac+3', duration: '3 ans', description: 'Web, mobile et applications full-stack en alternance.', icon: '#', color: '#45B7D1', details: 'Développez des solutions numériques innovantes et sobres en énergie.', outcomes: ['Développeur Full-Stack', 'Ingénieur Logiciel', 'CTO'] },
+    { id: 4, title: 'Bachelor Infrastructures Réseau Sécurisé',   level: 'Bac+3', duration: '3 ans', description: 'Infrastructure, sécurité et systèmes en alternance.', icon: '#', color: '#96CEB4', details: 'Maîtrisez l\'infrastructure informatique moderne et éco-efficace.', outcomes: ['Administrateur Réseau', 'Ingénieur Cloud', 'DSI'] },
+    { id: 5, title: 'Mastère Cybersecurity & Green IT',           level: 'Bac+5', duration: '2 ans', description: 'Sécurité numérique et sobriété énergétique.', icon: '#', color: '#FFEAA7', details: 'Devenez expert en cybersecurity avec une vision Green IT.', outcomes: ['RSSI', 'Consultant Cybersecurity', 'Ethical Hacker'] },
+    { id: 6, title: 'Mastère Performance Énergétique',            level: 'Bac+5', duration: '2 ans', description: 'Audit, rénovation et efficacité des bâtiments.', icon: '#', color: '#DDA0DD', details: 'Spécialisez-vous dans l\'efficacité énergétique des bâtiments.', outcomes: ['Auditeur Énergétique', 'Consultant RSE', 'Directeur Développement Durable'] },
   ],
   whyChooseUs: [
     { id: 1, title: 'Innovation Pédagogique', description: "Méthodes actives, projets réels, hackathons et ateliers pratiques.", stat: '40+', statLabel: 'Projets/an', icon: 'Zap', color: '#1FAB89' },
@@ -184,7 +184,7 @@ const initialContent = {
   ],
   testimonials: [
     { id: 1, name: 'Marie Dubois', program: 'Bachelor Dev Logiciel', year: '2023', text: 'Une formation exceptionnelle qui m\'a permis de décrocher un CDI dès la fin de mes études.', avatar: '', rating: 5, company: 'TechCorp Paris' },
-    { id: 2, name: 'Karim Mansour', program: 'Master Cybersécurité', year: '2024', text: 'Le réseau entreprises de Green Up Academy est incroyable. J\'ai trouvé mon alternance en 2 semaines.', avatar: '', rating: 5, company: 'SecureNet' },
+    { id: 2, name: 'Karim Mansour', program: 'Mastère Cybersécurité', year: '2024', text: 'Le réseau entreprises de Green Up Academy est incroyable. J\'ai trouvé mon alternance en 2 semaines.', avatar: '', rating: 5, company: 'SecureNet' },
   ],
   cta: {
     title: "Prêt à transformer votre avenir ?",

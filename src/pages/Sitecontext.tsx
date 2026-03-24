@@ -224,7 +224,7 @@ const DEFAULT_DATA: SiteData = {
       color: 'from-emerald-500 to-teal-600',
     },
     {
-      id: 'p2', title: 'Bachelor Développement Logiciel', type: 'bachelor',
+      id: 'p2', title: 'Bachelor Développement Fullstack', type: 'bachelor',
       duration: '3 ans', level: 'Bac+3', price: 'Gratuit (Alternance)',
       image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
       description: 'Maîtrisez le développement web et mobile, de la conception au déploiement.',
@@ -240,7 +240,7 @@ const DEFAULT_DATA: SiteData = {
       color: 'from-violet-500 to-purple-600',
     },
     {
-      id: 'p4', title: 'Bachelor Sécurité et Administration Réseaux', type: 'bachelor',
+      id: 'p4', title: 'Bachelor Infrastructures Réseau Sécurisé', type: 'bachelor',
       duration: '3 ans', level: 'Bac+3', price: 'Gratuit (Alternance)',
       image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80',
       description: 'Protégez les infrastructures et gérez les systèmes d\'information.',
@@ -248,7 +248,7 @@ const DEFAULT_DATA: SiteData = {
       color: 'from-slate-500 to-gray-700',
     },
     {
-      id: 'p5', title: 'Master Cybersécurité & Green IT', type: 'master',
+      id: 'p5', title: 'Mastère Cybersécurité & Green IT', type: 'master',
       duration: '2 ans', level: 'Bac+5', price: 'Gratuit (Alternance)',
       image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
       description: 'Sécurisez les infrastructures numériques tout en minimisant leur impact environnemental.',
@@ -256,7 +256,7 @@ const DEFAULT_DATA: SiteData = {
       color: 'from-blue-600 to-indigo-700',
     },
     {
-      id: 'p6', title: 'Master Performance Énergétique', type: 'master',
+      id: 'p6', title: 'Mastère Performance Énergétique', type: 'master',
       duration: '2 ans', level: 'Bac+5', price: 'Gratuit (Alternance)',
       image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80',
       description: "Expertise avancée en audit et rénovation énergétique pour l'industrie et le bâtiment.",
@@ -264,7 +264,7 @@ const DEFAULT_DATA: SiteData = {
       color: 'from-green-500 to-emerald-700',
     },
     {
-      id: 'p7', title: 'Master Management Durable', type: 'master',
+      id: 'p7', title: 'Mastère Management Durable', type: 'master',
       duration: '2 ans', level: 'Bac+5', price: 'Gratuit (Alternance)',
       image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb7d5fa5?auto=format&fit=crop&w=800&q=80',
       description: 'Pilotez la stratégie RSE et la transition écologique des entreprises.',
@@ -303,13 +303,13 @@ const DEFAULT_DATA: SiteData = {
     {
       id: 'test1', name: 'Alexandre Dubois', role: 'Ingénieur Green IT', company: 'Capgemini',
       image: 'https://randomuser.me/api/portraits/men/32.jpg',
-      program: 'Master Cybersécurité & Green IT 2024', rating: 5,
+      program: 'Mastère Cybersécurité & Green IT 2024', rating: 5,
       quote: "La formation m'a donné toutes les compétences pour réussir dans le numérique responsable. Aujourd'hui, j'aide les grandes entreprises à réduire l'empreinte carbone de leurs systèmes.",
     },
     {
       id: 'test2', name: 'Sarah Martin', role: 'Cheffe de projet RSE', company: "L'Oréal",
       image: 'https://randomuser.me/api/portraits/women/44.jpg',
-      program: 'Master Management Durable 2023', rating: 5,
+      program: 'Mastère Management Durable 2023', rating: 5,
       quote: "L'alternance chez L'Oréal pendant ma formation a été un véritable tremplin. Les cours étaient directement applicables et l'équipe pédagogique exceptionnelle.",
     },
     {
@@ -325,7 +325,7 @@ const DEFAULT_DATA: SiteData = {
       id: 'post1',
       title: "L'impact du Green IT sur la consommation mondiale",
       excerpt: "Analyse des dernières tendances pour réduire l'empreinte carbone du numérique.",
-      content: "Le numérique représente aujourd'hui environ 4% des émissions mondiales de gaz à effet de serre, un chiffre qui pourrait doubler d'ici 2025. Face à cette réalité, le Green IT s'impose comme une discipline incontournable pour les entreprises soucieuses de leur impact environnemental.\n\nNos étudiants en Master Cybersécurité & Green IT travaillent directement sur ces problématiques avec nos partenaires industriels, développant des solutions concrètes pour optimiser la consommation des data centers et réduire le cycle de vie des équipements numériques.",
+      content: "Le numérique représente aujourd'hui environ 4% des émissions mondiales de gaz à effet de serre, un chiffre qui pourrait doubler d'ici 2025. Face à cette réalité, le Green IT s'impose comme une discipline incontournable pour les entreprises soucieuses de leur impact environnemental.\n\nNos étudiants en Mastère Cybersécurité & Green IT travaillent directement sur ces problématiques avec nos partenaires industriels, développant des solutions concrètes pour optimiser la consommation des data centers et réduire le cycle de vie des équipements numériques.",
       date: '28 Jan 2026',
       category: 'Green IT',
       image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',

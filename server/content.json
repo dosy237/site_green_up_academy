@@ -11,7 +11,7 @@
     },
     {
       "id": 2,
-      "title": "Master Cybersécurité & Green IT",
+      "title": "Mastère Cybersécurité & Green IT",
       "description": "Alliez sécurité numérique et sobriété énergétique."
     },
     {
@@ -31,7 +31,7 @@
     },
     {
       "id": 6,
-      "title": "Master Management Durable",
+      "title": "Mastère Management Durable",
       "description": "Pilotez la stratégie RSE des entreprises."
     }
   ],
@@ -48,8 +48,8 @@
       "id": 2,
       "title": "100% Alternance",
       "description": "Immersion professionnelle totale. Vous êtes rémunéré pendant vos études et opérationnel dès la sortie.",
-      "stat": "0€",
-      "statLabel": "Frais de scolarité",
+      "stat": "100%",
+      "statLabel": "Financé par l'entreprise",
       "icon": "Briefcase"
     },
     {
@@ -68,7 +68,7 @@
       "role": "Consultant Green IT",
       "company": "Capgemini",
       "image": "https://randomuser.me/api/portraits/men/32.jpg",
-      "program": "Master Green IT 2024",
+      "program": "Mastère Green IT 2024",
       "quote": "Green Up Academy m'a permis de transformer ma passion pour l'informatique en une carrière qui a du sens. Aujourd'hui, j'aide les grandes entreprises à réduire l'empreinte carbone de leurs systèmes d'information.",
       "rating": 5
     },
@@ -78,7 +78,7 @@
       "role": "Cheffe de projet RSE",
       "company": "L'Oréal",
       "image": "https://randomuser.me/api/portraits/women/44.jpg",
-      "program": "Master Management Durable 2023",
+      "program": "Mastère Management Durable 2023",
       "quote": "L'alternance chez L'Oréal pendant ma formation a été un véritable tremplin. Les cours étaient directement applicables et l'équipe pédagogique exceptionnelle. Je recommande à 100%.",
       "rating": 5
     },
