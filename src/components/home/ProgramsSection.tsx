@@ -4,7 +4,7 @@ import { Button } from '../ui/Button';
 const programs = [
 {
   id: 1,
-  title: 'Bachelor Developpement logiciel ',
+  title: 'Bachelor Développement Fullstack',
   subtitle: 'Le fondement de votre expertise',
   duration: '3 ans',
   level: 'Bac+3',
