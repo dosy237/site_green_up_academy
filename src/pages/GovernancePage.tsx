@@ -20,10 +20,10 @@ export function GovernancePage({ onNavigate }: { onNavigate?: (page: string) => 
 
   const equipe = [
     { name: 'Meryl Bitee', role: 'Enseignante Dev Fullstack', image: '/images/enseignant/meryl.jpeg' },
-    { name: 'Cherif', role: 'Administration Réseau & Sécurité', image: '/images/enseignant/salif.jpeg' },
-    { name: 'Salamé', role: 'preparation au titre professionnel', image: '/images/enseignant/salame.jpeg' },
+    { name: 'Adem Cherif', role: 'Administration Réseau & Sécurité', image: '/images/enseignant/salif.jpeg' },
+    { name: 'RAWAD Salamé', role: 'preparation au titre professionnel', image: '/images/enseignant/salame.jpeg' },
     { name: 'Basile Starynkevich', role: 'Programmation Système', image: '/images/enseignant/basil.jpg' },
-    { name: 'Serge', role: 'Gestion d\'Entreprise', image: '/images/enseignant/code.jpeg' },
+    { name: 'Dr Serge ZOUNKEU ', role: 'Gestion d\'Entreprise', image: '/images/enseignant/code.jpeg' },
     { name: 'Paoline Saurelle', role: 'Gestion de Projet IT', image: '/images/enseignant/manager.jpeg' },
   ];
 

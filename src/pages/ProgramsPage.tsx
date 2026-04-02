@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
   Clock, Award, Users, CheckCircle, ArrowRight,
   X, BookOpen, Briefcase, TrendingUp, ChevronDown, ChevronUp,
-  Monitor, Palette, Network, Shield, Zap, Building2
+  Monitor, Palette, Network, Shield, Zap, Building2, BadgeCheck
 } from 'lucide-react';
 
 interface Module { semestre: string; cours: string[] }
@@ -21,8 +21,8 @@ const programs: Program[] = [
     title: 'Bachelor Administration des Entreprises',
     subtitle: 'Gestion, management & entrepreneuriat',
     duration: '3 ans', level: 'Bac+3', rhythm: '3 sem. entreprise / 1 sem. école', places: 20,
-    image: '/images/etudiant/etudiant.jpeg',
-    heroImage: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=800&q=80',
+    heroImage: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1200&q=80',
     icon: Building2,
     description: "Formez-vous à la gestion globale d'une entreprise : administration, finance, ressources humaines et stratégie. Une formation généraliste et opérationnelle qui prépare aux rôles de manager et d'entrepreneur.",
     objectifs: ["Maîtriser les fondamentaux de la gestion d'entreprise", 'Piloter des projets transversaux en équipe', 'Analyser des données financières et prendre des décisions stratégiques', 'Communiquer efficacement en contexte professionnel'],
@@ -40,8 +40,8 @@ const programs: Program[] = [
     title: 'Bachelor Design',
     subtitle: 'UX/UI, design graphique & création visuelle',
     duration: '3 ans', level: 'Bac+3', rhythm: '3 sem. entreprise / 1 sem. école', places: 20,
-    image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80',
-    heroImage: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?auto=format&fit=crop&w=800&q=80',
+    heroImage: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?auto=format&fit=crop&w=1200&q=80',
     icon: Palette,
     description: "Maîtrisez les outils et les méthodes du design contemporain : identité visuelle, interfaces numériques, UX research et motion design. Préparez-vous à concevoir des expériences utilisateur mémorables.",
     objectifs: ['Concevoir des interfaces intuitives et esthétiques', 'Maîtriser les outils professionnels (Figma, Adobe Suite)', 'Appliquer les principes UX Research et les tests utilisateurs', 'Construire une identité de marque cohérente'],
@@ -59,8 +59,8 @@ const programs: Program[] = [
     title: 'Bachelor Développement Fullstack',
     subtitle: 'Web, mobile & applications full-stack',
     duration: '3 ans', level: 'Bac+3', rhythm: '3 sem. entreprise / 1 sem. école', places: 20,
-    image: 'https://images.unsplash.com/photo-1629904853893-c2c8981a1dc5?auto=format&fit=crop&w=800&q=80',
-    heroImage: 'https://images.unsplash.com/photo-1629904853893-c2c8981a1dc5?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80',
+    heroImage: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80',
     icon: Monitor,
     description: "Devenez développeur full-stack opérationnel en 3 ans. Du front-end au back-end, maîtrisez les frameworks modernes, les bases de données et les bonnes pratiques du génie logiciel pour créer des applications robustes.",
     objectifs: ['Développer des applications web et mobiles complètes', 'Maîtriser les architectures modernes (REST, MVC, microservices)', 'Gérer des bases de données relationnelles et NoSQL', 'Collaborer avec Git et les méthodes agiles'],
@@ -78,8 +78,8 @@ const programs: Program[] = [
     title: 'Bachelor Infrastructures Réseau Sécurisé',
     subtitle: 'Infrastructure, sécurité & systèmes',
     duration: '3 ans', level: 'Bac+3', rhythm: '3 sem. entreprise / 1 sem. école', places: 20,
-    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80',
-    heroImage: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80',
+    heroImage: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80',
     icon: Network,
     description: "Maîtrisez l'infrastructure informatique des entreprises : configuration réseau, administration système, virtualisation et supervision. Une formation terrain qui vous prépare directement aux métiers d'administrateur et technicien réseau.",
     objectifs: ['Concevoir et administrer des infrastructures réseau', 'Gérer des serveurs Linux et Windows Server', 'Mettre en place des solutions de virtualisation', 'Assurer la supervision et la sécurité des systèmes'],
@@ -97,8 +97,8 @@ const programs: Program[] = [
     title: 'Mastère Cybersécurité & Green IT',
     subtitle: 'Sécurité numérique & sobriété énergétique',
     duration: '2 ans', level: 'Bac+5', rhythm: '4 sem. entreprise / 1 sem. école', places: 20,
-    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
-    heroImage: '/images/etudiant/vie_etudiante.jpeg',
+    image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80',
+    heroImage: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80',
     icon: Shield,
     description: "Formez-vous à la double expertise la plus recherchée du marché : sécuriser les systèmes d'information tout en réduire leur empreinte écologique. Un mastère unique qui allie cybersécurité avancée et Green IT.",
     objectifs: ["Auditer et sécuriser des systèmes d'information complexes", 'Concevoir des architectures résilientes et éco-responsables', 'Piloter la réponse à incident (SOC & CSIRT)', "Réduire l'empreinte carbone des infrastructures numériques"],
@@ -116,8 +116,8 @@ const programs: Program[] = [
     title: 'Mastère Performance Énergétique',
     subtitle: 'Audit, rénovation & efficacité des bâtiments',
     duration: '2 ans', level: 'Bac+5', rhythm: '4 sem. entreprise / 1 sem. école', places: 20,
-    image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80',
-    heroImage: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=800&q=80',
+    heroImage: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1200&q=80',
     icon: Zap,
     description: "Devenez expert en efficacité énergétique des bâtiments et des systèmes industriels. Maîtrisez l'audit, la réglementation thermique, la modélisation BIM et les énergies renouvelables pour piloter la transition énergétique.",
     objectifs: ['Réaliser des audits énergétiques réglementaires', 'Maîtriser la RE2020 et les normes BBC', 'Concevoir des solutions de rénovation thermique', 'Intégrer les énergies renouvelables dans les projets'],
@@ -210,7 +210,7 @@ function ProgramModal({ program, onClose, onApply }: { program: Program; onClose
 
         <div className="p-6 space-y-6">
           {/* Infos */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {[
               { label: 'Durée', value: program.duration, icon: Clock },
               { label: 'Niveau', value: program.level, icon: Award },
@@ -223,6 +223,12 @@ function ProgramModal({ program, onClose, onApply }: { program: Program; onClose
                 <p className="text-xs font-bold text-[#2D2D2D] dark:text-white mt-0.5 leading-snug">{item.value}</p>
               </div>
             ))}
+            {/* RNCP */}
+            <div className="bg-[#1FAB89]/10 border border-[#1FAB89]/30 rounded-2xl p-3 text-center">
+              <BadgeCheck className="h-4 w-4 text-[#1FAB89] mx-auto mb-1" />
+              <p className="text-xs text-[#696969] dark:text-[#B0B0B0]">Certification</p>
+              <p className="text-xs font-bold text-[#1FAB89] mt-0.5 leading-snug">Accrédité RNCP</p>
+            </div>
           </div>
 
           {/* Description */}

@@ -126,7 +126,7 @@ export function Hero({ onNavigate }: { onNavigate?: (page: string) => void }) {
                 size="lg"
                 className="group bg-[#1FAB89] hover:bg-[#15896B] text-white border-none shadow-lg hover:shadow-xl transition-all duration-300"
                 onClick={() => onNavigate?.('admissions')}>
-                <span>Postuler maintenant</span>
+                <span>Candidater  maintenant</span>
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button

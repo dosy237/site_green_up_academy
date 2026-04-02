@@ -10,7 +10,7 @@ const programs = [
   level: 'Bac+3',
   students: '20',
   image:
-  'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
+  'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80',
   color: 'from-emerald-500 to-teal-600',
   description:
   "Maîtrisez le développement d'applications modernes. Une formation complète alliant théorie et pratique en environnement réel.",
@@ -28,7 +28,7 @@ const programs = [
   level: 'Bac+5',
   students: '20',
   image:
-  'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
+  'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=800&q=80',
   color: 'from-blue-500 to-indigo-600',
   description:
   'Sécurisez les infrastructures numériques tout en minimisant leur impact environnemental. Le profil le plus recherché du marché.',
@@ -42,7 +42,7 @@ const programs = [
     level: 'Bac+3',
     students: '20',
     image:
-    'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?auto=format&fit=crop&w=800&q=80',
     color: 'from-purple-500 to-pink-600',
     description:
     'Devenez expert en conception graphique, UX/UI et création visuelle innovante.',
