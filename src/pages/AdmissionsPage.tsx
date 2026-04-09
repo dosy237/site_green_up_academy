@@ -52,7 +52,7 @@ const UPLOAD_DOCS = [
     label: 'Curriculum Vitae',
     desc: 'Votre CV à jour',
     accept: '.pdf,.doc,.docx',
-    maxMb: 5,
+    maxMb: 1.5,
     required: true,
     icon: '#',
   },
@@ -61,7 +61,7 @@ const UPLOAD_DOCS = [
     label: 'Relevés de notes / Diplôme',
     desc: 'Derniers relevés ou diplôme obtenu',
     accept: '.pdf,.jpg,.jpeg,.png',
-    maxMb: 10,
+    maxMb: 2,
     required: true,
     icon: '#',
   },
@@ -70,7 +70,7 @@ const UPLOAD_DOCS = [
     label: "Pièce d'identité",
     desc: 'CNI ou passeport (recto verso)',
     accept: '.pdf,.jpg,.jpeg,.png',
-    maxMb: 5,
+    maxMb: 1.5,
     required: true,
     icon: '#',
   },
@@ -79,7 +79,7 @@ const UPLOAD_DOCS = [
     label: 'Lettre de motivation (optionnel)',
     desc: 'Si vous en avez une en version PDF',
     accept: '.pdf,.doc,.docx',
-    maxMb: 5,
+    maxMb: 1,
     required: false,
     icon: '#',
   },
@@ -145,41 +145,35 @@ function UploadZone({
 }: {
   label: string; desc: string; accept: string;
   maxMb: number; required: boolean; icon: string;
-  file: File | null; onFile: (f: File | null) => void; error?: string; docKey?: string;
+  file: File | null; onFile: (f: File | null) => void; error?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
 
-  const validate = (f: File): string | null => {
-    if (f.size > maxMb * 1024 * 1024) return `Fichier trop lourd (max ${maxMb} Mo)`;
-    const allowedTypes = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'image/jpeg', 'image/png',
-    ];
-    if (!allowedTypes.includes(f.type) && f.type !== '') {
-      // On vérifie plutôt l'extension si le type MIME n'est pas reconnu
-      const ext = f.name.split('.').pop()?.toLowerCase();
-      const allowed = accept.replace(/\./g, '').split(',');
-      if (ext && !allowed.includes(ext)) return `Format non accepté (${accept})`;
+  const validateFile = (f: File): boolean => {
+    if (f.size > maxMb * 1024 * 1024) {
+      return false;
     }
-    return null;
+    return true;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0] ?? null;
-    if (f) {
+    if (f && validateFile(f)) {
       onFile(f);
+    } else if (f) {
+      // Fichier trop lourd, ne rien faire (l'erreur sera affichée par le parent)
+      if (inputRef.current) inputRef.current.value = '';
     }
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault(); setDragging(false);
     const f = e.dataTransfer.files?.[0] ?? null;
-    if (f) {
+    if (f && validateFile(f)) {
       onFile(f);
     }
+    // Si fichier trop lourd, on ne le charge pas
   };
 
   const formatSize = (bytes: number) => {
@@ -303,6 +297,20 @@ export function AdmissionsPage() {
     if (f) setErrors(err => { const n: Record<string, string> = { ...err }; delete n[key]; return n; });
   };
 
+  // ── Calcul et affichage de la taille totale des fichiers ───────────────────────
+  const getTotalFileSize = (): number => {
+    return Object.values(files).reduce((sum, file) => sum + (file?.size || 0), 0);
+  };
+
+  const getMaxTotalSize = (): number => {
+    return UPLOAD_DOCS.reduce((sum, doc) => sum + doc.maxMb, 0) * 1024 * 1024;
+  };
+
+  const formatSize = (bytes: number) => {
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} Ko`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
+  };
+
   // ── Validation par étape ──────────────────────────────────────────────────────
   const validate = (s: number): boolean => {
     const e: Record<string, string> = {};
@@ -325,11 +333,19 @@ export function AdmissionsPage() {
       if (!files.cv)      e.cv      = 'Votre CV est obligatoire';
       if (!files.diploma) e.diploma = 'Les relevés de notes sont obligatoires';
       if (!files.id)      e.id      = "La pièce d'identité est obligatoire";
+      
+      // Vérification de la taille totale des fichiers
+      const totalSize = getTotalFileSize();
+      const maxTotalSize = getMaxTotalSize();
+      if (totalSize > maxTotalSize) {
+        e['total-files'] = `La taille totale des fichiers (${formatSize(totalSize)}) dépasse la limite autorisée (${formatSize(maxTotalSize)}). Veuillez réduire certains fichiers.`;
+      }
     }
     setErrors(e);
     if (Object.keys(e).length > 0) {
       const first = Object.keys(e)[0];
-      document.querySelector(`[name="${first}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const element = document.querySelector(`[name="${first}"]`) || document.querySelector(`.error-${first}`);
+      element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return false;
     }
     return true;
@@ -628,13 +644,39 @@ export function AdmissionsPage() {
                 />
               ))}
 
-              {/* Compteur de fichiers */}
+              {/* Compteur de fichiers et taille */}
               {Object.values(files).some(Boolean) && (
-                <div className="flex items-center gap-2 bg-[#F0FDF9] border border-[#1FAB89]/30 rounded-xl px-4 py-2.5">
-                  <Check className="h-4 w-4 text-[#1FAB89] shrink-0" />
-                  <p className="text-sm text-[#1FAB89] font-medium">
-                    {Object.values(files).filter(Boolean).length} fichier(s) prêt(s) à l'envoi
-                  </p>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 bg-[#F0FDF9] border border-[#1FAB89]/30 rounded-xl px-4 py-2.5">
+                    <Check className="h-4 w-4 text-[#1FAB89] shrink-0" />
+                    <p className="text-sm text-[#1FAB89] font-medium">
+                      {Object.values(files).filter(Boolean).length} fichier(s) prêt(s) à l'envoi
+                    </p>
+                  </div>
+                  
+                  {/* Indicateur de taille */}
+                  <div className="flex items-center justify-between bg-white dark:bg-[#2A2A2A] border border-[#E0E0E0] dark:border-[#3A3A3A] rounded-xl px-4 py-3">
+                    <div>
+                      <p className="text-xs font-semibold text-[#696969] uppercase tracking-wider mb-1">Taille totale</p>
+                      <p className={`text-sm font-bold ${getTotalFileSize() > getMaxTotalSize() ? 'text-red-500' : 'text-[#1FAB89]'}`}>
+                        {formatSize(getTotalFileSize())} / {formatSize(getMaxTotalSize())}
+                      </p>
+                    </div>
+                    <div className="w-20 h-2 bg-[#E0E0E0] dark:bg-[#3A3A3A] rounded-full overflow-hidden">
+                      <div
+                        className={`h-full transition-all ${getTotalFileSize() > getMaxTotalSize() ? 'bg-red-500' : 'bg-[#1FAB89]'}`}
+                        style={{ width: `${Math.min(100, (getTotalFileSize() / getMaxTotalSize()) * 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Erreur si taille dépasse */}
+              {errors['total-files'] && (
+                <div className="error-total-files flex items-start gap-2 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-xl px-4 py-3">
+                  <AlertCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-600 dark:text-red-400">{errors['total-files']}</p>
                 </div>
               )}
 

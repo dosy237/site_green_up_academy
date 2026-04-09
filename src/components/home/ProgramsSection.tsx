@@ -36,8 +36,8 @@ const programs = [
 },
 {
     id: 3,
-    title: 'Bachelor design ',
-    subtitle: "devenez expert en conception visuelle et experience utilisateur ",
+    title: 'Conception Design',
+    subtitle: 'Devenez expert en conception visuelle et expérience utilisateur',
     duration: '3 ans',
     level: 'Bac+3',
     students: '20',
@@ -46,7 +46,7 @@ const programs = [
     color: 'from-purple-500 to-pink-600',
     description:
     'Devenez expert en conception graphique, UX/UI et création visuelle innovante.',
-      highlights: ['design ui ux ', 'Design graphique ', 'motion design ']
+      highlights: ['Design UI/UX', 'Design graphique', 'Motion design']
 
   },
 ];

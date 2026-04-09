@@ -142,7 +142,8 @@ const storage = multer.diskStorage({
     cb(null, `${Date.now()}_${name}${ext}`);
   },
 });
-const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB max
+// Limites: chaque fichier max 2MB, cumul max 6MB
+const upload = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 } }); // 2MB par fichier
 
 // Servir les uploads
 app.use('/uploads', express.static(UPLOADS_DIR));
