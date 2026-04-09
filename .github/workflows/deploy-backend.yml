@@ -1,0 +1,55 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+      - deploy-backend
+    paths:
+      - 'server/**'
+      - 'package.json'
+      - 'docker-compose.yml'
+      - 'Dockerfile'
+      - '.github/workflows/deploy-backend.yml'
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Lint backend code
+        run: |
+          echo "Linting server code..."
+          # npm run lint:server (si vous avez un script)
+      
+      - name: Build backend (if needed)
+        run: |
+          echo "Building backend..."
+          # npm run build:server (si nécessaire)
+      
+      - name: Run tests
+        run: |
+          echo "Running tests..."
+          # npm test (si vous avez des tests)
+      
+      - name: Deploy to server (SSH/Docker/etc)
+        run: |
+          echo "Backend deployment would go here"
+          echo "Configure your hosting provider secrets and deployment command"
+        # À remplacer par votre vrai commande de déploiement
+        # Exemples:
+        # - SSH: ssh user@server 'cd /app && git pull && npm install && pm2 restart server'
+        # - Docker: docker build -t myapp . && docker push registry.com/myapp
+        # - Heroku: heroku deploy --app myapp-api
+        # - AWS EC2: ssh -i $key ec2-user@instance 'pull latest && restart'
