@@ -5,14 +5,14 @@ import {
   User, GraduationCap, Star, FileText, ChevronDown, AlertCircle, Loader2
 } from 'lucide-react';
 
-// ─── Formations ────────────────────────────────────────────────────────────────
+// ─── Formations ───────────────────────────────────────────────────────────────
 const FORMATIONS = [
   { value: 'bachelor-admin',  label: 'Bachelor Administration des Entreprises', niveau: 'Bac+3' },
   { value: 'bachelor-design', label: 'Bachelor Design',                          niveau: 'Bac+3' },
   { value: 'bachelor-dev',    label: 'Bachelor Développement Fullstack',          niveau: 'Bac+3' },
   { value: 'bachelor-reseau', label: 'Bachelor Infrastructures Réseau Sécurisé',  niveau: 'Bac+3' },
   { value: 'master-cyber',    label: 'Mastère Cybersécurité & Green IT',          niveau: 'Bac+5' },
-  { value: 'master-energie',  label: 'Mastère Performance Énergétique',            niveau: 'Bac+5' },
+  { value: 'master-energie',  label: 'Mastère Performance Énergétique',           niveau: 'Bac+5' },
 ];
 
 const DIPLOMES = [
@@ -21,7 +21,52 @@ const DIPLOMES = [
 ];
 const ANNEES = ['2021', '2022', '2023', '2024', '2025', '2026 (en cours)'];
 
-// ─── Types ─────────────────────────────────────────────────────────────────────
+// ─── Limites — DOIT correspondre exactement à index.js ────────────────────────
+// index.js : FILE_LIMITS = { cv:1.5, letter:1.0, diploma:2.0, id:1.5, photo:1.0 }
+// index.js : TOTAL_MAX_MB = 4
+const TOTAL_MAX_MB = 4; // 4 Mo total max (aligné avec le backend)
+
+const UPLOAD_DOCS = [
+  {
+    key:      'cv'      as const,
+    label:    'Curriculum Vitae',
+    desc:     'Votre CV à jour',
+    accept:   '.pdf,.doc,.docx',
+    acceptLabel: 'PDF, DOC, DOCX',
+    maxMb:    1.5,   // aligné avec FILE_LIMITS.cv
+    required: true,
+  },
+  {
+    key:      'diploma' as const,
+    label:    'Relevés de notes / Diplôme',
+    desc:     'Derniers relevés ou diplôme obtenu',
+    accept:   '.pdf,.jpg,.jpeg,.png',
+    acceptLabel: 'PDF, JPG, PNG',
+    maxMb:    2.0,   // aligné avec FILE_LIMITS.diploma
+    required: true,
+  },
+  {
+    key:      'id'      as const,
+    label:    "Pièce d'identité",
+    desc:     'CNI ou passeport (recto verso)',
+    accept:   '.pdf,.jpg,.jpeg,.png',
+    acceptLabel: 'PDF, JPG, PNG',
+    maxMb:    1.5,   // aligné avec FILE_LIMITS.id
+    required: true,
+  },
+  {
+    key:      'letter'  as const,
+    label:    'Lettre de motivation (optionnel)',
+    desc:     'Si vous en avez une en version PDF',
+    accept:   '.pdf,.doc,.docx',
+    acceptLabel: 'PDF, DOC, DOCX',
+    maxMb:    1.0,   // aligné avec FILE_LIMITS.letter
+    required: false,
+  },
+] as const;
+
+type FileKey = typeof UPLOAD_DOCS[number]['key'];
+
 interface FormData {
   lastName: string; firstName: string; email: string; phone: string;
   birthDate: string; birthPlace: string; nationality: string; address: string;
@@ -29,12 +74,7 @@ interface FormData {
   program: string; startDate: string; motivation: string; experience: string;
 }
 
-interface FileState {
-  cv: File | null;
-  letter: File | null;
-  diploma: File | null;
-  id: File | null;
-}
+type FileState = Record<FileKey, File | null>;
 
 const INIT: FormData = {
   lastName: '', firstName: '', email: '', phone: '',
@@ -42,50 +82,16 @@ const INIT: FormData = {
   diploma: 'Baccalauréat', school: '', year: '2024', gpa: '', specialite: '',
   program: 'bachelor-admin', startDate: 'Septembre 2026', motivation: '', experience: '',
 };
+const INIT_FILES: FileState = { cv: null, diploma: null, id: null, letter: null };
 
-const INIT_FILES: FileState = { cv: null, letter: null, diploma: null, id: null };
+// ─── Utilitaire ───────────────────────────────────────────────────────────────
+const formatSize = (bytes: number) => {
+  if (bytes === 0) return '0 Ko';
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} Ko`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} Mo`;
+};
 
-// ─── Config upload ──────────────────────────────────────────────────────────────
-const UPLOAD_DOCS = [
-  {
-    key: 'cv' as keyof FileState,
-    label: 'Curriculum Vitae',
-    desc: 'Votre CV à jour',
-    accept: '.pdf,.doc,.docx',
-    maxMb: 1.5,
-    required: true,
-    icon: '#',
-  },
-  {
-    key: 'diploma' as keyof FileState,
-    label: 'Relevés de notes / Diplôme',
-    desc: 'Derniers relevés ou diplôme obtenu',
-    accept: '.pdf,.jpg,.jpeg,.png',
-    maxMb: 2,
-    required: true,
-    icon: '#',
-  },
-  {
-    key: 'id' as keyof FileState,
-    label: "Pièce d'identité",
-    desc: 'CNI ou passeport (recto verso)',
-    accept: '.pdf,.jpg,.jpeg,.png',
-    maxMb: 1.5,
-    required: true,
-    icon: '#',
-  },
-  {
-    key: 'letter' as keyof FileState,
-    label: 'Lettre de motivation (optionnel)',
-    desc: 'Si vous en avez une en version PDF',
-    accept: '.pdf,.doc,.docx',
-    maxMb: 1,
-    required: false,
-    icon: '#',
-  },
-];
-
-// ─── Sous-composants ────────────────────────────────────────────────────────────
+// ─── Composant : champ texte / textarea ───────────────────────────────────────
 function Field({
   label, name, type = 'text', value, onChange, error, placeholder, required,
 }: {
@@ -94,7 +100,7 @@ function Field({
   error?: string; placeholder?: string; required?: boolean;
 }) {
   const base = 'w-full px-4 py-3 rounded-xl border text-sm text-[#2D2D2D] dark:text-white bg-white dark:bg-[#2A2A2A] outline-none transition-all';
-  const ok = 'border-[#E0E0E0] dark:border-[#3A3A3A] focus:border-[#1FAB89] focus:ring-2 focus:ring-[#1FAB89]/20';
+  const ok  = 'border-[#E0E0E0] dark:border-[#3A3A3A] focus:border-[#1FAB89] focus:ring-2 focus:ring-[#1FAB89]/20';
   const bad = 'border-red-400 focus:ring-2 focus:ring-red-200';
   return (
     <div>
@@ -107,15 +113,12 @@ function Field({
         : <input type={type} name={name} value={value} onChange={onChange} placeholder={placeholder}
             className={`${base} ${error ? bad : ok}`} />
       }
-      {error && (
-        <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-          <X className="h-3 w-3" />{error}
-        </p>
-      )}
+      {error && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><X className="h-3 w-3" />{error}</p>}
     </div>
   );
 }
 
+// ─── Composant : select ───────────────────────────────────────────────────────
 function SelectField({
   label, name, value, onChange, options, required,
 }: {
@@ -139,60 +142,66 @@ function SelectField({
   );
 }
 
-// ─── Zone upload d'un fichier ──────────────────────────────────────────────────
+// ─── Composant : zone upload d'un fichier ─────────────────────────────────────
 function UploadZone({
-  label, desc, accept, maxMb, required, icon, file, onFile, error, docKey,
+  label, desc, accept, acceptLabel, maxMb, required,
+  file, onFile, error,
 }: {
-  label: string; desc: string; accept: string;
-  maxMb: number; required: boolean; icon: string;
-  file: File | null; onFile: (f: File | null) => void; error?: string;
+  label: string; desc: string; accept: string; acceptLabel: string;
+  maxMb: number; required: boolean;
+  file: File | null; onFile: (f: File | null, err?: string) => void; error?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
+  const maxBytes = maxMb * 1024 * 1024;
 
-  const validateFile = (f: File): boolean => {
-    if (f.size > maxMb * 1024 * 1024) {
-      return false;
+  const handleFile = (f: File | null) => {
+    if (!f) { onFile(null); return; }
+
+    // Vérification type MIME via extension (le MIME réel est vérifié côté serveur)
+    const ext = f.name.split('.').pop()?.toLowerCase() || '';
+    const allowedExt = accept.replace(/\./g, '').split(',');
+    if (!allowedExt.includes(ext)) {
+      onFile(null, `Format non autorisé. Utilisez : ${acceptLabel}`);
+      return;
     }
-    return true;
+
+    // Vérification taille individuelle
+    if (f.size > maxBytes) {
+      onFile(null, `Fichier trop lourd (${formatSize(f.size)}). Limite : ${maxMb} Mo pour ce document.`);
+      return;
+    }
+
+    onFile(f);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0] ?? null;
-    if (f && validateFile(f)) {
-      onFile(f);
-    } else if (f) {
-      // Fichier trop lourd, ne rien faire (l'erreur sera affichée par le parent)
-      if (inputRef.current) inputRef.current.value = '';
-    }
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleFile(e.target.files?.[0] ?? null);
+    // Reset input pour permettre re-sélection du même fichier
+    if (inputRef.current) inputRef.current.value = '';
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const onDrop = (e: React.DragEvent) => {
     e.preventDefault(); setDragging(false);
-    const f = e.dataTransfer.files?.[0] ?? null;
-    if (f && validateFile(f)) {
-      onFile(f);
-    }
-    // Si fichier trop lourd, on ne le charge pas
-  };
-
-  const formatSize = (bytes: number) => {
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} Ko`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
+    handleFile(e.dataTransfer.files?.[0] ?? null);
   };
 
   const hasFile = !!file;
+  const pct = file ? Math.min(100, (file.size / maxBytes) * 100) : 0;
+  const nearLimit = pct > 75;
 
   return (
     <div>
       <label className="block text-xs font-semibold text-[#696969] uppercase tracking-wider mb-1.5">
         {label}{required && <span className="text-[#1FAB89] ml-0.5">*</span>}
+        <span className="ml-2 text-[#B0B0B0] normal-case font-normal">max {maxMb} Mo</span>
       </label>
+
       <div
         onClick={() => !hasFile && inputRef.current?.click()}
         onDragOver={e => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
-        onDrop={handleDrop}
+        onDrop={onDrop}
         className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-all
           ${hasFile
             ? 'border-[#1FAB89] bg-[#1FAB89]/5 dark:bg-[#1FAB89]/10'
@@ -203,19 +212,35 @@ function UploadZone({
                 : 'border-dashed border-[#E0E0E0] dark:border-[#3A3A3A] hover:border-[#1FAB89]/60 hover:bg-[#F0FDF9] cursor-pointer'
           }`}
       >
-        {/* Icône */}
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-xl transition-all
-          ${hasFile ? 'bg-[#1FAB89] shadow-md shadow-[#1FAB89]/30' : 'bg-[#F0F0F0] dark:bg-[#2A2A2A]'}`}>
-          {hasFile ? <Check className="h-6 w-6 text-white" /> : <span>{icon}</span>}
+        {/* Icône état */}
+        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all
+          ${hasFile ? 'bg-[#1FAB89] shadow-md shadow-[#1FAB89]/30' : error ? 'bg-red-100 dark:bg-red-900/20' : 'bg-[#F0F0F0] dark:bg-[#2A2A2A]'}`}>
+          {hasFile
+            ? <Check className="h-6 w-6 text-white" />
+            : error
+              ? <AlertCircle className="h-6 w-6 text-red-400" />
+              : <FileText className="h-6 w-6 text-[#B0B0B0]" />
+          }
         </div>
 
         {/* Texte */}
         <div className="flex-1 min-w-0">
           {hasFile ? (
             <>
-              <p className="text-sm font-bold text-[#1FAB89]">✅ Fichier ajouté</p>
-              <p className="text-xs text-[#696969] truncate">{file?.name}</p>
-              <p className="text-xs text-[#B0B0B0]">{formatSize(file?.size || 0)}</p>
+              <p className="text-sm font-bold text-[#1FAB89]">Fichier sélectionné</p>
+              <p className="text-xs text-[#696969] truncate mt-0.5">{file.name}</p>
+              {/* Barre de taille */}
+              <div className="flex items-center gap-2 mt-1.5">
+                <div className="flex-1 h-1.5 bg-[#E0E0E0] dark:bg-[#3A3A3A] rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all ${nearLimit ? 'bg-amber-400' : 'bg-[#1FAB89]'}`}
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+                <span className={`text-xs font-semibold shrink-0 ${nearLimit ? 'text-amber-500' : 'text-[#696969]'}`}>
+                  {formatSize(file.size)} / {maxMb} Mo
+                </span>
+              </div>
             </>
           ) : (
             <>
@@ -223,7 +248,7 @@ function UploadZone({
                 Glisser-déposer ou <span className="text-[#1FAB89] underline underline-offset-2">parcourir</span>
               </p>
               <p className="text-xs text-[#696969] mt-0.5">{desc}</p>
-              <p className="text-xs text-[#B0B0B0] mt-0.5">{accept.replace(/\./g, '').toUpperCase()} · max {maxMb} Mo</p>
+              <p className="text-xs text-[#B0B0B0] mt-0.5">{acceptLabel}</p>
             </>
           )}
         </div>
@@ -232,94 +257,133 @@ function UploadZone({
         {hasFile && (
           <button
             type="button"
-            onClick={e => { e.stopPropagation(); onFile(null); if (inputRef.current) inputRef.current.value = ''; }}
+            onClick={e => { e.stopPropagation(); onFile(null); }}
             className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 text-red-500 hover:bg-red-200 flex items-center justify-center transition-all shrink-0"
-            title="Supprimer"
+            title="Supprimer ce fichier"
           >
             <X className="h-3.5 w-3.5" />
           </button>
         )}
 
-        <input ref={inputRef} type="file" className="hidden" accept={accept} onChange={handleChange} />
+        <input ref={inputRef} type="file" className="hidden" accept={accept} onChange={onChange} />
       </div>
 
       {error && (
         <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1">
-          <AlertCircle className="h-3 w-3" />{error}
+          <AlertCircle className="h-3 w-3 shrink-0" />{error}
         </p>
       )}
     </div>
   );
 }
 
-// ─── Composant principal ────────────────────────────────────────────────────────
-export function AdmissionsPage() {
-  const [step, setStep] = useState(1);
-  const [isSubmitted, setSubmitted] = useState(false);
-  const [isLoading, setLoading] = useState(false);
-  const [submitError, setSubmitError] = useState('');
-  const [form, setForm] = useState<FormData>(INIT);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [files, setFiles] = useState<FileState>(INIT_FILES);
+// ─── Composant : jauge du total ────────────────────────────────────────────────
+function TotalSizeBar({ files }: { files: FileState }) {
+  const totalBytes = Object.values(files).reduce((s, f) => s + (f?.size || 0), 0);
+  if (totalBytes === 0) return null;
 
-  const formation = FORMATIONS.find(f => f.value === form.program);
-  if (!formation) return null;
+  const totalMb   = totalBytes / (1024 * 1024);
+  const pct       = Math.min(100, (totalMb / TOTAL_MAX_MB) * 100);
+  const isOver    = totalMb > TOTAL_MAX_MB;
+  const isWarn    = pct > 75 && !isOver;
+
+  return (
+    <div className={`rounded-xl border px-4 py-3 ${
+      isOver ? 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-800'
+             : isWarn ? 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800'
+             : 'bg-[#F0FDF9] border-[#1FAB89]/20'
+    }`}>
+      <div className="flex items-center justify-between mb-1.5">
+        <p className="text-xs font-semibold text-[#696969] uppercase tracking-wider">Total des fichiers</p>
+        <p className={`text-sm font-bold ${isOver ? 'text-red-600' : isWarn ? 'text-amber-600' : 'text-[#1FAB89]'}`}>
+          {formatSize(totalBytes)} / {TOTAL_MAX_MB} Mo
+        </p>
+      </div>
+      <div className="h-2 bg-[#E0E0E0] dark:bg-[#3A3A3A] rounded-full overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-all duration-300 ${
+            isOver ? 'bg-red-500' : isWarn ? 'bg-amber-400' : 'bg-[#1FAB89]'
+          }`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      {isOver && (
+        <p className="text-xs text-red-600 font-semibold mt-1.5 flex items-center gap-1">
+          <AlertCircle className="h-3 w-3 shrink-0" />
+          Dépassement de {(totalMb - TOTAL_MAX_MB).toFixed(2)} Mo. Supprimez ou réduisez un fichier.
+        </p>
+      )}
+      {isWarn && (
+        <p className="text-xs text-amber-600 mt-1.5">
+          Vous approchez de la limite ({TOTAL_MAX_MB} Mo max).
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ─── Page principale ───────────────────────────────────────────────────────────
+export function AdmissionsPage() {
+  const [step, setStep]             = useState(1);
+  const [isSubmitted, setSubmitted] = useState(false);
+  const [isLoading, setLoading]     = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [form, setForm]             = useState<FormData>(INIT);
+  const [errors, setErrors]         = useState<Record<string, string>>({});
+  const [files, setFiles]           = useState<FileState>(INIT_FILES);
+
+  const formation = FORMATIONS.find(f => f.value === form.program)!;
 
   const STEPS = [
-    { n: 1, label: 'Identité',   icon: User },
+    { n: 1, label: 'Identité',   icon: User          },
     { n: 2, label: 'Parcours',   icon: GraduationCap },
-    { n: 3, label: 'Motivation', icon: Star },
-    { n: 4, label: 'Documents',  icon: FileText },
+    { n: 3, label: 'Motivation', icon: Star          },
+    { n: 4, label: 'Documents',  icon: FileText      },
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm(f => ({ ...f, [name]: value }));
-    setErrors(err => { const n: Record<string, string> = { ...err }; delete n[name]; return n; });
+    setErrors(err => { const n = { ...err }; delete n[name]; return n; });
   };
 
-  const setFile = (key: keyof FileState) => (f: File | null) => {
+  // Gestion d'un fichier : vérifie taille individuelle ET total global
+  const handleFile = (key: FileKey) => (f: File | null, fileErr?: string) => {
+    if (fileErr) {
+      // Erreur de type ou taille individuelle signalée par UploadZone
+      setErrors(err => ({ ...err, [key]: fileErr }));
+      return;
+    }
+
     if (f) {
-      // Get the doc config to check max size
-      const doc = UPLOAD_DOCS.find(d => d.key === key);
-      const maxSizeBytes = doc ? doc.maxMb * 1024 * 1024 : 0;
-      
-      if (maxSizeBytes > 0 && f.size > maxSizeBytes) {
+      // Vérification du total AVANT d'accepter
+      const futureFiles = { ...files, [key]: f };
+      const totalBytes  = Object.values(futureFiles).reduce((s, x) => s + (x?.size || 0), 0);
+      const totalMb     = totalBytes / (1024 * 1024);
+
+      if (totalMb > TOTAL_MAX_MB) {
         setErrors(err => ({
           ...err,
-          [key]: `Ce fichier dépasse la taille maximale autorisée (${doc?.maxMb} Mo). Veuillez choisir un fichier plus léger.`
+          [key]: `Impossible d'ajouter ce fichier : le total atteindrait ${totalMb.toFixed(2)} Mo (limite : ${TOTAL_MAX_MB} Mo).`,
         }));
         return;
       }
     }
-    
+
     setFiles(prev => ({ ...prev, [key]: f }));
-    if (f) setErrors(err => { const n: Record<string, string> = { ...err }; delete n[key]; return n; });
+    setErrors(err => { const n = { ...err }; delete n[key]; return n; });
   };
 
-  // ── Calcul et affichage de la taille totale des fichiers ───────────────────────
-  const getTotalFileSize = (): number => {
-    return Object.values(files).reduce((sum, file) => sum + (file?.size || 0), 0);
-  };
-
-  const getMaxTotalSize = (): number => {
-    return UPLOAD_DOCS.reduce((sum, doc) => sum + doc.maxMb, 0) * 1024 * 1024;
-  };
-
-  const formatSize = (bytes: number) => {
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} Ko`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
-  };
-
-  // ── Validation par étape ──────────────────────────────────────────────────────
+  // ── Validation par étape ────────────────────────────────────────────────────
   const validate = (s: number): boolean => {
     const e: Record<string, string> = {};
+
     if (s === 1) {
-      if (!form.lastName.trim())  e.lastName   = 'Nom requis';
-      if (!form.firstName.trim()) e.firstName  = 'Prénom requis';
+      if (!form.lastName.trim())    e.lastName    = 'Nom requis';
+      if (!form.firstName.trim())   e.firstName   = 'Prénom requis';
       if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = 'Email invalide';
-      if (!form.phone.trim())     e.phone      = 'Téléphone requis';
-      if (!form.birthDate)        e.birthDate  = 'Date de naissance requise';
+      if (!form.phone.trim())       e.phone       = 'Téléphone requis';
+      if (!form.birthDate)          e.birthDate   = 'Date de naissance requise';
       if (!form.nationality.trim()) e.nationality = 'Nationalité requise';
     }
     if (s === 2) {
@@ -330,22 +394,28 @@ export function AdmissionsPage() {
       if (form.motivation.trim().length < 50) e.motivation = 'Motivation trop courte (50 caractères min.)';
     }
     if (s === 4) {
+      // Fichiers obligatoires
       if (!files.cv)      e.cv      = 'Votre CV est obligatoire';
       if (!files.diploma) e.diploma = 'Les relevés de notes sont obligatoires';
       if (!files.id)      e.id      = "La pièce d'identité est obligatoire";
-      
-      // Vérification de la taille totale des fichiers
-      const totalSize = getTotalFileSize();
-      const maxTotalSize = getMaxTotalSize();
-      if (totalSize > maxTotalSize) {
-        e['total-files'] = `La taille totale des fichiers (${formatSize(totalSize)}) dépasse la limite autorisée (${formatSize(maxTotalSize)}). Veuillez réduire certains fichiers.`;
+
+      // Erreurs de taille déjà présentes
+      ['cv', 'diploma', 'id', 'letter'].forEach(k => {
+        if (errors[k]) e[k] = errors[k];
+      });
+
+      // Vérification total (dernier garde-fou)
+      const totalMb = Object.values(files).reduce((s, f) => s + (f?.size || 0), 0) / (1024 * 1024);
+      if (totalMb > TOTAL_MAX_MB) {
+        e['total-files'] = `Total (${totalMb.toFixed(2)} Mo) dépasse la limite de ${TOTAL_MAX_MB} Mo.`;
       }
     }
+
     setErrors(e);
     if (Object.keys(e).length > 0) {
       const first = Object.keys(e)[0];
-      const element = document.querySelector(`[name="${first}"]`) || document.querySelector(`.error-${first}`);
-      element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const el = document.querySelector(`[name="${first}"]`) || document.querySelector(`.error-${first}`);
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return false;
     }
     return true;
@@ -354,7 +424,7 @@ export function AdmissionsPage() {
   const next = () => { if (validate(step)) { setStep(s => s + 1); window.scrollTo(0, 0); } };
   const back = () => { setStep(s => Math.max(1, s - 1)); window.scrollTo(0, 0); };
 
-  // ── Soumission ────────────────────────────────────────────────────────────────
+  // ── Soumission ──────────────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate(step)) return;
@@ -363,8 +433,6 @@ export function AdmissionsPage() {
 
     try {
       const fd = new FormData();
-
-      // Champs texte
       fd.append('firstName',     form.firstName);
       fd.append('lastName',      form.lastName);
       fd.append('email',         form.email);
@@ -384,19 +452,19 @@ export function AdmissionsPage() {
       fd.append('motivation',    form.motivation);
       fd.append('experience',    form.experience);
 
-      // Fichiers — chacun avec son champ nommé (correspond au serveur)
       if (files.cv)      fd.append('cv',      files.cv,      files.cv.name);
       if (files.letter)  fd.append('letter',  files.letter,  files.letter.name);
       if (files.diploma) fd.append('diploma', files.diploma, files.diploma.name);
       if (files.id)      fd.append('id',      files.id,      files.id.name);
 
-      const res = await fetch(apiUrl('/api/send-application'), {
-        method: 'POST',
-        body: fd,
-      });
+      const res = await fetch(apiUrl('/api/send-application'), { method: 'POST', body: fd });
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
+        // Erreur 413 = taille dépassée côté serveur
+        if (res.status === 413) {
+          throw new Error(data.error || `Fichiers trop volumineux (${res.status}). Réduisez la taille de vos documents.`);
+        }
         throw new Error(data.error || `Erreur serveur (${res.status})`);
       }
 
@@ -407,22 +475,18 @@ export function AdmissionsPage() {
       window.scrollTo(0, 0);
 
     } catch (err) {
-      const error = err instanceof Error ? err.message : 'Une erreur est survenue';
-      // Si c'est une erreur réseau (serveur absent), on affiche quand même le succès
-      // car le serveur sauvegarde la candidature même sans email.
-      if (error.includes('fetch')) {
-        // Serveur inaccessible
-        setSubmitError('Impossible de joindre le serveur. Veuillez réessayer plus tard.');
+      const msg = err instanceof Error ? err.message : 'Une erreur est survenue';
+      if (msg.toLowerCase().includes('failed to fetch') || msg.includes('networkerror')) {
+        setSubmitError('Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.');
       } else {
-        // Erreur métier
-        setSubmitError('Erreur lors de l\'envoi: ' + error);
+        setSubmitError(msg);
       }
     } finally {
       setLoading(false);
     }
   };
 
-  // ── Écran de confirmation ─────────────────────────────────────────────────────
+  // ── Écran confirmation ──────────────────────────────────────────────────────
   if (isSubmitted) return (
     <div className="pt-20 min-h-screen bg-[#F0F0F0] dark:bg-[#0A0A0A] flex items-center justify-center p-4">
       <div className="bg-white dark:bg-[#1A1A1A] rounded-3xl p-10 max-w-md w-full text-center border border-[#E0E0E0] dark:border-[#2A2A2A] shadow-xl">
@@ -437,10 +501,8 @@ export function AdmissionsPage() {
           Votre dossier pour <strong className="text-[#1FAB89]">{formation.label}</strong> a bien été transmis.<br />
           Vous recevrez une réponse sous <strong>48h</strong> à <strong>{form.email}</strong>.
         </p>
-
-        {/* Récap docs envoyés */}
         <div className="bg-[#F0FDF9] border border-[#1FAB89]/20 rounded-2xl p-4 text-left mb-4">
-          <p className="text-xs font-bold text-[#1FAB89] uppercase tracking-wider mb-2">📎 Documents joints</p>
+          <p className="text-xs font-bold text-[#1FAB89] uppercase tracking-wider mb-2">Documents joints</p>
           <div className="space-y-1">
             {UPLOAD_DOCS.map(d => (
               <div key={d.key} className="flex items-center gap-2 text-xs">
@@ -452,7 +514,6 @@ export function AdmissionsPage() {
             ))}
           </div>
         </div>
-
         <div className="bg-[#F0F0F0] dark:bg-[#2A2A2A] rounded-2xl p-4 text-left mb-6 space-y-2">
           {[['Formation', formation.label], ['Rentrée', form.startDate], ['Email', form.email]].map(([k, v]) => (
             <div key={k} className="flex justify-between text-sm">
@@ -462,7 +523,7 @@ export function AdmissionsPage() {
           ))}
         </div>
         <button
-          onClick={() => { setSubmitted(false); setStep(1); setForm(INIT); setFiles(INIT_FILES); }}
+          onClick={() => { setSubmitted(false); setStep(1); setForm(INIT); setFiles(INIT_FILES); setErrors({}); }}
           className="w-full bg-[#1FAB89] hover:bg-[#15896B] text-white py-3 rounded-xl font-bold transition-all"
         >
           Nouvelle candidature
@@ -478,19 +539,19 @@ export function AdmissionsPage() {
 
       {/* Hero */}
       <div className="bg-[#1FAB89] py-16 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.5'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} />
+        <div className="absolute inset-0 opacity-10"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.5'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}
+        />
         <div className="absolute -bottom-16 -right-16 w-64 h-64 bg-[#15896B] rounded-full blur-3xl opacity-40" />
         <div className="relative max-w-3xl mx-auto px-4 text-center">
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-3">Déposer ma candidature</h1>
           <p className="text-white/80">Admissions 2026 · Formations en alternance · 100% gratuit</p>
           <div className="my-4 inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm border border-white/30">
-            📅 Clôture des candidatures: <strong>30 juillet</strong>
+            Clôture des candidatures : <strong>30 juillet 2026</strong>
           </div>
-          <div className="flex flex-wrap justify-center gap-4 mt-5">
-            {[{ e: '', t: '6 formations' }, { e: '', t: 'Réponse 48h' }, { e: '', t: 'Gratuit' }].map((b, i) => (
-              <div key={i} className="flex items-center gap-2 bg-white/15 backdrop-blur-sm px-4 py-1.5 rounded-full text-white text-sm border border-white/20">
-                {b.t}
-              </div>
+          <div className="flex flex-wrap justify-center gap-3 mt-4">
+            {['6 formations', 'Réponse sous 48h', '100% gratuit'].map(t => (
+              <div key={t} className="bg-white/15 backdrop-blur-sm px-4 py-1.5 rounded-full text-white text-sm border border-white/20">{t}</div>
             ))}
           </div>
         </div>
@@ -502,19 +563,26 @@ export function AdmissionsPage() {
         <div className="bg-white dark:bg-[#1A1A1A] rounded-2xl p-5 mb-5 border border-[#E0E0E0] dark:border-[#2A2A2A]">
           <div className="flex items-center justify-between mb-3">
             {STEPS.map((s, i) => {
-              const Icon = s.icon;
-              const done = step > s.n;
+              const Icon   = s.icon;
+              const done   = step > s.n;
               const active = step === s.n;
               return (
                 <React.Fragment key={s.n}>
                   <div className="flex flex-col items-center gap-1">
                     <div className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition-all
-                      ${done ? 'bg-[#1FAB89] border-[#1FAB89] text-white' : active ? 'border-[#1FAB89] bg-[#1FAB89]/10 text-[#1FAB89]' : 'border-[#E0E0E0] bg-[#F0F0F0] text-[#696969]'}`}>
+                      ${done ? 'bg-[#1FAB89] border-[#1FAB89] text-white'
+                             : active ? 'border-[#1FAB89] bg-[#1FAB89]/10 text-[#1FAB89]'
+                             : 'border-[#E0E0E0] bg-[#F0F0F0] text-[#696969]'}`}>
                       {done ? <Check className="h-4 w-4" /> : <Icon className="h-4 w-4" />}
                     </div>
-                    <span className={`text-xs font-medium hidden sm:block ${active ? 'text-[#1FAB89]' : done ? 'text-[#696969]' : 'text-[#B0B0B0]'}`}>{s.label}</span>
+                    <span className={`text-xs font-medium hidden sm:block
+                      ${active ? 'text-[#1FAB89]' : done ? 'text-[#696969]' : 'text-[#B0B0B0]'}`}>
+                      {s.label}
+                    </span>
                   </div>
-                  {i < STEPS.length - 1 && <div className={`flex-1 h-0.5 mx-2 transition-all ${step > s.n ? 'bg-[#1FAB89]' : 'bg-[#E0E0E0]'}`} />}
+                  {i < STEPS.length - 1 && (
+                    <div className={`flex-1 h-0.5 mx-2 transition-all ${step > s.n ? 'bg-[#1FAB89]' : 'bg-[#E0E0E0]'}`} />
+                  )}
                 </React.Fragment>
               );
             })}
@@ -522,57 +590,61 @@ export function AdmissionsPage() {
           <div className="w-full h-1.5 bg-[#F0F0F0] dark:bg-[#2A2A2A] rounded-full overflow-hidden">
             <div className="h-full bg-[#1FAB89] rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
           </div>
-          <p className="text-xs text-[#696969] mt-1.5 text-right">Étape {step}/{STEPS.length}</p>
+          <p className="text-xs text-[#696969] mt-1.5 text-right">Étape {step} / {STEPS.length}</p>
         </div>
 
         {/* Formulaire */}
         <form onSubmit={handleSubmit}>
           <div className="bg-white dark:bg-[#1A1A1A] rounded-2xl border border-[#E0E0E0] dark:border-[#2A2A2A] p-6 sm:p-8 space-y-5">
 
-            {/* ── ÉTAPE 1 — IDENTITÉ ── */}
+            {/* ── ÉTAPE 1 — IDENTITÉ ─────────────────────────────────────── */}
             {step === 1 && <>
               <div>
                 <h2 className="text-xl font-bold text-[#2D2D2D] dark:text-white mb-1">Informations personnelles</h2>
                 <p className="text-sm text-[#696969]">Ces données constituent votre dossier de candidature.</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <Field label="Nom" name="lastName" value={form.lastName} onChange={handleChange} error={errors.lastName} placeholder="DUPONT" required />
-                <Field label="Prénom" name="firstName" value={form.firstName} onChange={handleChange} error={errors.firstName} placeholder="Jean" required />
+                <Field label="Nom"    name="lastName"  value={form.lastName}  onChange={handleChange} error={errors.lastName}  placeholder="DUPONT" required />
+                <Field label="Prénom" name="firstName" value={form.firstName} onChange={handleChange} error={errors.firstName} placeholder="Jean"   required />
               </div>
               <Field label="Adresse email" name="email" type="email" value={form.email} onChange={handleChange} error={errors.email} placeholder="jean.dupont@email.com" required />
-              <Field label="Téléphone" name="phone" type="tel" value={form.phone} onChange={handleChange} error={errors.phone} placeholder="+33 6 12 34 56 78" required />
+              <Field label="Téléphone"     name="phone" type="tel"   value={form.phone} onChange={handleChange} error={errors.phone} placeholder="+33 6 12 34 56 78"    required />
               <div className="grid grid-cols-2 gap-4">
-                <Field label="Date de naissance" name="birthDate" type="date" value={form.birthDate} onChange={handleChange} error={errors.birthDate} required />
-                <Field label="Lieu de naissance" name="birthPlace" value={form.birthPlace} onChange={handleChange} placeholder="Paris, France" />
+                <Field label="Date de naissance" name="birthDate"  type="date" value={form.birthDate}  onChange={handleChange} error={errors.birthDate} required />
+                <Field label="Lieu de naissance" name="birthPlace"             value={form.birthPlace}  onChange={handleChange} placeholder="Paris, France" />
               </div>
-              <Field label="Nationalité" name="nationality" value={form.nationality} onChange={handleChange} error={errors.nationality} placeholder="Française" required />
-              <Field label="Adresse complète" name="address" value={form.address} onChange={handleChange} placeholder="15 rue de la Paix, 75001 Paris" />
+              <Field label="Nationalité"    name="nationality" value={form.nationality} onChange={handleChange} error={errors.nationality} placeholder="Française" required />
+              <Field label="Adresse complète" name="address"   value={form.address}    onChange={handleChange} placeholder="15 rue de la Paix, 75001 Paris" />
             </>}
 
-            {/* ── ÉTAPE 2 — PARCOURS ── */}
+            {/* ── ÉTAPE 2 — PARCOURS ─────────────────────────────────────── */}
             {step === 2 && <>
               <div>
                 <h2 className="text-xl font-bold text-[#2D2D2D] dark:text-white mb-1">Parcours académique</h2>
                 <p className="text-sm text-[#696969]">Renseignez votre dernier diplôme obtenu ou en cours.</p>
               </div>
-              <SelectField label="Diplôme le plus élevé" name="diploma" value={form.diploma} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLSelectElement>)}
+              <SelectField label="Diplôme le plus élevé" name="diploma" value={form.diploma}
+                onChange={e => handleChange(e as React.ChangeEvent<HTMLSelectElement>)}
                 options={DIPLOMES.map(d => ({ value: d, label: d }))} required />
-              <Field label="Établissement" name="school" value={form.school} onChange={handleChange} error={errors.school} placeholder="Lycée Victor Hugo / Université Paris 1…" required />
+              <Field label="Établissement" name="school" value={form.school} onChange={handleChange} error={errors.school}
+                placeholder="Lycée Victor Hugo / Université Paris 1…" required />
               <div className="grid grid-cols-2 gap-4">
-                <Field label="Spécialité / Filière" name="specialite" value={form.specialite} onChange={handleChange} error={errors.specialite} placeholder="Terminale S, BTS SIO…" required />
-                <SelectField label="Année d'obtention" name="year" value={form.year} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLSelectElement>)}
+                <Field label="Spécialité / Filière" name="specialite" value={form.specialite} onChange={handleChange}
+                  error={errors.specialite} placeholder="Terminale S, BTS SIO…" required />
+                <SelectField label="Année d'obtention" name="year" value={form.year}
+                  onChange={e => handleChange(e as React.ChangeEvent<HTMLSelectElement>)}
                   options={ANNEES.map(y => ({ value: y, label: y }))} />
               </div>
-              <Field label="Moyenne / Mention (optionnel)" name="gpa" value={form.gpa} onChange={handleChange} placeholder="12.5/20, Mention Bien…" />
+              <Field label="Moyenne / Mention (optionnel)" name="gpa" value={form.gpa} onChange={handleChange}
+                placeholder="12.5/20, Mention Bien…" />
             </>}
 
-            {/* ── ÉTAPE 3 — FORMATION & MOTIVATION ── */}
+            {/* ── ÉTAPE 3 — FORMATION & MOTIVATION ───────────────────────── */}
             {step === 3 && <>
               <div>
                 <h2 className="text-xl font-bold text-[#2D2D2D] dark:text-white mb-1">Formation & motivation</h2>
                 <p className="text-sm text-[#696969]">Choisissez votre formation et exprimez votre motivation.</p>
               </div>
-
               <div>
                 <label className="block text-xs font-semibold text-[#696969] uppercase tracking-wider mb-2">
                   Formation souhaitée <span className="text-[#1FAB89]">*</span>
@@ -584,7 +656,7 @@ export function AdmissionsPage() {
                     </p>
                     {FORMATIONS.filter(f => f.value.startsWith(type)).map(f => (
                       <label key={f.value} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all mb-1.5
-                        ${form.program === f.value ? 'border-[#1FAB89] bg-[#1FAB89]/8' : 'border-[#E0E0E0] dark:border-[#3A3A3A] hover:border-[#1FAB89]/50'}`}>
+                        ${form.program === f.value ? 'border-[#1FAB89] bg-[#1FAB89]/5' : 'border-[#E0E0E0] dark:border-[#3A3A3A] hover:border-[#1FAB89]/50'}`}>
                         <input type="radio" name="program" value={f.value} checked={form.program === f.value} onChange={handleChange} className="accent-[#1FAB89]" />
                         <div className="flex-1">
                           <p className={`text-sm font-semibold ${form.program === f.value ? 'text-[#1FAB89]' : 'text-[#2D2D2D] dark:text-white'}`}>{f.label}</p>
@@ -596,20 +668,18 @@ export function AdmissionsPage() {
                   </div>
                 ))}
               </div>
-
-              <SelectField label="Rentrée souhaitée" name="startDate" value={form.startDate} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLSelectElement>)}
+              <SelectField label="Rentrée souhaitée" name="startDate" value={form.startDate}
+                onChange={e => handleChange(e as React.ChangeEvent<HTMLSelectElement>)}
                 options={[
                   { value: 'Septembre 2026', label: 'Septembre 2026' },
-                  { value: 'Janvier 2027', label: 'Janvier 2027 (si disponible)' },
+                  { value: 'Janvier 2027',   label: 'Janvier 2027 (si disponible)' },
                 ]} />
-
               <Field
                 label={`Lettre de motivation (${form.motivation.length} car. · min. 50)`}
                 name="motivation" type="textarea" value={form.motivation} onChange={handleChange}
                 error={errors.motivation} required
-                placeholder="Expliquez pourquoi vous souhaitez rejoindre Green Up Academy et cette formation. Quels sont vos objectifs ? Qu'est-ce qui vous attire dans l'alternance ?"
+                placeholder="Expliquez pourquoi vous souhaitez rejoindre Green Up Academy. Quels sont vos objectifs ?"
               />
-
               <Field
                 label="Expériences professionnelles (optionnel)"
                 name="experience" type="textarea" value={form.experience} onChange={handleChange}
@@ -617,62 +687,44 @@ export function AdmissionsPage() {
               />
             </>}
 
-            {/* ── ÉTAPE 4 — DOCUMENTS ── */}
+            {/* ── ÉTAPE 4 — DOCUMENTS ────────────────────────────────────── */}
             {step === 4 && <>
               <div>
                 <h2 className="text-xl font-bold text-[#2D2D2D] dark:text-white mb-1">Documents à joindre</h2>
-                <p className="text-sm text-[#696969]">
-                  Les champs marqués <span className="text-[#1FAB89] font-bold">*</span> sont obligatoires pour valider votre dossier.
-                  Glissez-déposez ou cliquez pour sélectionner.
+                <p className="text-sm text-[#696969] mb-1">
+                  Les champs <span className="text-[#1FAB89] font-bold">*</span> sont obligatoires.
                 </p>
+                {/* Récapitulatif des limites */}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <span className="inline-flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                    <AlertCircle className="h-3 w-3" /> 1 Mo max par fichier (lettre)
+                  </span>
+                  <span className="inline-flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                    <AlertCircle className="h-3 w-3" /> {TOTAL_MAX_MB} Mo max au total
+                  </span>
+                </div>
               </div>
 
-              {/* Zones d'upload */}
+              {/* Zones upload */}
               {UPLOAD_DOCS.map(doc => (
                 <UploadZone
                   key={doc.key}
-                  docKey={doc.key}
                   label={doc.label}
                   desc={doc.desc}
                   accept={doc.accept}
+                  acceptLabel={doc.acceptLabel}
                   maxMb={doc.maxMb}
                   required={doc.required}
-                  icon={doc.icon}
                   file={files[doc.key]}
-                  onFile={setFile(doc.key)}
+                  onFile={handleFile(doc.key)}
                   error={(errors as Record<string, string>)[doc.key]}
                 />
               ))}
 
-              {/* Compteur de fichiers et taille */}
-              {Object.values(files).some(Boolean) && (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 bg-[#F0FDF9] border border-[#1FAB89]/30 rounded-xl px-4 py-2.5">
-                    <Check className="h-4 w-4 text-[#1FAB89] shrink-0" />
-                    <p className="text-sm text-[#1FAB89] font-medium">
-                      {Object.values(files).filter(Boolean).length} fichier(s) prêt(s) à l'envoi
-                    </p>
-                  </div>
-                  
-                  {/* Indicateur de taille */}
-                  <div className="flex items-center justify-between bg-white dark:bg-[#2A2A2A] border border-[#E0E0E0] dark:border-[#3A3A3A] rounded-xl px-4 py-3">
-                    <div>
-                      <p className="text-xs font-semibold text-[#696969] uppercase tracking-wider mb-1">Taille totale</p>
-                      <p className={`text-sm font-bold ${getTotalFileSize() > getMaxTotalSize() ? 'text-red-500' : 'text-[#1FAB89]'}`}>
-                        {formatSize(getTotalFileSize())} / {formatSize(getMaxTotalSize())}
-                      </p>
-                    </div>
-                    <div className="w-20 h-2 bg-[#E0E0E0] dark:bg-[#3A3A3A] rounded-full overflow-hidden">
-                      <div
-                        className={`h-full transition-all ${getTotalFileSize() > getMaxTotalSize() ? 'bg-red-500' : 'bg-[#1FAB89]'}`}
-                        style={{ width: `${Math.min(100, (getTotalFileSize() / getMaxTotalSize()) * 100)}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
+              {/* Jauge totale */}
+              <TotalSizeBar files={files} />
 
-              {/* Erreur si taille dépasse */}
+              {/* Erreur total si dépassement */}
               {errors['total-files'] && (
                 <div className="error-total-files flex items-start gap-2 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-xl px-4 py-3">
                   <AlertCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
@@ -680,9 +732,9 @@ export function AdmissionsPage() {
                 </div>
               )}
 
-              {/* Récap final */}
+              {/* Récapitulatif dossier */}
               <div className="bg-[#F0F0F0] dark:bg-[#2A2A2A] rounded-2xl p-5 border border-[#E0E0E0] dark:border-[#3A3A3A]">
-                <p className="text-xs font-bold text-[#696969] uppercase tracking-wider mb-3">📋 Récapitulatif du dossier</p>
+                <p className="text-xs font-bold text-[#696969] uppercase tracking-wider mb-3">Récapitulatif du dossier</p>
                 {[
                   ['Candidat',  `${form.firstName} ${form.lastName}`],
                   ['Email',     form.email],
@@ -705,7 +757,7 @@ export function AdmissionsPage() {
             </>}
           </div>
 
-          {/* Erreur de soumission */}
+          {/* Erreur soumission */}
           {submitError && (
             <div className="mt-4 flex items-start gap-3 bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-400 px-4 py-3 rounded-xl text-sm">
               <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
