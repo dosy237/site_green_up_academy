@@ -2,8 +2,9 @@ import { apiUrl } from '../lib/api';
 import React, { useState, useRef } from 'react';
 import {
   Check, ArrowRight, ArrowLeft, X,
-  User, GraduationCap, Star, FileText, ChevronDown, AlertCircle, Loader2
+  User, GraduationCap, Star, FileText, ChevronDown, AlertCircle, Loader2, FileSignature, ShieldCheck
 } from 'lucide-react';
+import { CgvSignatureModal } from '../components/public/CgvSignatureModal';
 
 // ─── Formations ───────────────────────────────────────────────────────────────
 const FORMATIONS = [
@@ -278,8 +279,8 @@ function UploadZone({
 }
 
 // ─── Composant : jauge du total ────────────────────────────────────────────────
-function TotalSizeBar({ files }: { files: FileState }) {
-  const totalBytes = Object.values(files).reduce((s, f) => s + (f?.size || 0), 0);
+function TotalSizeBar({ files, extraFile }: { files: FileState; extraFile?: File | null }) {
+  const totalBytes = Object.values(files).reduce((s, f) => s + (f?.size || 0), 0) + (extraFile?.size || 0);
   if (totalBytes === 0) return null;
 
   const totalMb   = totalBytes / (1024 * 1024);
@@ -331,6 +332,9 @@ export function AdmissionsPage({ onNavigate }: { onNavigate?: (page: string) => 
   const [form, setForm]             = useState<FormData>(INIT);
   const [errors, setErrors]         = useState<Record<string, string>>({});
   const [files, setFiles]           = useState<FileState>(INIT_FILES);
+  const [cgvFile, setCgvFile]       = useState<File | null>(null);
+  const [showCgvModal, setShowCgvModal] = useState(false);
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
 
   const formation = FORMATIONS.find(f => f.value === form.program)!;
 
@@ -358,7 +362,7 @@ export function AdmissionsPage({ onNavigate }: { onNavigate?: (page: string) => 
     if (f) {
       // Vérification du total AVANT d'accepter
       const futureFiles = { ...files, [key]: f };
-      const totalBytes  = Object.values(futureFiles).reduce((s, x) => s + (x?.size || 0), 0);
+      const totalBytes  = Object.values(futureFiles).reduce((s, x) => s + (x?.size || 0), 0) + (cgvFile?.size || 0);
       const totalMb     = totalBytes / (1024 * 1024);
 
       if (totalMb > TOTAL_MAX_MB) {
@@ -405,10 +409,14 @@ export function AdmissionsPage({ onNavigate }: { onNavigate?: (page: string) => 
       });
 
       // Vérification total (dernier garde-fou)
-      const totalMb = Object.values(files).reduce((s, f) => s + (f?.size || 0), 0) / (1024 * 1024);
+      const totalMb = (Object.values(files).reduce((s, f) => s + (f?.size || 0), 0) + (cgvFile?.size || 0)) / (1024 * 1024);
       if (totalMb > TOTAL_MAX_MB) {
         e['total-files'] = `Total (${totalMb.toFixed(2)} Mo) dépasse la limite de ${TOTAL_MAX_MB} Mo.`;
       }
+
+      // CGV signées + politique de confidentialité
+      if (!cgvFile) e.cgv = 'Vous devez lire et signer les CGV avant de continuer.';
+      if (!privacyAccepted) e.privacy = 'Vous devez accepter la politique de confidentialité des données.';
     }
 
     setErrors(e);
@@ -451,11 +459,13 @@ export function AdmissionsPage({ onNavigate }: { onNavigate?: (page: string) => 
       fd.append('startDate',     form.startDate);
       fd.append('motivation',    form.motivation);
       fd.append('experience',    form.experience);
+      fd.append('privacyAccepted', String(privacyAccepted));
 
       if (files.cv)      fd.append('cv',      files.cv,      files.cv.name);
       if (files.letter)  fd.append('letter',  files.letter,  files.letter.name);
       if (files.diploma) fd.append('diploma', files.diploma, files.diploma.name);
       if (files.id)      fd.append('id',      files.id,      files.id.name);
+      if (cgvFile)       fd.append('cgv',     cgvFile,        cgvFile.name);
 
       const res = await fetch(apiUrl('/api/send-application'), { method: 'POST', body: fd });
 
@@ -525,6 +535,7 @@ export function AdmissionsPage({ onNavigate }: { onNavigate?: (page: string) => 
         <button
           onClick={() => {
             setSubmitted(false); setStep(1); setForm(INIT); setFiles(INIT_FILES); setErrors({});
+            setCgvFile(null); setPrivacyAccepted(false);
             onNavigate?.('home');
           }}
           className="w-full flex items-center justify-center gap-2 bg-[#1FAB89] hover:bg-[#15896B] text-white py-3 rounded-xl font-bold transition-all"
@@ -725,7 +736,7 @@ export function AdmissionsPage({ onNavigate }: { onNavigate?: (page: string) => 
               ))}
 
               {/* Jauge totale */}
-              <TotalSizeBar files={files} />
+              <TotalSizeBar files={files} extraFile={cgvFile} />
 
               {/* Erreur total si dépassement */}
               {errors['total-files'] && (
@@ -753,10 +764,63 @@ export function AdmissionsPage({ onNavigate }: { onNavigate?: (page: string) => 
                 ))}
               </div>
 
-              <p className="text-xs text-[#696969] text-center leading-relaxed">
-                En soumettant ce formulaire, vos données seront traitées par Green Up Academy
-                uniquement dans le cadre de votre candidature, conformément au RGPD.
-              </p>
+              {/* CGV — lecture et signature électronique */}
+              <div className={`rounded-xl border p-4 ${errors.cgv ? 'border-red-300 bg-red-50 dark:bg-red-900/10' : 'border-[#E0E0E0] dark:border-[#3A3A3A]'}`}>
+                <div className="flex items-start justify-between gap-4 flex-wrap">
+                  <div className="flex items-start gap-3">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${cgvFile ? 'bg-[#1FAB89]' : 'bg-[#F0F0F0] dark:bg-[#2A2A2A]'}`}>
+                      {cgvFile ? <Check className="h-5 w-5 text-white" /> : <FileSignature className="h-5 w-5 text-[#B0B0B0]" />}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-[#2D2D2D] dark:text-white">
+                        Conditions Générales de Vente et de Formation <span className="text-[#1FAB89]">*</span>
+                      </p>
+                      {cgvFile
+                        ? <p className="text-xs text-[#1FAB89] mt-0.5">{cgvFile.name} — signées ✓</p>
+                        : <p className="text-xs text-[#696969] mt-0.5">À lire et signer avant de soumettre votre candidature.</p>
+                      }
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowCgvModal(true)}
+                    className="shrink-0 px-4 py-2 rounded-xl border border-[#1FAB89] text-[#1FAB89] text-xs font-bold hover:bg-[#1FAB89] hover:text-white transition-all"
+                  >
+                    {cgvFile ? 'Revoir / re-signer' : 'Lire et signer les CGV'}
+                  </button>
+                </div>
+                {errors.cgv && (
+                  <p className="text-red-500 text-xs mt-2 flex items-center gap-1"><AlertCircle className="h-3 w-3 shrink-0" />{errors.cgv}</p>
+                )}
+              </div>
+
+              {/* Politique de confidentialité des données */}
+              <div>
+                <label className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all ${errors.privacy ? 'border-red-300 bg-red-50 dark:bg-red-900/10' : 'border-[#E0E0E0] dark:border-[#3A3A3A] hover:border-[#1FAB89]/50'}`}>
+                  <input
+                    type="checkbox"
+                    checked={privacyAccepted}
+                    onChange={e => {
+                      setPrivacyAccepted(e.target.checked);
+                      setErrors(err => { const n = { ...err }; delete n.privacy; return n; });
+                    }}
+                    className="mt-0.5 accent-[#1FAB89] h-4 w-4 shrink-0"
+                  />
+                  <span className="text-sm text-[#2D2D2D] dark:text-white">
+                    <ShieldCheck className="inline h-4 w-4 text-[#1FAB89] mr-1 -mt-0.5" />
+                    J'accepte la politique de confidentialité des données <span className="text-[#1FAB89]">*</span>
+                    <span className="block text-xs text-[#696969] mt-0.5 font-normal">
+                      Vos données personnelles sont traitées par Green Up Academy uniquement dans le cadre de
+                      votre candidature, conformément au RGPD.
+                    </span>
+                  </span>
+                </label>
+                {errors.privacy && (
+                  <p className="error-privacy text-red-500 text-xs mt-1.5 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 shrink-0" />{errors.privacy}
+                  </p>
+                )}
+              </div>
             </>}
           </div>
 
@@ -793,6 +857,18 @@ export function AdmissionsPage({ onNavigate }: { onNavigate?: (page: string) => 
           </div>
         </form>
       </div>
+
+      {showCgvModal && (
+        <CgvSignatureModal
+          fullName={`${form.firstName} ${form.lastName}`.trim()}
+          onClose={() => setShowCgvModal(false)}
+          onSigned={(file) => {
+            setCgvFile(file);
+            setShowCgvModal(false);
+            setErrors(err => { const n = { ...err }; delete n.cgv; return n; });
+          }}
+        />
+      )}
     </div>
   );
 }
