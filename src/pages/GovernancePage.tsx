@@ -21,7 +21,6 @@ export function GovernancePage({ onNavigate }: { onNavigate?: (page: string) => 
   const equipe = [
     { name: 'Meryl Bitee', role: 'Enseignante Dev Fullstack', image: '/images/enseignant/meryl.jpeg' },
     { name: 'Adem Cherif', role: 'Administration Réseau & Sécurité', image: '/images/enseignant/salif.jpeg' },
-    { name: 'RAWAD Salamé', role: 'preparation au titre professionnel', image: '/images/enseignant/salame.jpeg' },
     { name: 'Basile Starynkevich', role: 'Programmation Système', image: '/images/enseignant/basil.jpg' },
     { name: 'Dr Serge ZOUNKEU ', role: 'Gestion d\'Entreprise', image: '/images/enseignant/code.jpeg' },
     { name: 'Paoline Saurelle', role: 'Gestion de Projet IT', image: '/images/enseignant/manager.jpeg' },
@@ -48,14 +47,6 @@ export function GovernancePage({ onNavigate }: { onNavigate?: (page: string) => 
     }
   ];
 
-  const conseilScientifique = [
-    {
-      name: 'Dr Charles Giscard Fongang',
-      role: 'Membre du Conseil Scientifique',
-      image: '/images/enseignant/charles.png'
-    }
-  ];
-
   return (
     <div className="pt-20 min-h-screen bg-gray-50 dark:bg-dark-bg">
       {/* Header */}
@@ -74,8 +65,7 @@ export function GovernancePage({ onNavigate }: { onNavigate?: (page: string) => 
           {[
             { id: 'direction', label: 'Direction' },
             { id: 'board', label: 'Équipe Pédagogique' },
-            { id: 'scientific', label: 'Direction Scientifique' },
-            { id: 'conseil', label: 'Conseil Scientifique' }
+            { id: 'scientific', label: 'Direction Scientifique' }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -164,26 +154,6 @@ export function GovernancePage({ onNavigate }: { onNavigate?: (page: string) => 
                       ))}
                     </ul>
                   </div>
-                </Card>
-              ))}
-            </div>
-          )}
-
-          {/* CONSEIL SCIENTIFIQUE */}
-          {activeTab === 'conseil' && (
-            <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-              {conseilScientifique.map((member, index) => (
-                <Card key={index} className="text-center p-8">
-                  <div className="w-36 h-36 mx-auto rounded-full overflow-hidden mb-6 border-4 border-primary/20">
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=1FAB89&color=fff&size=200`; }}
-                    />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{member.name}</h3>
-                  <p className="text-primary font-medium">{member.role}</p>
                 </Card>
               ))}
             </div>
