@@ -53,6 +53,7 @@ const FILE_LIMITS = {
   diploma: 2.0,
   id:      1.5,
   photo:   1.0,
+  cgv:     1.0,
 };
 const TOTAL_MAX_MB = 4; // Gmail + base64 ×1.37 → ~5.5 Mo encodé, bien sous le seuil
 
@@ -63,6 +64,7 @@ const ALLOWED_MIME = {
   diploma: ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'],
   id:      ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'],
   photo:   ['image/jpeg', 'image/jpg', 'image/png'],
+  cgv:     ['application/pdf'],
 };
 
 // ─── MULTER ──────────────────────────────────────────────────────────────────
@@ -559,6 +561,7 @@ app.post('/api/send-application',
       { name: 'diploma', maxCount: 3 },
       { name: 'id',      maxCount: 1 },
       { name: 'photo',   maxCount: 1 },
+      { name: 'cgv',     maxCount: 1 },
     ])(req, res, (err) => {
       if (err) return handleUploadError(err, req, res, next);
       next();
@@ -577,7 +580,7 @@ app.post('/api/send-application',
         birthDate, birthPlace, nationality, address,
         diploma, school, specialite, year, gpa,
         program, programNiveau, startDate,
-        motivation, experience,
+        motivation, experience, privacyAccepted,
       } = req.body;
 
       const fullName = `${firstName} ${lastName}`;
@@ -591,6 +594,7 @@ app.post('/api/send-application',
         birthDate, birthPlace, nationality, address,
         diploma, school, specialite, year, gpa,
         program, programNiveau, startDate, motivation, experience,
+        privacyAccepted: privacyAccepted === 'true',
         files: Object.entries(files).reduce((acc, [key, arr]) => {
           acc[key] = arr.map(f => ({ name: f.originalname, path: f.path, url: `/uploads/${f.filename}` }));
           return acc;
