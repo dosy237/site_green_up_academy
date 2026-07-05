@@ -45,7 +45,7 @@ function AppContent() {
       case 'student-life':
         return <StudentLifePage />;
       case 'admissions':
-        return <AdmissionsPage />;
+        return <AdmissionsPage onNavigate={setCurrentPage} />;
       case 'blog':
         return <BlogPage />;
       case 'contact':

@@ -36,7 +36,7 @@ const programs = [
 },
 {
     id: 3,
-    title: 'Conception Design',
+    title: 'Bachelor Design',
     subtitle: 'Devenez expert en conception visuelle et expérience utilisateur',
     duration: '3 ans',
     level: 'Bac+3',

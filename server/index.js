@@ -35,6 +35,9 @@ const USERS_FILE        = path.join(DATA_DIR, 'users.json');
 const UPLOADS_DIR       = path.join(__dirname, 'uploads');
 const PORT              = process.env.PORT || 4000;
 const ADMIN_EMAIL       = process.env.ADMIN_EMAIL || 'dosyca35@gmail.com';
+// Destinataires des emails de candidature (admin) — séparés par virgule si plusieurs
+const APPLICATION_ADMIN_EMAILS = process.env.APPLICATION_ADMIN_EMAILS
+  || `${ADMIN_EMAIL}, charles@green-up-academy.com`;
 const JWT_SECRET        = process.env.JWT_SECRET  || 'gua_secret_key_2026_change_in_production';
 
 // Créer les dossiers si absents
@@ -667,7 +670,7 @@ app.post('/api/send-application',
 
       // Envoi emails en arrière-plan (non bloquant)
       Promise.all([
-        sendEmail({ to: ADMIN_EMAIL, replyTo: email, subject: `[CANDIDATURE] ${program} — ${fullName}`, html: htmlAdmin, attachments }),
+        sendEmail({ to: APPLICATION_ADMIN_EMAILS, replyTo: email, subject: `[CANDIDATURE] ${program} — ${fullName}`, html: htmlAdmin, attachments }),
         sendEmail({ to: email, subject: `Candidature reçue — ${program} | Green Up Academy`, html: htmlCandidat }),
         // Pas de pièces jointes pour le candidat → email léger garanti
       ]).then(() => {
