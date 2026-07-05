@@ -133,7 +133,7 @@ export function Hero({ onNavigate }: { onNavigate?: (page: string) => void }) {
                 variant="outline"
                 size="lg"
                 className="group border-2 border-[#E8EBE3] hover:border-[#2D5016] hover:bg-[#F5F7F3] text-[#1F1F1F]"
-                onClick={() => onNavigate?.('student-life')}>
+                onClick={() => window.open('/images/documents/brochure.pdf', '_blank', 'noopener,noreferrer')}>
 
                 <Play className="mr-2 h-5 w-5 text-[#2D5016]" />
                 <span>Découvrir l'école</span>
