@@ -323,7 +323,7 @@ function TotalSizeBar({ files }: { files: FileState }) {
 }
 
 // ─── Page principale ───────────────────────────────────────────────────────────
-export function AdmissionsPage() {
+export function AdmissionsPage({ onNavigate }: { onNavigate?: (page: string) => void }) {
   const [step, setStep]             = useState(1);
   const [isSubmitted, setSubmitted] = useState(false);
   const [isLoading, setLoading]     = useState(false);
@@ -495,7 +495,7 @@ export function AdmissionsPage() {
             <Check className="h-8 w-8 text-white" />
           </div>
         </div>
-        <h2 className="text-2xl font-bold text-[#2D2D2D] dark:text-white mb-2">Candidature envoyée !</h2>
+        <h2 className="text-2xl font-bold text-[#2D2D2D] dark:text-white mb-2">Candidature soumise !</h2>
         <p className="text-[#696969] dark:text-[#B0B0B0] mb-6 text-sm leading-relaxed">
           Merci <strong className="text-[#2D2D2D] dark:text-white">{form.firstName} {form.lastName}</strong> !<br />
           Votre dossier pour <strong className="text-[#1FAB89]">{formation.label}</strong> a bien été transmis.<br />
@@ -523,10 +523,13 @@ export function AdmissionsPage() {
           ))}
         </div>
         <button
-          onClick={() => { setSubmitted(false); setStep(1); setForm(INIT); setFiles(INIT_FILES); setErrors({}); }}
-          className="w-full bg-[#1FAB89] hover:bg-[#15896B] text-white py-3 rounded-xl font-bold transition-all"
+          onClick={() => {
+            setSubmitted(false); setStep(1); setForm(INIT); setFiles(INIT_FILES); setErrors({});
+            onNavigate?.('home');
+          }}
+          className="w-full flex items-center justify-center gap-2 bg-[#1FAB89] hover:bg-[#15896B] text-white py-3 rounded-xl font-bold transition-all"
         >
-          Nouvelle candidature
+          <ArrowLeft className="h-4 w-4" /> Retour à l'accueil
         </button>
       </div>
     </div>
