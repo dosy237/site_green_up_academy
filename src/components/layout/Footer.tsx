@@ -18,7 +18,7 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
       { name: 'Bachelor Design', handler: () => onNavigate?.('programs') },
       { name: 'Bachelor Développement Logiciel', handler: () => onNavigate?.('programs') },
       { name: 'Bachelor Réseaux et Sécurité', handler: () => onNavigate?.('programs') },
-      { name: 'Mastère Cybersécurité & Green IT', handler: () => onNavigate?.('programs') },
+      { name: 'Mastère Innovation Numérique, IA et Green IT', handler: () => onNavigate?.('programs') },
     ],
     school: [
       { name: 'À propos', handler: () => onNavigate?.('governance') },

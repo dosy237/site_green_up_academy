@@ -22,8 +22,8 @@ const programs = [
 },
 {
   id: 2,
-  title: 'Mastère Cybersécurité & Green IT',
-  subtitle: "L'alliance du numérique responsable",
+  title: 'Mastère Innovation Numérique, IA et Green IT',
+  subtitle: 'Projets numériques innovants, inclusifs et responsables',
   duration: '2 ans',
   level: 'Bac+5',
   students: '20',
@@ -31,8 +31,8 @@ const programs = [
   'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=800&q=80',
   color: 'from-blue-500 to-indigo-600',
   description:
-  'Sécurisez les infrastructures numériques tout en minimisant leur impact environnemental. Le profil le plus recherché du marché.',
-  highlights: ['Sécurité des SI', 'Data centers verts', 'IA éthique']
+  "Concevez, pilotez et déployez un projet numérique de bout en bout avec l'intelligence artificielle et le Green IT comme fil rouge.",
+  highlights: ['Entrepreneuriat numérique', 'UX design & IA', 'Green IT']
 },
 {
     id: 3,

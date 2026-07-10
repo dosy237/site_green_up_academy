@@ -98,17 +98,18 @@
     },
     {
       "id": 5,
-      "title": "Mastère Cybersécurité & Green IT",
+      "title": "Mastère Innovation Numérique, Intelligence Artificielle et Green IT",
       "level": "Bac+5",
       "duration": "2 ans",
-      "description": "Sécurité numérique et sobriété énergétique.",
-      "icon": "🔒",
+      "description": "Concevoir, piloter et déployer des projets numériques innovants, inclusifs et responsables.",
+      "icon": "💡",
       "color": "#FFEAA7",
-      "details": "Devenez expert en cybersécurité avec une vision Green IT.",
+      "details": "Deux ans pour construire un projet numérique de bout en bout : business model, UX design, gestion de projet agile, marketing digital et intelligence économique, avec un usage responsable de l'IA et le Green IT comme fil rouge.",
       "outcomes": [
-        "RSSI",
-        "Consultant Cybersécurité",
-        "Ethical Hacker"
+        "Chef de projet numérique",
+        "Product owner",
+        "UX designer",
+        "Entrepreneur numérique"
       ]
     },
     {

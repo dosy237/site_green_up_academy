@@ -12,7 +12,7 @@ const FORMATIONS = [
   { value: 'bachelor-design', label: 'Bachelor Design',                          niveau: 'Bac+3' },
   { value: 'bachelor-dev',    label: 'Bachelor Développement Fullstack',          niveau: 'Bac+3' },
   { value: 'bachelor-reseau', label: 'Bachelor Infrastructures Réseau Sécurisé',  niveau: 'Bac+3' },
-  { value: 'master-cyber',    label: 'Mastère Cybersécurité & Green IT',          niveau: 'Bac+5' },
+  { value: 'master-cyber',    label: 'Mastère Innovation Numérique, IA et Green IT', niveau: 'Bac+5' },
   { value: 'master-energie',  label: 'Mastère Performance Énergétique',           niveau: 'Bac+5' },
 ];
 
