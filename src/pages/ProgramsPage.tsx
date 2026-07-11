@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
   Clock, Award, Users, CheckCircle, ArrowRight,
   X, BookOpen, Briefcase, TrendingUp, ChevronDown, ChevronUp,
-  Monitor, Palette, Network, Shield, Zap, Building2, BadgeCheck
+  Monitor, Palette, Network, Shield, Zap, Building2, BadgeCheck, Cpu, Download
 } from 'lucide-react';
 
 interface Module { semestre: string; cours: string[] }
@@ -12,7 +12,7 @@ interface Program {
   rhythm: string; places: number; image: string; heroImage: string;
   icon: React.ElementType; isMaster: boolean;
   description: string; objectifs: string[]; debouches: string[]; competences: string[];
-  modules: Module[];
+  modules: Module[]; brochure?: string;
 }
 
 const programs: Program[] = [
@@ -94,21 +94,22 @@ const programs: Program[] = [
   },
   {
     id: 5, type: 'master', isMaster: true,
-    title: 'Mastère Cybersécurité & Green IT',
-    subtitle: 'Sécurité numérique & sobriété énergétique',
+    title: 'Mastère Innovation Numérique, Intelligence Artificielle et Green IT',
+    subtitle: 'Concevoir, piloter et déployer des projets numériques innovants, inclusifs et responsables',
     duration: '2 ans', level: 'Bac+5', rhythm: '4 sem. entreprise / 1 sem. école', places: 20,
     image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80',
-    icon: Shield,
-    description: "Formez-vous à la double expertise la plus recherchée du marché : sécuriser les systèmes d'information tout en réduire leur empreinte écologique. Un mastère unique qui allie cybersécurité avancée et Green IT.",
-    objectifs: ["Auditer et sécuriser des systèmes d'information complexes", 'Concevoir des architectures résilientes et éco-responsables', 'Piloter la réponse à incident (SOC & CSIRT)', "Réduire l'empreinte carbone des infrastructures numériques"],
-    competences: ['Pentest & CTF', 'SOC & SIEM', 'Cryptographie', 'Green IT & écoconception', 'ISO 27001', 'Cloud Security'],
-    debouches: ['Ingénieur cybersécurité', 'Analyste SOC', 'Pentesteur', 'RSSI junior', 'Consultant Green IT', 'Architecte sécurité'],
+    icon: Cpu,
+    brochure: '/documents/Mastere_Innovation_Numerique_IA_Green_IT.pdf',
+    description: "Formez des profils capables de transformer une idée en solution numérique viable, utile et sobre. Pendant deux ans, chaque apprenant construit un projet numérique de bout en bout : étude de marché, business model circulaire, UX accessible, cahier des charges, prototype, stratégie de communication et étude d'intelligence économique, en utilisant l'intelligence artificielle avec méthode, esprit critique et validation des sources.",
+    objectifs: ["Innover : identifier une opportunité, concevoir une proposition de valeur et valider un modèle d'affaires", 'Concevoir : rechercher les besoins, prototyper une expérience accessible et spécifier une solution numérique', 'Déployer : piloter en agile, communiquer, mesurer la performance et éclairer la décision stratégique', "Utiliser l'IA de façon responsable : prompt engineering, vérification des sources et documentation de la méthodologie", 'Agir en Green IT : évaluer les impacts, réduire les externalités et intégrer sobriété et écoconception', 'Inclure : concevoir pour tous, notamment les personnes en situation de handicap'],
+    competences: ['Entrepreneuriat numérique', 'UX Design & prototypage', 'IA appliquée & prompt engineering', 'Gestion de projet agile', 'Marketing digital & growth', 'Green IT & écoconception'],
+    debouches: ['Chef de projet numérique / digital', 'Product owner / Assistant product manager', 'UX designer / UX researcher junior', 'Consultant en transformation numérique responsable', 'Chargé de marketing digital / acquisition', 'Entrepreneur ou intrapreneur numérique'],
     modules: [
-      { semestre: 'S1', cours: ['Sécurité offensive (pentest)', 'Cryptographie appliquée', 'Green IT & sobriété numérique', 'Gouvernance SI'] },
-      { semestre: 'S2', cours: ['SOC & SIEM (Splunk)', 'Forensics & réponse à incident', 'Cloud security', 'Mémoire de recherche S1'] },
-      { semestre: 'S3', cours: ['ISO 27001 & RGPD', 'IA et sécurité', 'Écoconception des SI', 'Audit de sécurité'] },
-      { semestre: 'S4', cours: ["Projet de fin d'études", 'Stage long (6 mois)', 'Certification préparée (CEH/OSCP)', 'Soutenance finale'] },
+      { semestre: 'S1', cours: ['Marketing stratégique : concept, marché, benchmark, positionnement (PESTEL/PORTER/SWOT)', 'IA appliquée : prompt engineering et vérification des sources', 'Fondamentaux Green IT : cycle de vie, sobriété numérique, écoconception', "Découverte utilisateurs : design thinking, personae, cartes d'empathie"] },
+      { semestre: 'S2', cours: ['Business model et lean startup : Circular Business Model Canvas, MVP', 'UX design : parcours utilisateurs, wireframes, tests utilisateurs', "Chartes d'expérience, ergonomie et accessibilité numérique", 'Première soutenance : preuve de concept'] },
+      { semestre: 'S3', cours: ['Cahier des charges fonctionnel : objectifs, KPI, MoSCoW, WBS, Gantt', 'Spécifications techniques et conduite de projet agile', 'Stratégie emarketing : SEO, SEM, SMO, crowdfunding, landing page', 'Production des supports de communication'] },
+      { semestre: 'S4', cours: ['Structuration de l’entreprise : RH, statut juridique, propriété intellectuelle', 'Finance : plan de financement, compte de résultat, trésorerie', 'Intelligence économique : veille, études, recommandations stratégiques', 'Finalisation du prototype et soutenance devant jury professionnel'] },
     ],
   },
   {
@@ -209,6 +210,17 @@ function ProgramModal({ program, onClose, onApply }: { program: Program; onClose
         </div>
 
         <div className="p-6 space-y-6">
+          {/* Brochure */}
+          {program.brochure && (
+            <a
+              href={program.brochure}
+              download
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border-2 border-[#1FAB89] text-[#1FAB89] hover:bg-[#1FAB89] hover:text-white font-semibold text-sm transition-all"
+            >
+              <Download className="h-4 w-4" /> Télécharger la brochure de la formation
+            </a>
+          )}
+
           {/* Infos */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {[

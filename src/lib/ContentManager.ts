@@ -280,11 +280,11 @@ const INITIAL_CONTENT: ContentData = {
     },
     {
       id: 'prog-5', type: 'master',
-      title: 'Mastère Cybersécurité & Green IT', level: 'Bac+5', duration: '2 ans',
-      description: "Formez-vous à la double expertise la plus recherchée : sécuriser les SI tout en réduisant leur empreinte écologique.",
-      fullDescription: "Mastère expert en sécurité offensive/défensive, SOC, ISO 27001, Green IT et écoconception des SI. 100% alternance.",
-      icon: 'Shield', color: 'from-slate-600 to-gray-800',
-      highlights: ['Pentest & CTF', 'SOC & SIEM', 'Cryptographie', 'Green IT & écoconception', 'ISO 27001', 'Cloud Security'],
+      title: 'Mastère Innovation Numérique, Intelligence Artificielle et Green IT', level: 'Bac+5', duration: '2 ans',
+      description: "Concevoir, piloter et déployer des projets numériques innovants, inclusifs et responsables.",
+      fullDescription: "Mastère en entrepreneuriat numérique : business model, UX design, gestion de projet agile, marketing digital et intelligence économique, avec un usage responsable de l'IA et le Green IT comme fil rouge. 100% alternance.",
+      icon: 'Cpu', color: 'from-slate-600 to-gray-800',
+      highlights: ['Entrepreneuriat numérique', 'UX Design & prototypage', 'IA appliquée & prompt engineering', 'Gestion de projet agile', 'Marketing digital & growth', 'Green IT & écoconception'],
       image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
     },
     {
